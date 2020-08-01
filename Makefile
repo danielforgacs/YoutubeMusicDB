@@ -1,8 +1,8 @@
-initdb:
+initdb: down
 	@docker-compose up -d db
 	@docker-compose exec db psql -U postgres -f /home/sql/schema.sql
 
-up:
+up: down
 	@docker-compose up -d
 
 down:
