@@ -1,3 +1,6 @@
+build:
+	@docker-compose build --no-cache --force-rm --pull
+
 initdb: down
 	@docker-compose up -d db
 	@docker-compose exec db psql -U postgres -f /home/sql/schema.sql
