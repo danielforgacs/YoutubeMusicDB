@@ -1,0 +1,1 @@
+alias sql="docker-compose exec db psql -U postgres -d ymdb "
