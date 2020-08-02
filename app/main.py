@@ -17,4 +17,8 @@ app = flask.Flask(__name__)
 
 
 if __name__ == '__main__':
-    app.run(debug=os.getenv('DEBUG'))
+    app.run(
+        debug=os.getenv('DEBUG'),
+        host=os.environ['FLASK_HOST'],
+        port=os.environ['FLASK_PORT'],
+    )
