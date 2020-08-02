@@ -1,10 +1,18 @@
-DROP DATABASE		ymdb;
-CREATE DATABASE		ymdb;
+CREATE DATABASE ymdb;
 
 \c ymdb
 
+CREATE TABLE playlist (
+	id				SMALLSERIAL		PRIMARY KEY,
+	title			TEXT			NOT NULL,
+	youtubeid		TEXT			NOT NULL UNIQUE
+)
+;
+
 CREATE TABLE song (
-	title		TEXT,
-	ytid		TEXT
+	id				SMALLSERIAL		PRIMARY KEY,
+	title			TEXT			NOT NULL,
+	youtubeid		TEXT			NOT NULL UNIQUE,
+	playlist		INTEGER			REFERENCES playlist
 )
 ;
