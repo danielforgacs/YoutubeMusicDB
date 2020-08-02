@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask = "==1.1.2"
 psycopg2-binary = "==2.8.5"
 
 [dev-packages]
