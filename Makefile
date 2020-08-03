@@ -7,7 +7,7 @@ initdb:
 	@docker-compose exec db psql -U postgres -f /home/sql/schema.sql
 
 up: down
-	@docker-compose up -d
+	@docker-compose up
 
 down:
 	@docker-compose down --remove-orphans --volumes
