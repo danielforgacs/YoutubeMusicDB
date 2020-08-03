@@ -1,18 +1,16 @@
 FROM ubuntu:20.04
 
+RUN apt update
+RUN apt install -y python3.8 pipenv
+RUN ln /usr/bin/python3.8 /usr/bin/python
+
 WORKDIR /home
 
 COPY Pipfile .
 COPY Pipfile.lock .
-
-RUN apt update
-RUN apt install -y python3.8
-RUN apt install -y pipenv
-RUN ln /usr/bin/python3.8 /usr/bin/python
-RUN pipenv install --system
-
+COPY .env .
 COPY app/ app/
 
-ENV PYTHONPATH=/home/
+RUN pipenv install --system
 
 EXPOSE 5000
