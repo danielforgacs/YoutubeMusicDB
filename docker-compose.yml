@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
 
-  db:
+  ymdb_db:
     image: postgres:12.3
     environment:
       - POSTGRES_PASSWORD=$DB_PASSWORD
@@ -11,3 +11,15 @@ services:
     volumes:
       - .volumes/pgdata/:/var/lib/postgresql/data/
       - ./sql/:/home/sql/
+
+  ymdb_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - 5000:5000
+    env_file: .env
+    command: ["python", "app/main.py"]
+    image: ymdb-app
+    depends_on:
+      - ymdb_db
