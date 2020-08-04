@@ -12,3 +12,9 @@ up:
 
 down:
 	@docker-compose down --remove-orphans --volumes
+
+test: down
+	@docker-compose up -d
+	@sleep 5
+	@- pytest
+	@make down
