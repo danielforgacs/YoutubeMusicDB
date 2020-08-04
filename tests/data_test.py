@@ -23,13 +23,19 @@ def test_can_create_playlist():
     )
 
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(query="""
         SELECT
             title,
             youtubeid
         FROM
             playlist
         WHERE
-            title = 'test-playlist-01'
+            title = %s
         ;
-    """)
+    """, vars=(title,))
+    result = cur.fetchall()
+    cur.close()
+
+    assert len(result) == 1
+    assert result[0][0] == title
+    assert result[0][1] == ytid
