@@ -6,8 +6,6 @@ import app.data as data
 
 
 def setup_module():
-    print('SETUP SETUP SETUP SETUP SETUP ')
-
     with data.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
@@ -15,8 +13,6 @@ def setup_module():
         cur.execute(query="create database test_db;")
 
 def teardown_module():
-    print('CLEAN UP  CLEAN UP  CLEAN UP  CLEAN UP  ')
-
     with data.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
