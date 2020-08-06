@@ -16,8 +16,9 @@ upd:
 down:
 	@docker-compose down --remove-orphans --volumes
 
-test: down
-	@docker-compose up -d
+test: build upd
 	@sleep 5
-	@- pytest
+	@- export PYTHONPATH=$$PWD && \
+		export DB_HOST=127.0.0.1 && \
+		pytest
 	@make down
