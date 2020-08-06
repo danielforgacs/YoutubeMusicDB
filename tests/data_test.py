@@ -12,6 +12,28 @@ def setup_module():
         cur = conn1.cursor()
         cur.execute(query="create database test_db;")
 
+    with data.PGConnection(dbname='test_db') as conn1:
+        conn1.set_isolation_level(
+            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn1.cursor()
+        cur.execute(query="""
+CREATE TABLE playlist (
+    id              SMALLSERIAL     PRIMARY KEY,
+    title           TEXT            NOT NULL,
+    youtubeid       TEXT            NOT NULL UNIQUE
+)
+;
+
+CREATE TABLE song (
+    id              SMALLSERIAL     PRIMARY KEY,
+    title           TEXT            NOT NULL,
+    youtubeid       TEXT            NOT NULL UNIQUE,
+    playlist        INTEGER         REFERENCES playlist
+)
+;
+
+""")
+
 def teardown_module():
     with data.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(
@@ -36,39 +58,31 @@ def test_sdkfg7fghg(conn):
     print('-- test_sdkfg7fghg', conn)
 
 
-# conn = psycopg2.connect(
-#     host=os.getenv('DB_HOST'),
-#     port=os.getenv('DB_PORT'),
-#     dbname=os.getenv('DB_DBNAME'),
-#     user=os.getenv('DB_USER'),
-#     password=os.getenv('DB_PASSWORD'),
-# )
 
 
+def test_can_create_playlist(conn):
+    title = 'test-playlist-01'
+    ytid = 'id-01'
 
-# def _test_can_create_playlist():
-#     title = 'test-playlist-01'
-#     ytid = 'id-01'
+    data.create_playlist(
+        title=title,
+        ytid=ytid,
+    )
 
-#     data.create_playlist(
-#         title=title,
-#         ytid=ytid,
-#     )
+    cur = conn.cursor()
+    cur.execute(query="""
+        SELECT
+            title,
+            youtubeid
+        FROM
+            playlist
+        WHERE
+            title = %s
+        ;
+    """, vars=(title,))
+    result = cur.fetchall()
+    cur.close()
 
-#     cur = conn.cursor()
-#     cur.execute(query="""
-#         SELECT
-#             title,
-#             youtubeid
-#         FROM
-#             playlist
-#         WHERE
-#             title = %s
-#         ;
-#     """, vars=(title,))
-#     result = cur.fetchall()
-#     cur.close()
-
-#     assert len(result) == 1
-#     assert result[0][0] == title
-#     assert result[0][1] == ytid
+    assert len(result) == 1
+    assert result[0][0] == title
+    assert result[0][1] == ytid
