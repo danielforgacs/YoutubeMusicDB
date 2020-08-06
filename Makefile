@@ -20,5 +20,6 @@ test: build upd
 	@sleep 5
 	@- export PYTHONPATH=$$PWD && \
 		export DB_HOST=127.0.0.1 && \
+		export DB_DBNAME=test_db && \
 		pytest
 	@make down
