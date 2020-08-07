@@ -1,5 +1,6 @@
 import os
 import flask
+import json
 import app.config as config
 import app.data as data
 import app.youtube as youtube
@@ -11,8 +12,21 @@ app = flask.Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def post_playlist():
-    data = flask.request.json
-    return 'askdfhj\n{}\n'.format(data)
+    print(flask.request.json['id'])
+    print(flask.request.json['id'])
+    print(type(flask.request.json['id']))
+    print(type(flask.request.json['id']))
+    ytdl = youtube.Youtube()
+    ytdl.url = flask.request.json['id']
+    ytdl.fetch_info()
+
+    if ytdl.playlist:
+        data = ytdl.playlist.as_dict
+    else:
+        data = ytdl.video.as_dict
+
+
+    return flask.jsonify(data)
 
 
 
