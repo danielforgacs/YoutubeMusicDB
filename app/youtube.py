@@ -28,10 +28,10 @@ ytdl_opts = {
     'forceid': False,
     # 'forcethumbnail': False,
     # 'forcedescription': False,
-    'forceduration': False,
-    'forcefilename': False,
-    'forceformat': False,
-    'forcejson': False,
+    # 'forceduration': False,
+    # 'forcefilename': False,
+    # 'forceformat': False,
+    # 'forcejson': False,
     'dump_single_json': False,
     'simulate': True,
     'skip_download': False,
@@ -139,7 +139,7 @@ result = ytdl.extract_info(url=url)
 
 print('\n>>> START...')
 
-print(result.keys())
+# print(result.keys())
 print(result['_type'])
 print(result['id'])
 print(result['title'])
