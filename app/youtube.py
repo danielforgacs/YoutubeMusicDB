@@ -63,10 +63,15 @@ class Playlist(BaseEntity):
     # ['_type', 'entries', 'id', 'title', 'uploader',
     #  'uploader_id', 'uploader_url', 'extractor',
     #   'webpage_url', 'webpage_url_basename', 'extractor_key'])
+    def __init__(self, attrs):
+        super().__init__(attrs=attrs)
+        self.videos = []
 
     def print_info(self):
         print('id:      {}'.format(self.id))
         print('title:   {}'.format(self.title))
+
+
 
 
 
@@ -96,6 +101,7 @@ class Youtube(youtube_dl.YoutubeDL):
 
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
+                self.playlist.youtube = self
             else:
                 self.videos.append(Video(attrs=result))
 
@@ -112,6 +118,9 @@ for url in urls:
 
     if ytdl.playlist:
         ytdl.playlist.print_info()
+
+        for video in ytdl.playlist.videos:
+            video.print_info()
 
     else:
         for video in ytdl.videos:
