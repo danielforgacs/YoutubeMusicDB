@@ -25,6 +25,18 @@ class BaseEntity:
 
 
 
+    @property
+    def as_dict(self):
+        result = {}
+
+        for attr, value in self.__dict__.items():
+            if attr in self._attrs:
+                result[attr] = value
+
+        return result
+
+
+
 
 class Video(BaseEntity):
     _attrs = [
