@@ -137,38 +137,39 @@ result = ytdl.extract_info(url=url)
 
 print('\n>>> START...')
 
-print(result['_type'])
-print(result['id'])
-print(result['title'])
-print(result['uploader'])
-print(result['uploader_id'])
-print(result['uploader_url'])
-print(result['extractor'])
-print(result['webpage_url'])
-print(result['webpage_url_basename'])
-print(result['extractor_key'])
+if '_type' in result:
+    print(result['_type'])
+    print(result['id'])
+    print(result['title'])
+    print(result['uploader'])
+    print(result['uploader_id'])
+    print(result['uploader_url'])
+    print(result['extractor'])
+    print(result['webpage_url'])
+    print(result['webpage_url_basename'])
+    print(result['extractor_key'])
 
-entries = result['entries']
-attrs = [
-    'album',
-    'artist',
-    # 'description',
-    'duration',
-    'ext',
-    # 'formats',
-    'id',
-    'playlist',
-    'playlist_id',
-    'playlist_index',
-    'playlist_title',
-    'title',
-    'track',
-]
+    entries = result['entries']
+    attrs = [
+        'album',
+        'artist',
+        # 'description',
+        'duration',
+        'ext',
+        # 'formats',
+        'id',
+        'playlist',
+        'playlist_id',
+        'playlist_index',
+        'playlist_title',
+        'title',
+        'track',
+    ]
 
-for song in entries:
-    print('-'*55)
+    for song in entries:
+        print('-'*55)
 
-    for key in attrs:
-        print(song[key])
+        for key in attrs:
+            print(song[key])
 
 
