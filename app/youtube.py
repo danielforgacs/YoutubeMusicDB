@@ -97,11 +97,13 @@ class Playlist(BaseEntity):
     @property
     def videos(self):
         for item in self.entries:
-            print('--append video')
-            data = self.youtube.fetch_info(url=item['url'])
-            video = Video(attrs=data)
-            # self._videos.append(item)
-            self._videos.append(video)
+            ytdl = Youtube(
+                url=item['url'],
+                params=self.youtube.params,
+                do_download=self.youtube.do_download
+            )
+            ytdl.fetch_info()
+            self._videos.append(ytdl.video)
 
         return self._videos
 
@@ -112,6 +114,7 @@ class Playlist(BaseEntity):
 
 class Youtube(youtube_dl.YoutubeDL):
     def __init__(self, url=None, params=None, do_download=False):
+        self.params = params
         self.url = url
         self.do_download = do_download
         self.playlist = None
@@ -155,6 +158,10 @@ for url in urls:
 
     if ytdl.playlist:
         ytdl.playlist.print_info()
+
+        for video in ytdl.playlist.videos:
+            print('\n..playlist video:')
+            video.print_info()
 
     else:
         ytdl.video.print_info()
