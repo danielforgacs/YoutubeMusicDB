@@ -90,7 +90,20 @@ class Playlist(BaseEntity):
 
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
-        self.videos = []
+        self._videos = []
+
+
+
+    @property
+    def videos(self):
+        for item in self.entries:
+            print('--append video')
+            data = self.youtube.fetch_info(url=item['url'])
+            video = Video(attrs=data)
+            # self._videos.append(item)
+            self._videos.append(video)
+
+        return self._videos
 
 
 
@@ -102,7 +115,7 @@ class Youtube(youtube_dl.YoutubeDL):
         self.url = url
         self.do_download = do_download
         self.playlist = None
-        self.videos = []
+        self.video = None
 
         if params:
             params.update({'quiet': True})
@@ -124,8 +137,10 @@ class Youtube(youtube_dl.YoutubeDL):
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
                 self.playlist.youtube = self
+
             else:
-                self.videos.append(Video(attrs=result))
+                self.video = Video(attrs=result)
+                self.video.youtube = self
 
 
 
@@ -141,10 +156,5 @@ for url in urls:
     if ytdl.playlist:
         ytdl.playlist.print_info()
 
-        for video in ytdl.playlist.videos:
-            video.print_info()
-
     else:
-        for video in ytdl.videos:
-            video.print_info()
-
+        ytdl.video.print_info()
