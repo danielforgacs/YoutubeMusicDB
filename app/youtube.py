@@ -10,22 +10,77 @@ urls = [
 
 
 
-class Youtube(youtube_dl.YoutubeDL):
-    def __init__(self, url=None, params=dict(), do_download=False):
-        params.update({'quiet': True})
+class BaseEntity:
+    def __init__(self, attrs):
+        print(attrs.keys())
+        for attr in attrs:
+            setattr(self, attr, attrs[attr])
 
-        if not do_download:
-            params.update({'skip_download': True})
-        super().__init__(params=params, auto_init=True)
+
+
+
+class Video(BaseEntity):
+    # ['id', 'uploader', 'uploader_id', 'uploader_url',
+    #  'channel_id', 'channel_url', 'upload_date', 'license',
+    #   'creator', 'title', 'alt_title', 'thumbnails',
+    #    'description', 'categories', 'tags', 'subtitles',
+    #     'automatic_captions', 'duration', 'age_limit',
+    #     'annotations', 'chapters', 'webpage_url', 'view_count',
+    #      'like_count', 'dislike_count', 'average_rating', 'formats',
+    #       'is_live', 'start_time', 'end_time', 'series',
+    #        'season_number', 'episode_number', 'track', 'artist',
+    #         'album', 'release_date', 'release_year', 'extractor',
+    #          'webpage_url_basename', 'extractor_key'])
+
+
+    def info(self):
+        pass
+
+
+
+class Playlist(BaseEntity):
+    # ['_type', 'entries', 'id', 'title', 'uploader',
+    #  'uploader_id', 'uploader_url', 'extractor',
+    #   'webpage_url', 'webpage_url_basename', 'extractor_key'])
+
+    def info(self):
+        print(self._type)
+        print(self.id)
+
+
+
+class Youtube(youtube_dl.YoutubeDL):
+    def __init__(self, url=None, params=None, do_download=False):
         self.url = url
+        self.do_download = do_download
+
+        if params:
+            params.update({'quiet': True})
+        else:
+            params = {}
+
+        super().__init__(params=params, auto_init=True)
+
+
 
     def fetch_info(self):
-        result = None
+        result = {}
 
         if self.url:
-            result = self.extract_info(url=self.url)
+            result = self.extract_info(
+                url=self.url,
+                download=self.do_download,
+                process=self.do_download,
+            )
+
+            if '_type' in result.keys():
+                result = Playlist(attrs=result)
+            else:
+                result = Video(attrs=result)
 
         return result
+
+
 
 
 for url in urls:
@@ -35,42 +90,44 @@ for url in urls:
     ytdl.url = url
     result = ytdl.fetch_info()
 
-    print('\n>>> START...')
+    result.info()
 
-    if '_type' in result:
-        print(result['_type'])
-        print(result['id'])
-        print(result['title'])
-        print(result['uploader'])
-        print(result['uploader_id'])
-        print(result['uploader_url'])
-        print(result['extractor'])
-        print(result['webpage_url'])
-        print(result['webpage_url_basename'])
-        print(result['extractor_key'])
+    # print('\n>>> START...')
 
-        entries = result['entries']
-        attrs = [
-            'album',
-            'artist',
-            # 'description',
-            'duration',
-            'ext',
-            # 'formats',
-            'id',
-            'playlist',
-            'playlist_id',
-            'playlist_index',
-            'playlist_title',
-            'title',
-            'track',
-        ]
+    # if '_type' in result:
+    #     print(result['_type'])
+    #     print(result['id'])
+    #     print(result['title'])
+    #     print(result['uploader'])
+    #     print(result['uploader_id'])
+    #     print(result['uploader_url'])
+    #     print(result['extractor'])
+    #     print(result['webpage_url'])
+    #     print(result['webpage_url_basename'])
+    #     print(result['extractor_key'])
 
-        for song in entries:
-            print('-'*55)
+    #     entries = result['entries']
+    #     attrs = [
+    #         'album',
+    #         'artist',
+    #         # 'description',
+    #         'duration',
+    #         'ext',
+    #         # 'formats',
+    #         'id',
+    #         'playlist',
+    #         'playlist_id',
+    #         'playlist_index',
+    #         'playlist_title',
+    #         'title',
+    #         'track',
+    #     ]
 
-            for key in attrs:
-                print(song[key])
+    #     for song in entries:
+    #         print('-'*55)
 
-    else:
-        print(result.keys())
+    #         for key in attrs:
+    #             print(song[key])
+
+    # else:
+    #     print(result.keys())
