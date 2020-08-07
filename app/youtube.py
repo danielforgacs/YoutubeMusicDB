@@ -139,7 +139,6 @@ result = ytdl.extract_info(url=url)
 
 print(result.keys())
 print(result['_type'])
-# print(result['entries'])
 print(result['id'])
 print(result['title'])
 print(result['uploader'])
@@ -150,6 +149,28 @@ print(result['webpage_url'])
 print(result['webpage_url_basename'])
 print(result['extractor_key'])
 
+entries = result['entries']
+attrs = [
+    'album',
+    'artist',
+    'description',
+    'duration',
+    'ext',
+    # 'formats',
+    'id',
+    'playlist',
+    'playlist_id',
+    'playlist_index',
+    'playlist_title',
+    'title',
+    'track',
+]
+
+for song in entries:
+    print()
+
+    for key in attrs:
+        print(song[key])
 
 
 # playlists = [
