@@ -39,35 +39,35 @@ class Video(BaseEntity):
         'title',
         'alt_title',
         'thumbnails',
-        'description',
+        # 'description',
         'categories',
         'tags',
         'subtitles',
         'automatic_captions',
         'duration',
-        'age_limit',
-        'annotations',
-        'chapters',
-        'webpage_url',
-        'view_count',
-        'like_count',
-        'dislike_count',
-        'average_rating',
-        'formats',
-        'is_live',
-        'start_time',
-        'end_time',
-        'series',
-        'season_number',
-        'episode_number',
-        'track',
-        'artist',
-        'album',
-        'release_date',
-        'release_year',
-        'extractor',
-        'webpage_url_basename',
-        'extractor_key'
+        # 'age_limit',
+        # 'annotations',
+        # 'chapters',
+        # 'webpage_url',
+        # 'view_count',
+        # 'like_count',
+        # 'dislike_count',
+        # 'average_rating',
+        # 'formats',
+        # 'is_live',
+        # 'start_time',
+        # 'end_time',
+        # 'series',
+        # 'season_number',
+        # 'episode_number',
+        # 'track',
+        # 'artist',
+        # 'album',
+        # 'release_date',
+        # 'release_year',
+        # 'extractor',
+        # 'webpage_url_basename',
+        # 'extractor_key'
     ]
 
 
@@ -81,17 +81,17 @@ class Video(BaseEntity):
 
 class Playlist(BaseEntity):
     _attrs = [
-        '_type',
+        # '_type',
         'entries',
         'id',
         'title',
-        'uploader',
+        # 'uploader',
         'uploader_id',
-        'uploader_url',
-        'extractor',
-        'webpage_url',
-        'webpage_url_basename',
-        'extractor_key'
+        # 'uploader_url',
+        # 'extractor',
+        # 'webpage_url',
+        # 'webpage_url_basename',
+        # 'extractor_key'
     ]
 
     def __init__(self, attrs):
@@ -129,8 +129,6 @@ class Youtube(youtube_dl.YoutubeDL):
                 download=self.do_download,
                 process=self.do_download,
             )
-
-            print('RESULT:', result.keys())
 
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
