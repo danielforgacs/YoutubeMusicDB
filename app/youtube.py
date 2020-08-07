@@ -2,10 +2,14 @@ import sys
 import youtube_dl
 
 url = 'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32'
+url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
+
+url = 'https://www.youtube.com/watch?v=HJq-6y2IYEQ'
+# url = 'HJq-6y2IYEQ'
 
 sys.argv = ['']
 sys.argv += [url]
-sys.argv += ['--get-title']
+# sys.argv += ['--get-title']
 
 
 # res = youtube_dl._real_main()
