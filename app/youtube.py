@@ -149,20 +149,22 @@ class Youtube(youtube_dl.YoutubeDL):
 
 
 
+if __name__ == '__main__':
+    pass
 
-for url in urls:
-    print('\n', '-'*79)
+    for url in urls:
+        print('\n', '-'*79)
 
-    ytdl = Youtube()
-    ytdl.url = url
-    ytdl.fetch_info()
+        ytdl = Youtube()
+        ytdl.url = url
+        ytdl.fetch_info()
 
-    if ytdl.playlist:
-        ytdl.playlist.print_info()
+        if ytdl.playlist:
+            ytdl.playlist.print_info()
 
-        for video in ytdl.playlist.videos:
-            print('\n..playlist video:')
-            video.print_info()
+            for video in ytdl.playlist.videos:
+                print('\n..playlist video:')
+                video.print_info()
 
-    else:
-        ytdl.video.print_info()
+        else:
+            ytdl.video.print_info()

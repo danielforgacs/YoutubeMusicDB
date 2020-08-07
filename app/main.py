@@ -2,6 +2,7 @@ import os
 import flask
 import app.config as config
 import app.data as data
+import app.youtube as youtube
 
 
 app = flask.Flask(__name__)
