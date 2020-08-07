@@ -8,14 +8,9 @@ urls = [
     'HJq-6y2IYEQ',
 ]
 
-url = 'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32'
-url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
+# url = 'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32'
+# url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
 
-# url = 'https://www.youtube.com/watch?v=HJq-6y2IYEQ'
-# url = 'HJq-6y2IYEQ'
-
-# sys.argv = ['']
-# sys.argv += [url]
 
 ytdl_opts = {
     # 'age_limit': None,
