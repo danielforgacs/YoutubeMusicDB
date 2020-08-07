@@ -132,8 +132,26 @@ ytdl_opts = {
     'youtube_include_dash_manifest': True,
 }
 
-ytdl = youtube_dl.YoutubeDL(params=ytdl_opts)
-result = ytdl.extract_info(url=url)
+
+class Youtube(youtube_dl.YoutubeDL):
+    def __init__(self, url=None):
+        super().__init__(params=ytdl_opts, auto_init=True)
+        self.url = url
+
+    def fetch_info(self):
+        result = None
+
+        if self.url:
+            result = self.extract_info(url=self.url)
+
+        return result
+
+
+
+
+ytdl = Youtube()
+ytdl.url = url
+result = ytdl.fetch_info()
 
 print('\n>>> START...')
 
@@ -172,4 +190,5 @@ if '_type' in result:
         for key in attrs:
             print(song[key])
 
-
+else:
+    print(result.keys())
