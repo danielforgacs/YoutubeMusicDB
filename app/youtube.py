@@ -114,6 +114,14 @@ class Playlist(BaseEntity):
         return self._videos
 
 
+    @property
+    def as_dict(self):
+        data = super().as_dict
+        data['videos'] = [video.as_dict for video in self.videos]
+        del data['entries']
+        return data
+
+
 
 
 
@@ -159,9 +167,9 @@ if __name__ == '__main__':
 
     urls = [
         'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
-        'PL9YsudagsL6hicXrha4zBId875lRXxc32',
+        # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
         'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
-        'HJq-6y2IYEQ',
+        # 'HJq-6y2IYEQ',
         'FIQ2F3T1ydM',
     ]
 
@@ -175,13 +183,14 @@ if __name__ == '__main__':
         if ytdl.playlist:
             ytdl.playlist.print_info()
 
-            for video in ytdl.playlist.videos:
-                print('\n..playlist video:')
-                video.print_info()
-                print(video.as_dict)
-            print(type(video.as_dict))
+            print('\nas_dict:')
+            print(ytdl.playlist.as_dict)
 
-        else:
-            ytdl.video.print_info()
-            print(ytdl.video.as_dict)
-            print(type(ytdl.video.as_dict))
+        #     for video in ytdl.playlist.videos:
+        #         print('\n..playlist video:')
+        #         video.print_info()
+        #         print(video.as_dict)
+
+        # else:
+        #     ytdl.video.print_info()
+        #     print(ytdl.video.as_dict)
