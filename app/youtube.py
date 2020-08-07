@@ -12,14 +12,20 @@ urls = [
 
 class BaseEntity:
     def __init__(self, attrs):
-        print(attrs.keys())
         for attr in attrs:
-            setattr(self, attr, attrs[attr])
+            if attr in self._attrs:
+                setattr(self, attr, attrs[attr])
 
 
 
 
 class Video(BaseEntity):
+    _attrs = [
+        'id',
+        'title',
+        'upload_date',
+        'alt_title',
+    ]
     # ['id', 'uploader', 'uploader_id', 'uploader_url',
     #  'channel_id', 'channel_url', 'upload_date', 'license',
     #   'creator', 'title', 'alt_title', 'thumbnails',
@@ -33,19 +39,34 @@ class Video(BaseEntity):
     #          'webpage_url_basename', 'extractor_key'])
 
 
-    def info(self):
-        pass
+    def print_info(self):
+        print('id:              {}'.format(self.id))
+        print('title:           {}'.format(self.title))
+        print('upload_date:     {}'.format(self.upload_date))
+        print('alt_title:       {}'.format(self.alt_title))
+        # print(self.alt_title)
+        # print(self.duration)
+        # print(self.start_time)
+        # print(self.end_time)
+        # print(self.track)
+        # print(self.artist)
+        # print(self.artist)
+        # print(self.album)
 
 
 
 class Playlist(BaseEntity):
+    _attrs = [
+        'id',
+        'title',
+    ]
     # ['_type', 'entries', 'id', 'title', 'uploader',
     #  'uploader_id', 'uploader_url', 'extractor',
     #   'webpage_url', 'webpage_url_basename', 'extractor_key'])
 
-    def info(self):
-        print(self._type)
-        print(self.id)
+    def print_info(self):
+        print('id:      {}'.format(self.id))
+        print('title:   {}'.format(self.title))
 
 
 
@@ -53,6 +74,8 @@ class Youtube(youtube_dl.YoutubeDL):
     def __init__(self, url=None, params=None, do_download=False):
         self.url = url
         self.do_download = do_download
+        self.playlist = None
+        self.videos = []
 
         if params:
             params.update({'quiet': True})
@@ -64,8 +87,6 @@ class Youtube(youtube_dl.YoutubeDL):
 
 
     def fetch_info(self):
-        result = {}
-
         if self.url:
             result = self.extract_info(
                 url=self.url,
@@ -74,23 +95,30 @@ class Youtube(youtube_dl.YoutubeDL):
             )
 
             if '_type' in result.keys():
-                result = Playlist(attrs=result)
+                self.playlist = Playlist(attrs=result)
             else:
-                result = Video(attrs=result)
+                self.videos.append(Video(attrs=result))
 
-        return result
 
 
 
 
 for url in urls:
-    print('\n', '>'*79)
+    print('\n', '-'*79)
 
     ytdl = Youtube()
     ytdl.url = url
-    result = ytdl.fetch_info()
+    ytdl.fetch_info()
 
-    result.info()
+    if ytdl.playlist:
+        ytdl.playlist.print_info()
+
+    else:
+        for video in ytdl.videos:
+            video.print_info()
+
+    # result.print_info()
+
 
     # print('\n>>> START...')
 
