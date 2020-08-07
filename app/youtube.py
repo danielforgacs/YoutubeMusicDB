@@ -71,12 +71,6 @@ class Video(BaseEntity):
     ]
 
 
-    # def print_info(self):
-    #     print('id:              {}'.format(self.id))
-    #     print('title:           {}'.format(self.title))
-    #     print('upload_date:     {}'.format(self.upload_date))
-    #     print('alt_title:       {}'.format(self.alt_title))
-
 
 
 class Playlist(BaseEntity):
@@ -98,9 +92,6 @@ class Playlist(BaseEntity):
         super().__init__(attrs=attrs)
         self.videos = []
 
-    # def print_info(self):
-    #     print('id:      {}'.format(self.id))
-    #     print('title:   {}'.format(self.title))
 
 
 
