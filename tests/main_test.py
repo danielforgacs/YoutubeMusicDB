@@ -18,7 +18,8 @@ def client():
 
 
 
-def test_post_playlist(client):
+@pytest.mark.parametrize('ytid', youtubeids)
+def test_post_playlist(client, ytid):
     expected = {
         'id': 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
         'title': 'AAAA',
@@ -44,18 +45,20 @@ def test_post_playlist(client):
         }
         ]
     }
-    response = client.post('/', json={'id': 'PL9YsudagsL6hicXrha4zBId875lRXxc32'})
+    response = client.post('/', json={'id': ytid})
     data = response.get_json()
 
     assert data == expected
 
 
 
-def test_post_playlist_02(client):
+@pytest.mark.parametrize('ytid', youtubeids)
+def test_post_playlist_02(client, ytid):
     youtube = ytdl.Youtube()
-    youtube.url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
+    youtube.url = ytid
     youtube.fetch_info()
-    response = client.post('/', json={'id': 'PL9YsudagsL6hicXrha4zBId875lRXxc32'})
+
+    response = client.post('/', json={'id': ytid})
     data = response.get_json()
 
     assert youtube.playlist.as_dict == data
