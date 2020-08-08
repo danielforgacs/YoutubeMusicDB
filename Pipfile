@@ -10,7 +10,6 @@ youtube-dl = "==2020.7.28"
 
 [dev-packages]
 pytest = "==6.0.1"
-pytest-mock = "==3.2.0"
 
 [requires]
 python_version = "3.8"
