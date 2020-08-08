@@ -1,5 +1,12 @@
 import pytest
 import app.main as main
+import app.youtube as ytdl
+
+
+
+youtubeids = [
+    'PL9YsudagsL6hicXrha4zBId875lRXxc32',
+]
 
 
 
@@ -41,6 +48,17 @@ def test_post_playlist(client):
     data = response.get_json()
 
     assert data == expected
+
+
+
+def test_post_playlist_02(client):
+    youtube = ytdl.Youtube()
+    youtube.url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
+    youtube.fetch_info()
+    response = client.post('/', json={'id': 'PL9YsudagsL6hicXrha4zBId875lRXxc32'})
+    data = response.get_json()
+
+    assert youtube.playlist.as_dict == data
 
 
 
