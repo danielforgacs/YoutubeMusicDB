@@ -6,6 +6,7 @@ import app.data as data
 
 
 def setup_module():
+    os.environ['DB_DBNAME'] = 'test_db'
     with data.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
