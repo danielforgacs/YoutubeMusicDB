@@ -41,6 +41,16 @@ def test_post_playlist(client, ytid):
 
 
 
+def test_post_playlist_returns_error_json_on_missing_id(client):
+    expected = {'error': 'missing id'}
+    response = client.post('/', json={'id': '1'})
+    data = response.get_json()
+
+    assert data == expected
+
+
+
+
 
 if __name__ == '__main__':
     pass
