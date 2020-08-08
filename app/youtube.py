@@ -137,7 +137,7 @@ class Youtube(youtube_dl.YoutubeDL):
         if params:
             params.update({'quiet': True})
         else:
-            params = {}
+            params = {'quiet': True}
 
         super().__init__(params=params, auto_init=True)
 
