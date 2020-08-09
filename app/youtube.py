@@ -145,20 +145,11 @@ class Youtube(youtube_dl.YoutubeDL):
 
     def fetch_info(self):
         if self.url:
-            result = {}
-
-            try:
-                result = self.extract_info(
-                    url=self.url,
-                    download=self.do_download,
-                    process=self.do_download,
-                )
-            except:
-                pass
-                # self.playlist = None
-                # self.video = None
-
-                # return
+            result = self.extract_info(
+                url=self.url,
+                download=self.do_download,
+                process=self.do_download,
+            )
 
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
