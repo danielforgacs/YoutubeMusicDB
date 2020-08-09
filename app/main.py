@@ -12,23 +12,26 @@ app = flask.Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def post_playlist():
+    result = {}
     ytid = flask.request.json.get('id')
 
     if not ytid:
-        return flask.jsonify({'error': 'missing id'})
+        result = {'error': 'missing id'}
 
-
-    ytdl = youtube.Youtube()
-    ytdl.url = ytid
-    ytdl.fetch_info()
-
-    if ytdl.playlist:
-        data = ytdl.playlist.as_dict
     else:
-        data = ytdl.video.as_dict
+        ytdl = youtube.Youtube()
+        ytdl.url = ytid
+        ytdl.fetch_info()
+
+        if ytdl.playlist:
+            data = ytdl.playlist.as_dict
+        elif ytdl.video:
+            data = ytdl.video.as_dict
+        else:
+            result = {'error': 'something wrong'}
 
 
-    return flask.jsonify(data)
+    return flask.jsonify(result)
 
 
 
