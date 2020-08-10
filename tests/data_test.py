@@ -49,17 +49,6 @@ def conn():
         yield conn
 
 
-def test_aslkdfhj(conn):
-    print('-- test_aslkdfhj', conn)
-
-def test_aslkasjhdf(conn):
-    print('-- test_aslkasjhdf', conn)
-
-def test_sdkfg7fghg(conn):
-    print('-- test_sdkfg7fghg', conn)
-
-
-
 
 def test_can_create_playlist(conn):
     title = 'test-playlist-01'
