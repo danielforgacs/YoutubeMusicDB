@@ -23,12 +23,13 @@ def post_playlist():
     ytdl.fetch_info()
 
     if ytdl.playlist:
-        data = ytdl.playlist.as_dict
+        download = ytdl.playlist.as_dict
     else:
-        data = ytdl.video.as_dict
+        download = ytdl.video.as_dict
 
+    response = flask.jsonify(download)
 
-    return flask.jsonify(data)
+    return response
 
 
 
