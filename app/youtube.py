@@ -1,5 +1,6 @@
 import sys
 import youtube_dl
+import app.data as datab
 
 
 
@@ -99,7 +100,6 @@ class Playlist(BaseEntity):
         self._videos = []
 
 
-
     @property
     def videos(self):
         for item in self.entries:
@@ -154,10 +154,14 @@ class Youtube(youtube_dl.YoutubeDL):
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
                 self.playlist.youtube = self
+                datab.insert_playlist(playlist=self.playlist)
+                self.playlist.videos
+
 
             else:
                 self.video = Video(attrs=result)
                 self.video.youtube = self
+                datab.insert_video(video=self.video)
 
 
 
@@ -168,9 +172,9 @@ if __name__ == '__main__':
     urls = [
         'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
         # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
-        'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
+        # 'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
         # 'HJq-6y2IYEQ',
-        'FIQ2F3T1ydM',
+        # 'FIQ2F3T1ydM',
     ]
 
     for url in urls:
@@ -180,11 +184,11 @@ if __name__ == '__main__':
         ytdl.url = url
         ytdl.fetch_info()
 
-        if ytdl.playlist:
-            ytdl.playlist.print_info()
+        # if ytdl.playlist:
+        #     ytdl.playlist.print_info()
 
-            print('\nas_dict:')
-            print(ytdl.playlist.as_dict)
+        #     print('\nas_dict:')
+        #     print(ytdl.playlist.as_dict)
 
         #     for video in ytdl.playlist.videos:
         #         print('\n..playlist video:')

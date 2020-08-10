@@ -5,10 +5,10 @@ import app.youtube as ytdl
 
 
 youtubeids = [
-    'PL9YsudagsL6hicXrha4zBId875lRXxc32',
+    # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
     'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
-    'HJq-6y2IYEQ',
+    # 'HJq-6y2IYEQ',
     'FIQ2F3T1ydM',
 ]
 

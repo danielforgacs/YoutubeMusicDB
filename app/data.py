@@ -23,16 +23,23 @@ class PGConnection:
 
 
 
-def create_playlist(title, ytid):
-    sql = """
-INSERT INTO playlist (title, youtubeid)
-VALUES (%s, %s)
-"""
 
+def insert_playlist(playlist):
+    # print(playlist.print_info())
+    sql = """
+INSERT INTO playlist (youtubeid, title, uploaderid)
+VALUES (%s, %s, %s)
+"""
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql, (title, ytid))
+        cur.execute(sql, (playlist.id, playlist.title, playlist.uploader_id))
         conn.commit()
+
+
+
+def insert_video(video):
+    print('\nDB_INSERT - VIDEO')
+    pass
 
 
 
