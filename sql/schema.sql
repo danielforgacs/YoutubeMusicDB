@@ -4,8 +4,9 @@ CREATE DATABASE ymdb;
 
 CREATE TABLE playlist (
 	id				SMALLSERIAL		PRIMARY KEY,
+	youtubeid		TEXT			NOT NULL UNIQUE,
 	title			TEXT			NOT NULL,
-	youtubeid		TEXT			NOT NULL UNIQUE
+	uploaderid		TEXT			NOT NULL
 )
 ;
 
