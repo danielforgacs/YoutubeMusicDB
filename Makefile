@@ -28,6 +28,7 @@ test: build initdb_test upd
 	@sleep 5
 	@- export PYTHONPATH=$$PWD && \
 		export DB_HOST=127.0.0.1 && \
-		export DB_DBNAME=ymdb_test && \
+		export PGDATABASE=ymdb_test && \
+		export PGDATABASE=ymdb_test && \
 		pytest
 	@make down

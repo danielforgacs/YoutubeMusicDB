@@ -5,15 +5,15 @@ import app.data as data
 import app.youtube as youtube
 
 
-print('\n[IMPORT]', os.environ['DB_DBNAME'])
+print('\n[IMPORT]', os.environ['PGDATABASE'])
 
-os.environ['DB_DBNAME'] = 'ymdb_test'
-print('\n[IMPORT AFTER UPDATE]', os.environ['DB_DBNAME'])
+os.environ['PGDATABASE'] = 'ymdb_test'
+print('\n[IMPORT AFTER UPDATE]', os.environ['PGDATABASE'])
 
 
 
 # def setup_module():
-#     print('\n[SETUP]', os.environ['DB_DBNAME'])
+#     print('\n[SETUP]', os.environ['PGDATABASE'])
 
 #     with data.PGConnection(dbname='postgres') as conn1:
 #         conn1.set_isolation_level(
@@ -48,7 +48,7 @@ print('\n[IMPORT AFTER UPDATE]', os.environ['DB_DBNAME'])
 
 
 # def teardown_module():
-#     print('\n[TEARDOWN]', os.environ['DB_DBNAME'])
+#     print('\n[TEARDOWN]', os.environ['PGDATABASE'])
 
 #     with data.PGConnection(dbname='postgres') as conn1:
 #         conn1.set_isolation_level(
@@ -63,7 +63,7 @@ print('\n[IMPORT AFTER UPDATE]', os.environ['DB_DBNAME'])
 
 @pytest.fixture
 def conn():
-    print('\n[CONN]', os.environ['DB_DBNAME'])
+    print('\n[CONN]', os.environ['PGDATABASE'])
 
     # with data.PGConnection(dbname='ymdb_test') as conn:
     with data.PGConnection() as conn:
@@ -73,7 +73,7 @@ def conn():
 
 
 def test_insert_playlist(conn):
-    print('\n[TEST001]', os.environ['DB_DBNAME'])
+    print('\n[TEST001]', os.environ['PGDATABASE'])
     playlist = youtube.Playlist(attrs={})
     playlist.id = 'youtube-id-01'
     playlist.title = 'playlist-title-01'

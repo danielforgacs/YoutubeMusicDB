@@ -5,7 +5,7 @@ import psycopg2
 
 class PGConnection:
     def __init__(self, dbname=None):
-        self.dbname = dbname or os.getenv('DB_DBNAME')
+        self.dbname = dbname or os.getenv('PGDATABASE')
 
     def __enter__(self, *args, **kwargs):
         self.conn = psycopg2.connect(
