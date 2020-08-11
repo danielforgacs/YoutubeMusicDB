@@ -1,6 +1,7 @@
 import pytest
 import app.main as main
 import app.youtube as ytdl
+import tests.data_test
 
 
 
@@ -12,6 +13,13 @@ youtubeids = [
     'FIQ2F3T1ydM',
 ]
 
+
+def setup_module():
+    tests.data_test.setup_module()
+
+
+def teardown_module():
+    tests.data_test.teardown_module()
 
 
 
@@ -25,9 +33,9 @@ def client():
 
 @pytest.mark.parametrize('ytid', youtubeids)
 def test_post_playlist(client, ytid):
-    youtube = ytdl.Youtube()
-    youtube.url = ytid
-    youtube.fetch_info()
+    youtube = ytdl.Youtube(url=ytid)
+    # youtube.url = ytid
+    # youtube.fetch_info()
 
     if youtube.playlist:
         expected = youtube.playlist.as_dict
