@@ -11,14 +11,14 @@ TEST_DB_NAME = 'ymdb_test'
 os.environ['PGDATABASE'] = TEST_DB_NAME
 SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
 PLAYLIST_DATA = [{
-        'id': 'youtubeid_{}'.format(idx),
+        'id': 'id_{}'.format(idx),
         'title': 'title_{}'.format(idx),
-        'uploader_id': 'uploaderid_{}'.format(idx),
+        'uploader_id': 'uploader_id_{}'.format(idx),
     } for idx in range(3)
 ]
 VIDEO_DATA = [
     {
-        'youtubeid': 'youtubeid_{}'.format(idx),
+        'id': 'id_{}'.format(idx),
         'title': 'title_{}'.format(idx),
     } for idx in range(1)
 ]
@@ -75,41 +75,42 @@ def test_test_db_is_ready(conn):
 
 @pytest.mark.parametrize('pldata', PLAYLIST_DATA)
 def test_insert_playlist(conn, pldata):
-    plid = data.insert_playlist(pldict=pldata)
+    plpk = data.insert_playlist(pldict=pldata)
 
-    assert isinstance(plid, int)
+    assert isinstance(plpk, int)
 
     cur = conn.cursor()
     cur.execute(query="""
-        SELECT id, youtubeid, title, uploaderid
+        SELECT pk, id, title, uploader_id
         FROM playlist
-        WHERE youtubeid = %(id)s
+        WHERE id = %(id)s
         ;
     """, vars=pldata)
     result = cur.fetchone()
     cur.close()
 
-    assert result[data.IDX_PLAYLIST__youtubeid] == pldata['id']
+    assert result[data.IDX_PLAYLIST__pk] == plpk
+    assert result[data.IDX_PLAYLIST__id] == pldata['id']
     assert result[data.IDX_PLAYLIST__title] == pldata['title']
-    assert result[data.IDX_PLAYLIST__uploaderid] == pldata['uploader_id']
+    assert result[data.IDX_PLAYLIST__uploader_id] == pldata['uploader_id']
 
 
 
 def test_playlist_insert_updates_data_if_playlist_extsts(conn):
     playlist = PLAYLIST_DATA[0]
     newtitle = 'new_title'
-    plid = data.insert_playlist(pldict=playlist)
+    plpk = data.insert_playlist(pldict=playlist)
 
     playlist['title'] = newtitle
-    plid2 = data.insert_playlist(pldict=playlist)
+    plpk2 = data.insert_playlist(pldict=playlist)
 
-    assert plid == plid2
+    assert plpk == plpk2
 
     cur = conn.cursor()
     cur.execute(query="""
-        SELECT id, youtubeid, title, uploaderid
+        SELECT pk, id, title, uploader_id
         FROM playlist
-        WHERE youtubeid = %(id)s
+        WHERE id = %(id)s
         ;
     """, vars=playlist)
     result = cur.fetchall()
@@ -122,23 +123,23 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
 
 @pytest.mark.parametrize('vdata', VIDEO_DATA)
 def test_insert_video(conn, vdata):
-    videoid = data.insert_video(vdata=vdata)
+    vpk = data.insert_video(vdata=vdata)
 
-    assert isinstance(videoid, int)
+    assert isinstance(vpk, int)
 
     cur = conn.cursor()
     cur.execute("""
-        SELECT id, youtubeid, title, playlist
+        SELECT pk, id, title, playlist
         FROM video
-        WHERE id = %(videoid)s
+        WHERE id = %(id)s
     ;
-    """, vars={'videoid': videoid})
+    """, vars=vdata)
     result = cur.fetchall()
     cur.close()
 
     assert len(result) == 1
-    assert result[0][data.IDX_VIDEO__id] == videoid
-    assert result[0][data.IDX_VIDEO__youtubeid] == vdata['youtubeid']
+    assert result[0][data.IDX_VIDEO__pk] == vpk
+    assert result[0][data.IDX_VIDEO__id] == vdata['id']
     assert result[0][data.IDX_VIDEO__title] == vdata['title']
     assert result[0][data.IDX_VIDEO__playlist] == vdata['playlist']
 

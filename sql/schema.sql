@@ -3,16 +3,16 @@
 -- \c ymdb
 
 CREATE TABLE playlist (
-	id				SMALLSERIAL		PRIMARY KEY,
-	youtubeid		TEXT			NOT NULL UNIQUE,
+	pk				SMALLSERIAL		PRIMARY KEY,
+	id				TEXT			NOT NULL UNIQUE,
 	title			TEXT			NOT NULL,
-	uploaderid		TEXT			NOT NULL
+	uploader_id		TEXT			NOT NULL
 )
 ;
 
 CREATE TABLE video (
-	id				SMALLSERIAL		PRIMARY KEY,
-	youtubeid		TEXT			NOT NULL UNIQUE,
+	pk				SMALLSERIAL		PRIMARY KEY,
+	id				TEXT			NOT NULL UNIQUE,
 	title			TEXT			NOT NULL,
 	playlist		INTEGER			REFERENCES playlist
 )

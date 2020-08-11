@@ -3,33 +3,35 @@ import psycopg2
 
 
 
-IDX_PLAYLIST__id = 0
-IDX_PLAYLIST__youtubeid = 1
+IDX_PLAYLIST__pk = 0
+IDX_PLAYLIST__id = 1
 IDX_PLAYLIST__title = 2
-IDX_PLAYLIST__uploaderid = 3
+IDX_PLAYLIST__uploader_id = 3
 
-IDX_VIDEO__id = 0
-IDX_VIDEO__youtubeid = 1
+IDX_VIDEO__pk = 0
+IDX_VIDEO__id = 1
 IDX_VIDEO__title = 2
 IDX_VIDEO__playlist = 3
 
+
 SQL_INSERT_PLAYLIST = """
-INSERT INTO playlist (youtubeid, title, uploaderid)
-VALUES (%(id)s, %(title)s, %(uploader_id)s)
-ON CONFLICT (youtubeid) DO UPDATE SET
-    title = %(title)s,
-    uploaderid = %(uploader_id)s
-RETURNING id
-;
+    INSERT INTO playlist (id, title, uploader_id)
+    VALUES (%(id)s, %(title)s, %(uploader_id)s)
+    ON CONFLICT (id) DO UPDATE SET
+        title = %(title)s,
+        uploader_id = %(uploader_id)s
+    RETURNING pk
+    ;
 """
+
 SQL_INSERT_VIDEO = """
-INSERT INTO video (youtubeid, title, playlist)
-VALUES (%(youtubeid)s, %(title)s, %(playlist)s)
-ON CONFLICT (youtubeid) DO UPDATE SET
-    title = %(title)s,
-    playlist = %(playlist)s
-RETURNING id
-;
+    INSERT INTO video (id, title, playlist)
+    VALUES (%(id)s, %(title)s, %(playlist)s)
+    ON CONFLICT (id) DO UPDATE SET
+        title = %(title)s,
+        playlist = %(playlist)s
+    RETURNING pk
+    ;
 """
 
 class PGConnection:
@@ -60,9 +62,9 @@ def insert_playlist(pldict):
         conn.commit()
         row = cur.fetchone()
 
-    plid = row[IDX_PLAYLIST__id]
+    pk = row[IDX_PLAYLIST__pk]
 
-    return plid
+    return pk
 
 
 
@@ -75,9 +77,9 @@ def insert_video(vdata):
         conn.commit()
         row = cur.fetchone()
 
-    plid = row[IDX_VIDEO__id]
+    pk = row[IDX_VIDEO__pk]
 
-    return plid
+    return pk
 
 
 
