@@ -16,16 +16,16 @@ YOUTUBE_IDS = [
 
 
 def test_can_init_youtube():
-    youtube = app.youtube.Youtube()
+    youtube = app.youtube.Youtube(url=YOUTUBE_IDS[0])
     assert isinstance(youtube, app.youtube.Youtube)
 
 
 
 
-def test_playlist_has_dbid():
-    youtube = app.youtube.Youtube()
-    youtube.url = 'PL9YsudagsL6hicXrha4zBId875lRXxc32'
-    youtube.fetch_info()
+def test_playlist_has_dbpk():
+    youtube = app.youtube.Youtube(url='PL9YsudagsL6hicXrha4zBId875lRXxc32')
+
+    assert hasattr(youtube.playlist, 'pk')
 
     # print(youtube.playlist)
     # assert hasattr(youtube.playlist, 'dbid')
