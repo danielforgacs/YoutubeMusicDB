@@ -1,5 +1,6 @@
 import sys
 import youtube_dl
+import app.data as datab
 
 
 
@@ -97,11 +98,14 @@ class Playlist(BaseEntity):
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
         self._videos = []
-
+        self.dbid = None
 
 
     @property
     def videos(self):
+        if not self.dbid:
+            return
+
         for item in self.entries:
             ytdl = Youtube(
                 url=item['url'],
@@ -109,7 +113,9 @@ class Playlist(BaseEntity):
                 do_download=self.youtube.do_download
             )
             ytdl.fetch_info()
-            self._videos.append(ytdl.video)
+            video = ytdl.video
+            video.pldbid = self.dbid
+            self._videos.append(video)
 
         return self._videos
 
@@ -154,10 +160,15 @@ class Youtube(youtube_dl.YoutubeDL):
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
                 self.playlist.youtube = self
+                print('LHGKJHG')
+                self.playlist.dbid = datab.insert_playlist(playlist=self.playlist)
+                # self.playlist.videos
+
 
             else:
                 self.video = Video(attrs=result)
                 self.video.youtube = self
+                datab.insert_video(video=self.video)
 
 
 
@@ -168,9 +179,9 @@ if __name__ == '__main__':
     urls = [
         'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
         # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
-        'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
+        # 'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
         # 'HJq-6y2IYEQ',
-        'FIQ2F3T1ydM',
+        # 'FIQ2F3T1ydM',
     ]
 
     for url in urls:
@@ -180,11 +191,11 @@ if __name__ == '__main__':
         ytdl.url = url
         ytdl.fetch_info()
 
-        if ytdl.playlist:
-            ytdl.playlist.print_info()
+        # if ytdl.playlist:
+        #     ytdl.playlist.print_info()
 
-            print('\nas_dict:')
-            print(ytdl.playlist.as_dict)
+        #     print('\nas_dict:')
+        #     print(ytdl.playlist.as_dict)
 
         #     for video in ytdl.playlist.videos:
         #         print('\n..playlist video:')

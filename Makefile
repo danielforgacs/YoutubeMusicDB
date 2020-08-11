@@ -5,7 +5,15 @@ initdb:
 	@docker-compose up -d ymdb_db
 	@sleep 5
 	@- docker-compose exec ymdb_db psql -U postgres -c "drop database ymdb;"
-	@docker-compose exec ymdb_db psql -U postgres -f /home/sql/schema.sql
+	@- docker-compose exec ymdb_db psql -U postgres -c "create database ymdb;"
+	@docker-compose exec ymdb_db psql -U postgres -d ymdb -f /home/sql/schema.sql
+
+initdb_test:
+	@docker-compose up -d ymdb_db
+	@sleep 5
+	@- docker-compose exec ymdb_db psql -U postgres -c "drop database ymdb_test;"
+	@- docker-compose exec ymdb_db psql -U postgres -c "create database ymdb_test;"
+	@docker-compose exec ymdb_db psql -U postgres -d ymdb_test -f /home/sql/schema.sql
 
 up:
 	@docker-compose up
@@ -16,10 +24,11 @@ upd:
 down:
 	@docker-compose down --remove-orphans --volumes
 
-test: build upd
+test: build initdb_test upd
 	@sleep 5
 	@- export PYTHONPATH=$$PWD && \
 		export DB_HOST=127.0.0.1 && \
-		export DB_DBNAME=test_db && \
+		export PGDATABASE=ymdb_test && \
+		export PGDATABASE=ymdb_test && \
 		pytest
 	@make down

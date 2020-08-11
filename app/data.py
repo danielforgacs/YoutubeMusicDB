@@ -5,7 +5,7 @@ import psycopg2
 
 class PGConnection:
     def __init__(self, dbname=None):
-        self.dbname = dbname or os.getenv('DB_DBNAME')
+        self.dbname = dbname or os.getenv('PGDATABASE')
 
     def __enter__(self, *args, **kwargs):
         self.conn = psycopg2.connect(
@@ -23,16 +23,42 @@ class PGConnection:
 
 
 
-def create_playlist(title, ytid):
+
+def insert_playlist(playlist):
+    # print(playlist.print_info())
     sql = """
-INSERT INTO playlist (title, youtubeid)
-VALUES (%s, %s)
+INSERT INTO playlist (youtubeid, title, uploaderid)
+VALUES (%(id)s, %(title)s, %(uploader_id)s)
+ON CONFLICT (youtubeid) DO UPDATE SET
+    title = %(title)s,
+    uploaderid = %(uploader_id)s
+RETURNING id
+;
 """
+    data = playlist.as_dict
+
+    assert id(data) != id(playlist.as_dict)
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql, (title, ytid))
+        cur.execute(sql, data)
         conn.commit()
+        row = cur.fetchone()
+
+    plid = row[0]
+
+    print('plid:', plid)
+    print('plid:', plid)
+    print('plid:', plid)
+
+    return plid
+
+
+
+def insert_video(video):
+    # print('\nDB_INSERT - VIDEO')
+    sql = """
+"""
 
 
 
