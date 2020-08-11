@@ -16,6 +16,12 @@ PLAYLIST_DATA = [{
         'uploader_id': 'uploaderid_{}'.format(idx),
     } for idx in range(3)
 ]
+VIDEO_DATA = [
+    {
+        'youtubeid': 'youtubeid_{}'.format(idx),
+        'title': 'title_{}'.format(idx),
+    } for idx in range(1)
+]
 
 
 
@@ -113,6 +119,24 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
     assert result[0][data.IDX_PLAYLIST__title] == newtitle
 
 
+
+@pytest.mark.parametrize('vdata', VIDEO_DATA)
+def test_insert_video(conn, vdata):
+    videoid = data.insert_video(vdata=vdata)
+
+    assert isinstance(videoid, int)
+
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, youtubeid, title, playlist
+        FROM video
+        WHERE id = %(videoid)s
+    ;
+    """, vars={'videoid': videoid})
+    result = cur.fetchall()
+    cur.close()
+
+    assert len(result) == 1
 
 
 if __name__ == '__main__':
