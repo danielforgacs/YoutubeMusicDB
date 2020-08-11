@@ -31,6 +31,22 @@ def post_playlist():
 
 
 
+
+@app.route('/download', methods=['POST'])
+def download_playlist():
+    ytid = flask.request.json.get('id')
+
+    if not ytid:
+        return flask.jsonify({'error': 'missing id'})
+
+    print('>>> ytid', ytid)
+    response = {'lkjh': 123}
+
+    return response
+
+
+
+
 if __name__ == '__main__':
     app.run(
         debug=os.getenv('DEBUG'),
