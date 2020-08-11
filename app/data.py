@@ -28,11 +28,19 @@ def insert_playlist(playlist):
     # print(playlist.print_info())
     sql = """
 INSERT INTO playlist (youtubeid, title, uploaderid)
-VALUES (%s, %s, %s)
+VALUES (%(id)s, %(title)s, %(uploader_id)s)
+ON CONFLICT (youtubeid) DO UPDATE SET
+    title = %(title)s,
+    uploaderid = %(uploader_id)s
+;
 """
+    data = playlist.as_dict
+
+    assert id(data) != id(playlist.as_dict)
+
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql, (playlist.id, playlist.title, playlist.uploader_id))
+        cur.execute(sql, data)
         conn.commit()
 
 
