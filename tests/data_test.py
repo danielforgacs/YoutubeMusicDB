@@ -89,6 +89,31 @@ def test_insert_playlist(conn, pldata):
 
 
 
+def test_playlist_insert_updates_data_if_playlist_extsts(conn):
+    playlist = PLAYLIST_DATA[0]
+    newtitle = 'new_title'
+    plid = data.insert_playlist(pldict=playlist)
+
+    playlist['title'] = newtitle
+    plid2 = data.insert_playlist(pldict=playlist)
+
+    assert plid == plid2
+
+    cur = conn.cursor()
+    cur.execute(query="""
+        SELECT youtubeid, title, uploaderid
+        FROM playlist
+        WHERE youtubeid = %(id)s
+        ;
+    """, vars=playlist)
+    result = cur.fetchall()
+    cur.close()
+
+    assert len(result) == 1
+    assert result[0][1] == newtitle
+
+
+
 
 if __name__ == '__main__':
     pass
