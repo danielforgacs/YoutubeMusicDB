@@ -3,14 +3,19 @@ import app.youtube
 import tests.data_test
 
 
-
-YOUTUBE_IDS = [
+YOUTUBE_PLAYLISTS = [
     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
     'PL9YsudagsL6hicXrha4zBId875lRXxc32',
+]
+YOUTUBE_VIDEOS = [
     'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
     'HJq-6y2IYEQ',
     'FIQ2F3T1ydM',
 ]
+
+
+
+YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_VIDEOS
 
 def setup_module():
     tests.data_test.setup_module()
@@ -22,18 +27,26 @@ def teardown_module():
 
 
 
-def test_can_init_youtube():
-    youtube = app.youtube.Youtube(url=YOUTUBE_IDS[0])
+@pytest.mark.parametrize('ytid', YOUTUBE_IDS)
+def test_can_init_youtube(ytid):
+    youtube = app.youtube.Youtube(url=ytid)
+
     assert isinstance(youtube, app.youtube.Youtube)
 
 
 
 
-def test_playlist_has_dbpk():
-    youtube = app.youtube.Youtube(url='PL9YsudagsL6hicXrha4zBId875lRXxc32')
+def test_playlist_has_pk():
+    youtube = app.youtube.Youtube(url=YOUTUBE_PLAYLISTS[0])
 
     assert hasattr(youtube.playlist, 'pk')
 
-    # print(youtube.playlist)
-    # assert hasattr(youtube.playlist, 'dbid')
 
+
+def test_youtube_playlist_has_videos():
+    youtube = app.youtube.Youtube(url=YOUTUBE_PLAYLISTS[0])
+    is_video = lambda x: isinstance(x, app.youtube.Video)
+
+    assert len(youtube.playlist.videos) > 0
+
+    assert all(filter(is_video, youtube.playlist.videos))
