@@ -32,6 +32,7 @@ VALUES (%(id)s, %(title)s, %(uploader_id)s)
 ON CONFLICT (youtubeid) DO UPDATE SET
     title = %(title)s,
     uploaderid = %(uploader_id)s
+RETURNING id
 ;
 """
     data = playlist.as_dict
@@ -42,12 +43,18 @@ ON CONFLICT (youtubeid) DO UPDATE SET
         cur = conn.cursor()
         cur.execute(sql, data)
         conn.commit()
+        row = cur.fetchone()
+
+    plid = row[0]
+
+    return plid
 
 
 
 def insert_video(video):
-    print('\nDB_INSERT - VIDEO')
-    pass
+    # print('\nDB_INSERT - VIDEO')
+    sql = """
+"""
 
 
 

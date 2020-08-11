@@ -92,7 +92,9 @@ def test_insert_playlist(conn, pldata):
     playlist.uploader_id = pldata[2]
     playlist.entries = []
 
-    data.insert_playlist(playlist=playlist)
+    plid = data.insert_playlist(playlist=playlist)
+
+    assert isinstance(plid, int)
 
     cur = conn.cursor()
     cur.execute(query="""
