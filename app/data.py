@@ -8,6 +8,15 @@ IDX_PLAYLIST__youtubeid = 1
 IDX_PLAYLIST__title = 2
 IDX_PLAYLIST__uploaderid = 3
 
+SQL_INSERT_PLAYLIST = """
+INSERT INTO playlist (youtubeid, title, uploaderid)
+VALUES (%(id)s, %(title)s, %(uploader_id)s)
+ON CONFLICT (youtubeid) DO UPDATE SET
+    title = %(title)s,
+    uploaderid = %(uploader_id)s
+RETURNING id
+;
+"""
 
 
 class PGConnection:
@@ -32,18 +41,9 @@ class PGConnection:
 
 
 def insert_playlist(pldict):
-    sql = """
-INSERT INTO playlist (youtubeid, title, uploaderid)
-VALUES (%(id)s, %(title)s, %(uploader_id)s)
-ON CONFLICT (youtubeid) DO UPDATE SET
-    title = %(title)s,
-    uploaderid = %(uploader_id)s
-RETURNING id
-;
-"""
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql, pldict)
+        cur.execute(SQL_INSERT_PLAYLIST, pldict)
         conn.commit()
         row = cur.fetchone()
 
