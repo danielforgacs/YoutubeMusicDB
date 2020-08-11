@@ -3,6 +3,13 @@ import psycopg2
 
 
 
+IDX_PLAYLIST__id = 0
+IDX_PLAYLIST__youtubeid = 1
+IDX_PLAYLIST__title = 2
+IDX_PLAYLIST__uploaderid = 3
+
+
+
 class PGConnection:
     def __init__(self, dbname=None):
         self.dbname = dbname or os.getenv('PGDATABASE')
@@ -24,8 +31,7 @@ class PGConnection:
 
 
 
-def insert_playlist(playlist):
-    # print(playlist.print_info())
+def insert_playlist(pldict):
     sql = """
 INSERT INTO playlist (youtubeid, title, uploaderid)
 VALUES (%(id)s, %(title)s, %(uploader_id)s)
@@ -35,21 +41,13 @@ ON CONFLICT (youtubeid) DO UPDATE SET
 RETURNING id
 ;
 """
-    data = playlist.as_dict
-
-    assert id(data) != id(playlist.as_dict)
-
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql, data)
+        cur.execute(sql, pldict)
         conn.commit()
         row = cur.fetchone()
 
-    plid = row[0]
-
-    print('plid:', plid)
-    print('plid:', plid)
-    print('plid:', plid)
+    plid = row[IDX_PLAYLIST__id]
 
     return plid
 

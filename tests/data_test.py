@@ -11,10 +11,10 @@ TEST_DB_NAME = 'ymdb_test'
 os.environ['PGDATABASE'] = TEST_DB_NAME
 SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
 PLAYLIST_DATA = [{
-        'youtubeid': 'youtubeid_{}'.format(idx),
+        'id': 'youtubeid_{}'.format(idx),
         'title': 'title_{}'.format(idx),
-        'uploaderid': 'uploaderid_{}'.format(idx),
-    } for idx in range(1)
+        'uploader_id': 'uploaderid_{}'.format(idx),
+    } for idx in range(3)
 ]
 
 
@@ -43,6 +43,8 @@ def setup_module():
         cur.execute(query=schemasql)
 
 
+
+
 def teardown_module():
     with data.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(
@@ -53,11 +55,10 @@ def teardown_module():
 
 
 
-
-
 @pytest.fixture
 def conn():
     with data.PGConnection() as conn:
+        assert conn.info.dbname == TEST_DB_NAME
         yield conn
 
 
@@ -66,36 +67,25 @@ def test_test_db_is_ready(conn):
     pass
 
 
-# @pytest.mark.parametrize('pldata', PLAYLIST_DATA)
-# def test_insert_playlist(conn, pldata):
-#     playlist = youtube.Playlist(attrs={})
-#     playlist.id = pldata[0]
-#     playlist.title = pldata[1]
-#     playlist.uploader_id = pldata[2]
-#     playlist.entries = []
+@pytest.mark.parametrize('pldata', PLAYLIST_DATA)
+def test_insert_playlist(conn, pldata):
+    plid = data.insert_playlist(pldict=pldata)
 
-#     plid = data.insert_playlist(playlist=playlist)
+    assert isinstance(plid, int)
 
-#     assert isinstance(plid, int)
+    cur = conn.cursor()
+    cur.execute(query="""
+        SELECT youtubeid, title, uploaderid
+        FROM playlist
+        WHERE youtubeid = %(id)s
+        ;
+    """, vars=pldata)
+    result = cur.fetchone()
+    cur.close()
 
-#     cur = conn.cursor()
-#     cur.execute(query="""
-#         SELECT
-#             youtubeid,
-#             title,
-#             uploaderid
-#         FROM
-#             playlist
-#         WHERE
-#             youtubeid = %s
-#         ;
-#     """, vars=(pldata[0],))
-#     result = cur.fetchall()
-#     cur.close()
-
-#     assert result[0][0] == pldata[0]
-#     assert result[0][1] == pldata[1]
-#     assert result[0][2] == pldata[2]
+    assert result[0] == pldata['id']
+    assert result[1] == pldata['title']
+    assert result[2] == pldata['uploader_id']
 
 
 
