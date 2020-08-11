@@ -75,7 +75,7 @@ def test_insert_playlist(conn, pldata):
 
     cur = conn.cursor()
     cur.execute(query="""
-        SELECT youtubeid, title, uploaderid
+        SELECT id, youtubeid, title, uploaderid
         FROM playlist
         WHERE youtubeid = %(id)s
         ;
@@ -83,9 +83,9 @@ def test_insert_playlist(conn, pldata):
     result = cur.fetchone()
     cur.close()
 
-    assert result[0] == pldata['id']
-    assert result[1] == pldata['title']
-    assert result[2] == pldata['uploader_id']
+    assert result[data.IDX_PLAYLIST__youtubeid] == pldata['id']
+    assert result[data.IDX_PLAYLIST__title] == pldata['title']
+    assert result[data.IDX_PLAYLIST__uploaderid] == pldata['uploader_id']
 
 
 
@@ -101,7 +101,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
 
     cur = conn.cursor()
     cur.execute(query="""
-        SELECT youtubeid, title, uploaderid
+        SELECT id, youtubeid, title, uploaderid
         FROM playlist
         WHERE youtubeid = %(id)s
         ;
@@ -110,7 +110,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
     cur.close()
 
     assert len(result) == 1
-    assert result[0][1] == newtitle
+    assert result[0][data.IDX_PLAYLIST__title] == newtitle
 
 
 
