@@ -10,10 +10,10 @@ CREATE TABLE playlist (
 )
 ;
 
-CREATE TABLE song (
+CREATE TABLE video (
 	id				SMALLSERIAL		PRIMARY KEY,
-	title			TEXT			NOT NULL,
 	youtubeid		TEXT			NOT NULL UNIQUE,
+	title			TEXT			NOT NULL,
 	playlist		INTEGER			REFERENCES playlist
 )
 ;
