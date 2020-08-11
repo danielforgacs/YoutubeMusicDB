@@ -98,10 +98,14 @@ class Playlist(BaseEntity):
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
         self._videos = []
+        self.dbid = None
 
 
     @property
     def videos(self):
+        if not self.dbid:
+            return
+
         for item in self.entries:
             ytdl = Youtube(
                 url=item['url'],
@@ -109,7 +113,9 @@ class Playlist(BaseEntity):
                 do_download=self.youtube.do_download
             )
             ytdl.fetch_info()
-            self._videos.append(ytdl.video)
+            video = ytdl.video
+            video.pldbid = self.dbid
+            self._videos.append(video)
 
         return self._videos
 
@@ -154,8 +160,9 @@ class Youtube(youtube_dl.YoutubeDL):
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
                 self.playlist.youtube = self
-                datab.insert_playlist(playlist=self.playlist)
-                self.playlist.videos
+                print('LHGKJHG')
+                self.playlist.dbid = datab.insert_playlist(playlist=self.playlist)
+                # self.playlist.videos
 
 
             else:

@@ -47,6 +47,10 @@ RETURNING id
 
     plid = row[0]
 
+    print('plid:', plid)
+    print('plid:', plid)
+    print('plid:', plid)
+
     return plid
 
 
