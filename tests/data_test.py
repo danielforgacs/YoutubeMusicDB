@@ -137,6 +137,10 @@ def test_insert_video(conn, vdata):
     cur.close()
 
     assert len(result) == 1
+    assert result[0][data.IDX_VIDEO__id] == videoid
+    assert result[0][data.IDX_VIDEO__youtubeid] == vdata['youtubeid']
+    assert result[0][data.IDX_VIDEO__title] == vdata['title']
+    assert result[0][data.IDX_VIDEO__playlist] == vdata['playlist']
 
 
 if __name__ == '__main__':
