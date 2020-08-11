@@ -144,5 +144,17 @@ def test_insert_video(conn, vdata):
     assert result[0][data.IDX_VIDEO__playlist] == vdata['playlist']
 
 
+
+
+def test_get_video_ids_by_playlist(conn):
+    plpk = data.insert_playlist(pldict=PLAYLIST_DATA[0])
+    videodata = VIDEO_DATA[0]
+    videodata['playlist'] = plpk
+    vpk = data.insert_video(vdata=videodata)
+    videoids = data.query_videos_by_playlistid(
+        playlistid=PLAYLIST_DATA[0]['id'])
+
+
+
 if __name__ == '__main__':
     pass

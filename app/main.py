@@ -2,7 +2,7 @@ import os
 import flask
 import json
 import app.config as config
-# import app.data as data
+import app.data as data
 import app.youtube as youtube
 
 
@@ -39,6 +39,7 @@ def download_playlist():
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
+    videoids = data.query_videos_by_playlistid(playlistid=ytid)
     print('>>> ytid', ytid)
     response = {'lkjh': 123}
 
