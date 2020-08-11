@@ -11,16 +11,16 @@ TEST_DB_NAME = 'ymdb_test'
 os.environ['PGDATABASE'] = TEST_DB_NAME
 SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
 PLAYLIST_DATA = [{
-        'id': 'id_{}'.format(idx),
-        'title': 'title_{}'.format(idx),
-        'uploader_id': 'uploader_id_{}'.format(idx),
+        'id': 'pl-id_{}'.format(idx),
+        'title': 'pl-title_{}'.format(idx),
+        'uploader_id': 'pl-uploader_id_{}'.format(idx),
     } for idx in range(3)
 ]
 VIDEO_DATA = [
     {
-        'id': 'id_{}'.format(idx),
-        'title': 'title_{}'.format(idx),
-    } for idx in range(1)
+        'id': 'v-id_{}'.format(idx),
+        'title': 'v-title_{}'.format(idx),
+    } for idx in range(3)
 ]
 
 
@@ -51,12 +51,12 @@ def setup_module():
 
 
 
-def teardown_module():
-    with data.PGConnection(dbname='postgres') as conn1:
-        conn1.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = conn1.cursor()
-        cur.execute(query="drop database %s;" % TEST_DB_NAME)
+# def teardown_module():
+#     with data.PGConnection(dbname='postgres') as conn1:
+#         conn1.set_isolation_level(
+#             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+#         cur = conn1.cursor()
+#         cur.execute(query="drop database %s;" % TEST_DB_NAME)
 
 
 
@@ -153,6 +153,8 @@ def test_get_video_ids_by_playlist(conn):
     vpk = data.insert_video(vdata=videodata)
     videoids = data.query_videos_by_playlistid(
         playlistid=PLAYLIST_DATA[0]['id'])
+
+    assert videoids == [videodata['id']]
 
 
 

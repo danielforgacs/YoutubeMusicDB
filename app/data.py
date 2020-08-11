@@ -34,6 +34,13 @@ SQL_INSERT_VIDEO = """
     ;
 """
 
+SQL_VIDEO_BY_PLAYLIST = """
+SELECT video.id
+FROM video
+JOIN playlist ON playlist.pk = video.playlist
+;
+"""
+
 class PGConnection:
     def __init__(self, dbname=None):
         self.dbname = dbname or os.getenv('PGDATABASE')
@@ -84,9 +91,25 @@ def insert_video(vdata):
 
 
 def query_videos_by_playlistid(playlistid):
-    pass
+    # with PGConnection() as conn:
+    with PGConnection(dbname='ymdb_test') as conn:
+        cur = conn.cursor()
+        cur.execute(SQL_VIDEO_BY_PLAYLIST, {'plid': playlistid})
+        conn.commit()
+        rows = cur.fetchall()
+
+    result = [row[0] for row in rows]
+    print(rows)
+    print(result)
+    return result
+
+
 
 
 
 if __name__ == '__main__':
     pass
+
+    plid = 'id_0'
+
+    query_videos_by_playlistid(playlistid=plid)
