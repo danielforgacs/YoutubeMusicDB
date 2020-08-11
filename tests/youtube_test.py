@@ -1,5 +1,6 @@
 import pytest
 import app.youtube
+import tests.data_test
 
 
 
@@ -11,6 +12,12 @@ YOUTUBE_IDS = [
     'FIQ2F3T1ydM',
 ]
 
+def setup_module():
+    tests.data_test.setup_module()
+
+
+def teardown_module():
+    tests.data_test.teardown_module()
 
 
 
