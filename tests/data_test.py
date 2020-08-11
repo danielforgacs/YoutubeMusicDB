@@ -5,10 +5,21 @@ import app.data as data
 import app.youtube as youtube
 
 
-print('\n[IMPORT]', os.environ['PGDATABASE'])
+# print('\n[IMPORT]', os.environ['PGDATABASE'])
 
 os.environ['PGDATABASE'] = 'ymdb_test'
-print('\n[IMPORT AFTER UPDATE]', os.environ['PGDATABASE'])
+# print('\n[IMPORT AFTER UPDATE]', os.environ['PGDATABASE'])
+
+
+
+PLAYLIST_DATA = [
+    ['youtube-id-01', 'playlist-title-01', 'updloader-id-01'],
+    ['youtube-id-01', 'playlist-title-01-B', 'updloader-id-01'],
+    ['youtube-id-01', 'playlist-title-01', 'updloader-id-01-C'],
+    ['youtube-id-01', 'playlist-title-01-D', 'updloader-id-01-D'],
+
+    ['youtube-id-02', 'playlist-title-02', 'updloader-id-02'],
+]
 
 
 
@@ -72,12 +83,14 @@ def conn():
 
 
 
-def test_insert_playlist(conn):
+@pytest.mark.parametrize('pldata', PLAYLIST_DATA)
+def test_insert_playlist(conn, pldata):
     print('\n[TEST001]', os.environ['PGDATABASE'])
     playlist = youtube.Playlist(attrs={})
-    playlist.id = 'youtube-id-01'
-    playlist.title = 'playlist-title-01'
-    playlist.uploader_id = 'updloader-id-01'
+    playlist.id = pldata[0]
+    playlist.title = pldata[1]
+    playlist.uploader_id = pldata[2]
+    playlist.entries = []
 
     data.insert_playlist(playlist=playlist)
 
@@ -92,13 +105,13 @@ def test_insert_playlist(conn):
         WHERE
             youtubeid = %s
         ;
-    """, vars=('youtube-id-01',))
+    """, vars=(pldata[0],))
     result = cur.fetchall()
     cur.close()
 
-    assert result[0][0] == 'youtube-id-01'
-    assert result[0][1] == 'playlist-title-01'
-    assert result[0][2] == 'updloader-id-01'
+    assert result[0][0] == pldata[0]
+    assert result[0][1] == pldata[1]
+    assert result[0][2] == pldata[2]
 
 
 
