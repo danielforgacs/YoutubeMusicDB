@@ -38,6 +38,7 @@ SQL_VIDEO_BY_PLAYLIST = """
 SELECT video.id
 FROM video
 JOIN playlist ON playlist.pk = video.playlist
+WHERE playlist.id = %(plid)s
 ;
 """
 
@@ -99,7 +100,6 @@ def query_videos_by_playlistid(playlistid):
         rows = cur.fetchall()
 
     result = [row[0] for row in rows]
-    print(rows)
     print(result)
     return result
 
@@ -110,6 +110,9 @@ def query_videos_by_playlistid(playlistid):
 if __name__ == '__main__':
     pass
 
-    plid = 'id_0'
+    plid = 'pl-id_0'
+    # plid = 'pl-id_1'
+    # plid = 'pl-id_2'
+    # plid = 'pl-id_3'
 
     query_videos_by_playlistid(playlistid=plid)
