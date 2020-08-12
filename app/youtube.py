@@ -135,8 +135,8 @@ class Playlist(BaseEntity):
     @property
     def as_dict(self):
         data = super().as_dict
-        # data['videos'] = [video.as_dict for video in self.videos]
-        data['videos'] = [{}]
+        data['videos'] = [video.as_dict for video in self.videos]
+        # data['videos'] = [{}]
         del data['entries']
         return data
 

@@ -41,7 +41,7 @@ def download_playlist():
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
     print('>>> ytid', ytid)
-    response = {'lkjh': 123}
+    response = {'videos': str(videoids)}
 
     return response
 
