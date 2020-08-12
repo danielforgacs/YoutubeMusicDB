@@ -76,11 +76,14 @@ class Video(BaseEntity):
         # 'release_year',
         # 'extractor',
         # 'webpage_url_basename',
-        # 'extractor_key'
+        # 'extractor_key',
+        'playlist',
+        'youtube',
+
     ]
 
     def __init__(self, attrs):
-        self.playlist = None
+        # self.playlist = None
         super().__init__(attrs=attrs)
         self.pk = datab.insert_video(vdata=self.as_dict)
 
@@ -127,6 +130,7 @@ class Playlist(BaseEntity):
             # video = ytdl.video
             # video.pldbid = self.dbid
             yout.video.playlist = self
+            yout.video.AAAAA = 'AAAAA'
             self._videos.append(yout.video)
 
         return self._videos
@@ -181,6 +185,8 @@ class Youtube(youtube_dl.YoutubeDL):
 
 
             else:
+                # if self.playlist:
+                result['playlist'] = None
                 self.video = Video(attrs=result)
                 # self.video.youtube = self
                 # datab.insert_video(video=self.video)
@@ -196,24 +202,26 @@ if __name__ == '__main__':
         # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
         # 'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
         # 'HJq-6y2IYEQ',
-        'FIQ2F3T1ydM',
+        # 'FIQ2F3T1ydM',
     ]
 
-    for url in urls:
-        print('\n', '-'*79)
+    you = Youtube(url=urls[0])
 
-        yout = Youtube(url=url)
-        print(yout.playlist)
+    # for url in urls:
+    #     print('\n', '-'*79)
 
-        if yout.playlist:
-            yout.playlist.print_info()
+    #     yout = Youtube(url=url)
+    #     print(yout.playlist)
 
-            for vid in yout.playlist.videos:
-                print('\t', vid)
-                vid.print_info()
+    #     if yout.playlist:
+    #         yout.playlist.print_info()
 
-        else:
-            yout.video.print_info()
+    #         for vid in yout.playlist.videos:
+    #             print('\t', vid)
+    #             vid.print_info()
+
+    #     else:
+    #         yout.video.print_info()
         # yout.fetch_info()
         # yout.video.print_info()
         # ytdl.url = url

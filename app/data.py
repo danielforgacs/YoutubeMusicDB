@@ -64,6 +64,7 @@ class PGConnection:
 
 
 def insert_playlist(pldict):
+    print('\n+++ INSERT PLAYLIST:', pldict)
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_INSERT_PLAYLIST, pldict)
@@ -101,6 +102,7 @@ def query_videos_by_playlistid(playlistid):
         rows = cur.fetchall()
 
     result = [row[0] for row in rows]
+    print(rows)
     print(result)
     return result
 
