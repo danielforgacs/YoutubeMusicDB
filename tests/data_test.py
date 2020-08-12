@@ -52,12 +52,13 @@ def setup_module():
 
 
 
-# def teardown_module():
-#     with data.PGConnection(dbname='postgres') as conn1:
-#         conn1.set_isolation_level(
-#             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-#         cur = conn1.cursor()
-#         cur.execute(query="drop database %s;" % TEST_DB_NAME)
+def teardown_module():
+    pass
+    # with data.PGConnection(dbname='postgres') as conn1:
+    #     conn1.set_isolation_level(
+    #         psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+    #     cur = conn1.cursor()
+    #     cur.execute(query="drop database %s;" % TEST_DB_NAME)
 
 
 
