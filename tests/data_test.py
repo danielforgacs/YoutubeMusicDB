@@ -182,9 +182,9 @@ def test_set_video_playlist_sets_updates(conn):
     videodata = VIDEO_DATA[0]
     plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
     plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
-    data.insert_video(vdata=videodata)
+    vpk = data.insert_video(vdata=videodata)
 
-    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
+    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
 
     cur.execute(query=sql, vars={'vid': videodata['id']})
     result = cur.fetchone()
@@ -193,23 +193,26 @@ def test_set_video_playlist_sets_updates(conn):
     # print(result, )
     # print(result, )
 
-    assert result[data.IDX_VIDEO__playlist] == plpk1
+    assert result[data.IDX_VIDEO__playlist] == plpk1 == plpk
+    assert result[data.IDX_VIDEO__pk] == vpk
 
-    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2)
+    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2)
 
     cur.execute(query=sql, vars={'vid': videodata['id']})
     result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk2
+    assert result[data.IDX_VIDEO__playlist] == plpk2 == plpk
+    assert result[data.IDX_VIDEO__pk] == vpk
 
     plpk3 = None
 
-    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
 
     cur.execute(query=sql, vars={'vid': videodata['id']})
     result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk3
+    assert result[data.IDX_VIDEO__playlist] == plpk3 == plpk
+    assert result[data.IDX_VIDEO__pk] == vpk
 
 
 

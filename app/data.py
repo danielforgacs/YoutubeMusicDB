@@ -45,9 +45,8 @@ WHERE playlist.id = %(plid)s
 SQL_SET_VIDEO_PLAYLIST = """
 UPDATE video
 SET playlist = %(plpk)s
--- WHERE video.id = 'v-title_0'
 WHERE video.id = %(vid)s
-RETURNING pk, id, playlist
+RETURNING pk, id, title, playlist
 ;
 """
 
@@ -127,12 +126,16 @@ def set_video_playlist(vid, plpk):
         row = cur.fetchone()
 
     print('ROW:', row)
-    # result = [row[IDX_VIDEO__pk], row[IDX_VIDEO__id], row[IDX_VIDEO__playlist]]
+    result = [
+        row[IDX_VIDEO__pk],
+        row[IDX_VIDEO__id],
+        row[IDX_VIDEO__playlist],
+    ]
 
     # print(rows)
     # print(result)
-    # return result
-    return 1, 1
+    return result
+    # return 1, 1
 
 
 
