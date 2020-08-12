@@ -77,6 +77,7 @@ def insert_playlist(pldict):
 
 
 def insert_video(vdata):
+    print('\n+++ INSERT VIDEO:', vdata)
     vdata.setdefault('playlist', None)
 
     with PGConnection() as conn:
@@ -93,7 +94,7 @@ def insert_video(vdata):
 
 def query_videos_by_playlistid(playlistid):
     # with PGConnection() as conn:
-    with PGConnection(dbname='ymdb_test') as conn:
+    with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_VIDEO_BY_PLAYLIST, {'plid': playlistid})
         conn.commit()
