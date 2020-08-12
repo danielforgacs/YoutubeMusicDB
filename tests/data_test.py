@@ -20,6 +20,7 @@ VIDEO_DATA = [
     {
         'id': 'v-id_{}'.format(idx),
         'title': 'v-title_{}'.format(idx),
+        # 'playlist': 1,
     } for idx in range(3)
 ]
 
@@ -148,13 +149,16 @@ def test_insert_video(conn, vdata):
 
 def test_get_video_ids_by_playlist(conn):
     plpk = data.insert_playlist(pldict=PLAYLIST_DATA[0])
-    videodata = VIDEO_DATA[0]
-    videodata['playlist'] = plpk
-    vpk = data.insert_video(vdata=videodata)
+    videodata1 = VIDEO_DATA[0]
+    videodata2 = VIDEO_DATA[1]
+    videodata1['playlist'] = plpk
+    videodata2['playlist'] = plpk
+    vpk1 = data.insert_video(vdata=videodata1)
+    vpk2 = data.insert_video(vdata=videodata2)
     videoids = data.query_videos_by_playlistid(
         playlistid=PLAYLIST_DATA[0]['id'])
 
-    assert videoids == [videodata['id']]
+    assert videoids == [videodata1['id'], videodata2['id']]
 
 
 
