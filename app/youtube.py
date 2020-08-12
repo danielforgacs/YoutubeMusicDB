@@ -109,8 +109,8 @@ class Playlist(BaseEntity):
 
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
-        self.pk = datab.insert_playlist(pldict=self.as_dict)
         self._videos = []
+        self.pk = datab.insert_playlist(pldict=self.as_dict)
         # self.dbid = None
 
 
