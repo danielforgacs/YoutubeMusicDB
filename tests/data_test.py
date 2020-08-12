@@ -20,7 +20,6 @@ VIDEO_DATA = [
     {
         'id': 'v-id_{}'.format(idx),
         'title': 'v-title_{}'.format(idx),
-        # 'playlist': 1,
     } for idx in range(3)
 ]
 
@@ -37,10 +36,12 @@ def setup_module():
         conn1.set_isolation_level(
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn1.cursor()
+
         try:
             cur.execute(query="drop database %s;" % TEST_DB_NAME)
         except psycopg2.errors.InvalidCatalogName:
             pass
+
         cur.execute(query="create database %s;" % TEST_DB_NAME)
 
     with data.PGConnection() as conn2:
@@ -53,12 +54,11 @@ def setup_module():
 
 
 def teardown_module():
-    pass
-    # with data.PGConnection(dbname='postgres') as conn1:
-    #     conn1.set_isolation_level(
-    #         psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-    #     cur = conn1.cursor()
-    #     cur.execute(query="drop database %s;" % TEST_DB_NAME)
+    with data.PGConnection(dbname='postgres') as conn1:
+        conn1.set_isolation_level(
+            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn1.cursor()
+        cur.execute(query="drop database %s;" % TEST_DB_NAME)
 
 
 
@@ -66,7 +66,6 @@ def teardown_module():
 @pytest.fixture
 def conn():
     with data.PGConnection() as conn:
-        assert conn.info.dbname == TEST_DB_NAME
         yield conn
 
 
@@ -189,10 +188,6 @@ def test_set_video_playlist_sets_updates(conn):
 
     cur.execute(query=sql, vars={'vid': videodata['id']})
     result = cur.fetchone()
-    print('## test:', result)
-    # print(result, )
-    # print(result, )
-    # print(result, )
 
     assert result[data.IDX_VIDEO__playlist] == plpk1 == plpk
     assert result[data.IDX_VIDEO__pk] == vpk

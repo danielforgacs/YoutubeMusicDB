@@ -48,5 +48,4 @@ def test_youtube_playlist_has_videos():
     is_video = lambda x: isinstance(x, app.youtube.Video)
 
     assert len(youtube.playlist.videos) > 0
-
     assert all(filter(is_video, youtube.playlist.videos))

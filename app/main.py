@@ -40,7 +40,6 @@ def download_playlist():
         return flask.jsonify({'error': 'missing id'})
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
-    print('>>> ytid', ytid)
     response = {'videos': str(videoids)}
 
     return response

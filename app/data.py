@@ -35,19 +35,19 @@ SQL_INSERT_VIDEO = """
 """
 
 SQL_VIDEO_BY_PLAYLIST = """
-SELECT video.id
-FROM video
-JOIN playlist ON playlist.pk = video.playlist
-WHERE playlist.id = %(plid)s
-;
+    SELECT video.id
+    FROM video
+    JOIN playlist ON playlist.pk = video.playlist
+    WHERE playlist.id = %(plid)s
+    ;
 """
 
 SQL_SET_VIDEO_PLAYLIST = """
-UPDATE video
-SET playlist = %(plpk)s
-WHERE video.id = %(vid)s
-RETURNING pk, id, title, playlist
-;
+    UPDATE video
+    SET playlist = %(plpk)s
+    WHERE video.id = %(vid)s
+    RETURNING pk, id, title, playlist
+    ;
 """
 
 class PGConnection:
@@ -72,7 +72,6 @@ class PGConnection:
 
 
 def insert_playlist(pldict):
-    print('\n+++ INSERT PLAYLIST:', pldict)
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_INSERT_PLAYLIST, pldict)
@@ -86,7 +85,6 @@ def insert_playlist(pldict):
 
 
 def insert_video(vdata):
-    print('\n+++ INSERT VIDEO:', vdata)
     vdata.setdefault('playlist', None)
 
     with PGConnection() as conn:
@@ -102,7 +100,6 @@ def insert_video(vdata):
 
 
 def query_videos_by_playlistid(playlistid):
-    # with PGConnection() as conn:
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_VIDEO_BY_PLAYLIST, {'plid': playlistid})
@@ -110,32 +107,26 @@ def query_videos_by_playlistid(playlistid):
         rows = cur.fetchall()
 
     result = [row[0] for row in rows]
-    print(rows)
-    print(result)
+
     return result
 
 
 
 
 def set_video_playlist(vid, plpk):
-    print('vid, plpk:', vid, plpk)
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_SET_VIDEO_PLAYLIST, {'vid': vid, 'plpk': plpk})
         conn.commit()
         row = cur.fetchone()
 
-    print('ROW:', row)
     result = [
         row[IDX_VIDEO__pk],
         row[IDX_VIDEO__id],
         row[IDX_VIDEO__playlist],
     ]
 
-    # print(rows)
-    # print(result)
     return result
-    # return 1, 1
 
 
 
@@ -143,10 +134,3 @@ def set_video_playlist(vid, plpk):
 
 if __name__ == '__main__':
     pass
-
-    plid = 'pl-id_0'
-    # plid = 'pl-id_1'
-    # plid = 'pl-id_2'
-    # plid = 'pl-id_3'
-
-    query_videos_by_playlistid(playlistid=plid)
