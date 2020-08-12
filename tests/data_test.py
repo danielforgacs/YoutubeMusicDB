@@ -169,5 +169,52 @@ def test_get_video_ids_by_playlist(conn):
 
 
 
+
+
+def test_set_video_playlist_sets_updates(conn):
+    sql = """
+        SELECT pk, id, title, playlist
+        FROM video
+        WHERE video.id = %(vid)s
+        ;
+    """
+    cur = conn.cursor()
+    videodata = VIDEO_DATA[0]
+    plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
+    plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
+    data.insert_video(vdata=videodata)
+
+    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
+
+    cur.execute(query=sql, vars={'vid': videodata['id']})
+    result = cur.fetchone()
+    print('## test:', result)
+    # print(result, )
+    # print(result, )
+    # print(result, )
+
+    assert result[data.IDX_VIDEO__playlist] == plpk1
+
+    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2)
+
+    cur.execute(query=sql, vars={'vid': videodata['id']})
+    result = cur.fetchone()
+
+    assert result[data.IDX_VIDEO__playlist] == plpk2
+
+    plpk3 = None
+
+    vpk, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+
+    cur.execute(query=sql, vars={'vid': videodata['id']})
+    result = cur.fetchone()
+
+    assert result[data.IDX_VIDEO__playlist] == plpk3
+
+
+
+
+
+
 if __name__ == '__main__':
     pass
