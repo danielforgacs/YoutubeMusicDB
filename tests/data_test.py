@@ -148,17 +148,24 @@ def test_insert_video(conn, vdata):
 
 
 def test_get_video_ids_by_playlist(conn):
-    plpk = data.insert_playlist(pldict=PLAYLIST_DATA[0])
+    plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
+    plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
     videodata1 = VIDEO_DATA[0]
     videodata2 = VIDEO_DATA[1]
-    videodata1['playlist'] = plpk
-    videodata2['playlist'] = plpk
+    videodata3 = VIDEO_DATA[2]
+    videodata1['playlist'] = plpk1
+    videodata2['playlist'] = plpk1
+    videodata3['playlist'] = plpk2
     vpk1 = data.insert_video(vdata=videodata1)
     vpk2 = data.insert_video(vdata=videodata2)
-    videoids = data.query_videos_by_playlistid(
+    vpk3 = data.insert_video(vdata=videodata3)
+    videoids1 = data.query_videos_by_playlistid(
         playlistid=PLAYLIST_DATA[0]['id'])
+    videoids2 = data.query_videos_by_playlistid(
+        playlistid=PLAYLIST_DATA[1]['id'])
 
-    assert videoids == [videodata1['id'], videodata2['id']]
+    assert videoids1 == [videodata1['id'], videodata2['id']]
+    assert videoids2 == [videodata3['id']]
 
 
 
