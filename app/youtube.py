@@ -77,9 +77,9 @@ class Video(BaseEntity):
         # 'extractor',
         # 'webpage_url_basename',
         # 'extractor_key',
-        'playlist',
-        'youtube',
 
+        # 'playlist',
+        # 'youtube',
     ]
 
     def __init__(self, attrs):
