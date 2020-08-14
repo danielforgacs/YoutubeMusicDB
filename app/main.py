@@ -6,6 +6,9 @@ import app.data as data
 import app.youtube as youtube
 
 
+DOWNLOAD_DIR = '/home/download/'
+
+
 app = flask.Flask(__name__)
 
 
@@ -37,13 +40,27 @@ def post_playlist():
 
 @app.route('/download', methods=['POST'])
 def download_playlist():
+    print()
+    print(os.getcwd())
+    print(__file__)
     ytid = flask.request.json.get('id')
 
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
+
+    for videoid in videoids:
+        print('<<< DOWNLOADING >>>', videoid)
+        ytdl = youtube.Youtube(url=videoid, do_download=True)
+
     response = {'videos': str(videoids)}
+    # response = {'videos': str(videoids),
+    #     'cwd': os.getcwd(),
+    #     '__filw__': __file__,
+    #     '_ss_filw__': os.path.dirname(__file__),
+    #     '__filw_ss_': os.path.abspath(__file__),
+    # }
 
     return response
 
