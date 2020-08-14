@@ -52,6 +52,7 @@ def download_playlist():
 
     for videoid in videoids:
         print('<<< DOWNLOADING >>>', videoid)
+        os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=videoid, do_download=True)
 
     response = {'videos': str(videoids)}
