@@ -1,19 +1,13 @@
 # playlist: AAAA
 # https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32
 
-appurl=http://127.0.0.1:5000
 headerjson="Content-type: application/json"
+post_playlist_url=http://127.0.0.1:5000
+download_playlist_url=http://127.0.0.1:5000/download
+playlist1=PL9YsudagsL6hicXrha4zBId875lRXxc32
 
 
-curl $appurl -H "$headerjson" -d '{"id": "PL9YsudagsL6hicXrha4zBId875lRXxc32"}'
-# curl $appurl -H "Content-type: application/json" -d '{}'
-
-# curl http://127.0.0.1:5000 -H 'Content-type: application/json' -d '{"id": "FIQ2F3T1ydM"}'
-# curl http://127.0.0.1:5000 -H 'Content-type: application/json' -d '{"id": "PL9YsudagsL6hicXrha4zBId875lRXxc32"}'
-# curl http://127.0.0.1:5000 -H 'Content-type: application/json' -d '{"id": "FIQ2F3T1ydM"}'
-# curl http://127.0.0.1:5000 -H 'Content-type: application/json' -d '{"id": "PL9YsudagsL6hicXrha4zBId875lRXxc32"}'
-
-
-
-# curl http://127.0.0.1:5000 -H 'Content-type: application/json' -d '{"id": "PL9YsudagsL6hicXrha4zBId875lRXxc32"}'
-# curl http://127.0.0.1:5000/download -H 'Content-type: application/json' -d '{"id": "PL9YsudagsL6hicXrha4zBId875lRXxc32"}'
+echo "--> post playlist:"
+curl $post_playlist_url -H "$headerjson" -d "{\"id\": \"$playlist1\"}"
+echo "--> download playlist:"
+curl $download_playlist_url -H "$headerjson" -d "{\"id\": \"$playlist1\"}"
