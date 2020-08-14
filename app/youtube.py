@@ -118,6 +118,7 @@ class Youtube(youtube_dl.YoutubeDL):
         self.do_download = do_download
         self.playlist = None
         self.video = None
+        self.error = None
 
         if params:
             params.update({'quiet': True})
@@ -132,11 +133,18 @@ class Youtube(youtube_dl.YoutubeDL):
 
     def fetch_info(self):
         if self.url:
-            result = self.extract_info(
-                url=self.url,
-                download=self.do_download,
-                process=self.do_download,
-            )
+            try:
+                result = self.extract_info(
+                    url=self.url,
+                    download=self.do_download,
+                    process=self.do_download,
+                )
+            except youtube_dl.utils.DownloadError as err:
+                print(err)
+                self.error = ''.join(err.args)
+
+                return
+
             result['youtube'] = self
 
             if '_type' in result.keys():

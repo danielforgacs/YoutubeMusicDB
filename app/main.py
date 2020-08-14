@@ -20,6 +20,9 @@ def post_playlist():
 
     ytdl = youtube.Youtube(url=ytid)
 
+    if ytdl.error:
+        return {'error': ytdl.error}
+
     if ytdl.playlist:
         download = ytdl.playlist.as_dict
     else:
