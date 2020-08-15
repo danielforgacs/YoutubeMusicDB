@@ -69,9 +69,11 @@ def download_playlist():
         print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
+    downloads = os.listdir(DOWNLOAD_DIR)
+
     with zipfile.ZipFile(ARCHIVE_NAME, 'w') as downlfile:
-        for title in titles:
-            downlfile.write(title)
+        for fname in downloads:
+            downlfile.write('{}'.format(fname))
 
     response = {'videos': str(videoids)}
 
