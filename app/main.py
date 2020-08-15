@@ -1,13 +1,24 @@
 import os
 import flask
 import json
+import zipfile
 import app.config as config
 import app.data as data
 import app.youtube as youtube
 
+ROOT_DIR = (
+    os.path.dirname(
+        os.path.dirname(__file__)
+))
 
-DOWNLOAD_DIR = '/home/download/'
 
+# DOWNLOAD_DIR = '/home/download/'
+DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
+ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
+
+print(ROOT_DIR)
+print(DOWNLOAD_DIR)
+print(ARCHIVE_NAME)
 
 app = flask.Flask(__name__)
 
@@ -49,19 +60,20 @@ def download_playlist():
         return flask.jsonify({'error': 'missing id'})
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
+    titles = []
 
     for videoid in videoids:
         print('<<< DOWNLOADING >>>', videoid)
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=videoid, do_download=True)
+        print('-- downloaded: ', ytdl.video.title)
+        titles.append(ytdl.video.title)
+
+    with zipfile.ZipFile(ARCHIVE_NAME, 'w') as downlfile:
+        for title in titles:
+            downlfile.write(title)
 
     response = {'videos': str(videoids)}
-    # response = {'videos': str(videoids),
-    #     'cwd': os.getcwd(),
-    #     '__filw__': __file__,
-    #     '_ss_filw__': os.path.dirname(__file__),
-    #     '__filw_ss_': os.path.abspath(__file__),
-    # }
 
     return response
 
