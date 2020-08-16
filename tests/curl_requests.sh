@@ -9,5 +9,9 @@ playlist1=PL9YsudagsL6hicXrha4zBId875lRXxc32
 
 echo "--> post playlist:"
 curl $post_playlist_url -H "$headerjson" -d "{\"id\": \"$playlist1\"}"
+
 echo "--> download playlist:"
 curl $download_playlist_url -H "$headerjson" -d "{\"id\": \"$playlist1\"}"
+
+echo "--> downloading archive:"
+curl http://localhost:5000/archive -o download.zip
