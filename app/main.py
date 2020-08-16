@@ -82,6 +82,14 @@ def download_playlist():
 
 
 
+@app.route('/archive')
+def archive():
+    # return flask.send_file('/home/download/download.zip')
+    return flask.send_file('/home/ford/storage/dev/YoutubeMusicDB/.download/download.zip')
+
+
+
+
 if __name__ == '__main__':
     app.run(
         debug=os.getenv('DEBUG'),
