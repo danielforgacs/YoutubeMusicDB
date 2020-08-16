@@ -6,6 +6,8 @@ RUN ln /usr/bin/python3.8 /usr/bin/python
 
 WORKDIR /home
 
+RUN mkdir -p app/.download
+
 COPY Pipfile .
 COPY Pipfile.lock .
 COPY .env .

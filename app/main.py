@@ -7,18 +7,20 @@ import app.data as data
 import app.youtube as youtube
 
 ROOT_DIR = (
-    os.path.dirname(
-        os.path.dirname(__file__)
-))
+    # os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))
+# )
+)
 
 
 # DOWNLOAD_DIR = '/home/download/'
 DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
 ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
 
-print(ROOT_DIR)
-print(DOWNLOAD_DIR)
-print(ARCHIVE_NAME)
+print('-'*79)
+print('ROOT_DIR:', ROOT_DIR)
+print('DOWNLOAD_DIR:', DOWNLOAD_DIR)
+print('ARCHIVE_NAME:', ARCHIVE_NAME)
 
 app = flask.Flask(__name__)
 
