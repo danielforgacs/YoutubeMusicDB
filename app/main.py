@@ -69,6 +69,9 @@ def download_playlist():
         print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
+    if os.path.isfile(ARCHIVE_NAME):
+        os.remove(ARCHIVE_NAME)
+
     downloads = os.listdir(DOWNLOAD_DIR)
 
     with zipfile.ZipFile(ARCHIVE_NAME, 'w') as downlfile:
@@ -85,7 +88,8 @@ def download_playlist():
 @app.route('/archive')
 def archive():
     # return flask.send_file('/home/download/download.zip')
-    return flask.send_file('/home/ford/storage/dev/YoutubeMusicDB/.download/download.zip')
+    # return flask.send_file('/home/ford/storage/dev/YoutubeMusicDB/.download/download.zip')
+    return flask.send_file(ARCHIVE_NAME)
 
 
 
