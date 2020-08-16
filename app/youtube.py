@@ -4,6 +4,24 @@ import app.data as datab
 
 
 
+YOUTUBEDL_VIDEO_ATTRS = [
+    'id',
+    'uploader',
+    'uploader_id',
+    'upload_date',
+    'title',
+    'alt_title',
+    'duration',
+]
+YOUTUBEDL_PLAYLIST_ATTRS = [
+    'entries',
+    'id',
+    'title',
+    'uploader_id',
+]
+
+
+
 
 class BaseEntity:
     def __init__(self, attrs):
@@ -35,52 +53,9 @@ class BaseEntity:
 
 
 class Video(BaseEntity):
-    _attrs = [
-        'id',
-        'uploader',
-        'uploader_id',
-        # 'uploader_url',
-        # 'channel_id',
-        # 'channel_url',
-        'upload_date',
-        # 'license',
-        # 'creator',
-        'title',
-        'alt_title',
-        # 'thumbnails',
-        # 'description',
-        # 'categories',
-        # 'tags',
-        # 'subtitles',
-        # 'automatic_captions',
-        'duration',
-        # 'age_limit',
-        # 'annotations',
-        # 'chapters',
-        # 'webpage_url',
-        # 'view_count',
-        # 'like_count',
-        # 'dislike_count',
-        # 'average_rating',
-        # 'formats',
-        # 'is_live',
-        # 'start_time',
-        # 'end_time',
-        # 'series',
-        # 'season_number',
-        # 'episode_number',
-        # 'track',
-        # 'artist',
-        # 'album',
-        # 'release_date',
-        # 'release_year',
-        # 'extractor',
-        # 'webpage_url_basename',
-        # 'extractor_key'
-    ]
+    _attrs = YOUTUBEDL_VIDEO_ATTRS
 
     def __init__(self, attrs):
-        self.playlist = None
         super().__init__(attrs=attrs)
         self.pk = datab.insert_video(vdata=self.as_dict)
 
@@ -90,28 +65,22 @@ class Video(BaseEntity):
         print('{:<50}{}'.format('playlist', self.playlist))
 
 
+    def set_playlist(self, playlist):
+        vpk, vid, plpk = datab.set_video_playlist(self.id, plpk=playlist.pk)
+
+
 
 
 class Playlist(BaseEntity):
-    _attrs = [
-        # '_type',
-        'entries',
-        'id',
-        'title',
-        # 'uploader',
-        'uploader_id',
-        # 'uploader_url',
-        # 'extractor',
-        # 'webpage_url',
-        # 'webpage_url_basename',
-        # 'extractor_key'
-    ]
+    _attrs = YOUTUBEDL_PLAYLIST_ATTRS
 
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
-        self.pk = datab.insert_playlist(pldict=self.as_dict)
         self._videos = []
-        # self.dbid = None
+        self.pk = datab.insert_playlist(pldict=self.as_dict)
+
+        for video in self.videos:
+            video.set_playlist(playlist=self)
 
 
 
@@ -121,11 +90,8 @@ class Playlist(BaseEntity):
             yout = Youtube(
                 url=item['url'],
                 params=self.youtube.params,
-                do_download=self.youtube.do_download
+                do_download=self.youtube.do_download,
             )
-            # ytdl.fetch_info()
-            # video = ytdl.video
-            # video.pldbid = self.dbid
             yout.video.playlist = self
             self._videos.append(yout.video)
 
@@ -135,9 +101,9 @@ class Playlist(BaseEntity):
     @property
     def as_dict(self):
         data = super().as_dict
-        # data['videos'] = [video.as_dict for video in self.videos]
-        data['videos'] = [{}]
+        data['videos'] = [video.as_dict for video in self.videos]
         del data['entries']
+
         return data
 
 
@@ -152,6 +118,7 @@ class Youtube(youtube_dl.YoutubeDL):
         self.do_download = do_download
         self.playlist = None
         self.video = None
+        self.error = None
 
         if params:
             params.update({'quiet': True})
@@ -166,70 +133,27 @@ class Youtube(youtube_dl.YoutubeDL):
 
     def fetch_info(self):
         if self.url:
-            result = self.extract_info(
-                url=self.url,
-                download=self.do_download,
-                process=self.do_download,
-            )
+            try:
+                result = self.extract_info(
+                    url=self.url,
+                    download=self.do_download,
+                    process=self.do_download,
+                )
+            except youtube_dl.utils.DownloadError as err:
+                print(err)
+                self.error = ''.join(err.args)
+
+                return
+
             result['youtube'] = self
 
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
-                # self.playlist.youtube = self
-                # playlist.pk = datab.insert_playlist(playlist=self.playlist)
-                # self.playlist.videos
-
-
             else:
+                result['playlist'] = None
                 self.video = Video(attrs=result)
-                # self.video.youtube = self
-                # datab.insert_video(video=self.video)
-
 
 
 
 if __name__ == '__main__':
     pass
-
-    urls = [
-        'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
-        # 'PL9YsudagsL6hicXrha4zBId875lRXxc32',
-        # 'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
-        # 'HJq-6y2IYEQ',
-        'FIQ2F3T1ydM',
-    ]
-
-    for url in urls:
-        print('\n', '-'*79)
-
-        yout = Youtube(url=url)
-        print(yout.playlist)
-
-        if yout.playlist:
-            yout.playlist.print_info()
-
-            for vid in yout.playlist.videos:
-                print('\t', vid)
-                vid.print_info()
-
-        else:
-            yout.video.print_info()
-        # yout.fetch_info()
-        # yout.video.print_info()
-        # ytdl.url = url
-        # ytdl.fetch_info()
-
-        # if ytdl.playlist:
-        #     ytdl.playlist.print_info()
-
-        #     print('\nas_dict:')
-        #     print(ytdl.playlist.as_dict)
-
-        #     for video in ytdl.playlist.videos:
-        #         print('\n..playlist video:')
-        #         video.print_info()
-        #         print(video.as_dict)
-
-        # else:
-        #     ytdl.video.print_info()
-        #     print(ytdl.video.as_dict)

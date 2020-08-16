@@ -1,10 +1,26 @@
 import os
 import flask
 import json
+import zipfile
 import app.config as config
-# import app.data as data
+import app.data as data
 import app.youtube as youtube
 
+ROOT_DIR = (
+    # os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))
+# )
+)
+
+
+# DOWNLOAD_DIR = '/home/download/'
+DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
+ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
+
+print('-'*79)
+print('ROOT_DIR:', ROOT_DIR)
+print('DOWNLOAD_DIR:', DOWNLOAD_DIR)
+print('ARCHIVE_NAME:', ARCHIVE_NAME)
 
 app = flask.Flask(__name__)
 
@@ -20,6 +36,9 @@ def post_playlist():
 
     ytdl = youtube.Youtube(url=ytid)
 
+    if ytdl.error:
+        return {'error': ytdl.error}
+
     if ytdl.playlist:
         download = ytdl.playlist.as_dict
     else:
@@ -28,6 +47,52 @@ def post_playlist():
     response = flask.jsonify(download)
 
     return response
+
+
+
+
+@app.route('/download', methods=['POST'])
+def download_playlist():
+    print()
+    print(os.getcwd())
+    print(__file__)
+    ytid = flask.request.json.get('id')
+
+    if not ytid:
+        return flask.jsonify({'error': 'missing id'})
+
+    videoids = data.query_videos_by_playlistid(playlistid=ytid)
+    titles = []
+
+    for videoid in videoids:
+        print('<<< DOWNLOADING >>>', videoid)
+        os.chdir(DOWNLOAD_DIR)
+        ytdl = youtube.Youtube(url=videoid, do_download=True)
+        print('-- downloaded: ', ytdl.video.title)
+        titles.append(ytdl.video.title)
+
+    if os.path.isfile(ARCHIVE_NAME):
+        os.remove(ARCHIVE_NAME)
+
+    downloads = os.listdir(DOWNLOAD_DIR)
+
+    with zipfile.ZipFile(ARCHIVE_NAME, 'w') as downlfile:
+        for fname in downloads:
+            downlfile.write('{}'.format(fname))
+
+    response = {'videos': str(videoids)}
+
+    return response
+
+
+
+
+@app.route('/archive')
+def archive():
+    # return flask.send_file('/home/download/download.zip')
+    # return flask.send_file('/home/ford/storage/dev/YoutubeMusicDB/.download/download.zip')
+    return flask.send_file(ARCHIVE_NAME)
+
 
 
 

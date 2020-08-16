@@ -34,6 +34,22 @@ SQL_INSERT_VIDEO = """
     ;
 """
 
+SQL_VIDEO_BY_PLAYLIST = """
+    SELECT video.id
+    FROM video
+    JOIN playlist ON playlist.pk = video.playlist
+    WHERE playlist.id = %(plid)s
+    ;
+"""
+
+SQL_SET_VIDEO_PLAYLIST = """
+    UPDATE video
+    SET playlist = %(plpk)s
+    WHERE video.id = %(vid)s
+    RETURNING pk, id, title, playlist
+    ;
+"""
+
 class PGConnection:
     def __init__(self, dbname=None):
         self.dbname = dbname or os.getenv('PGDATABASE')
@@ -80,6 +96,39 @@ def insert_video(vdata):
     pk = row[IDX_VIDEO__pk]
 
     return pk
+
+
+
+def query_videos_by_playlistid(playlistid):
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(SQL_VIDEO_BY_PLAYLIST, {'plid': playlistid})
+        conn.commit()
+        rows = cur.fetchall()
+
+    result = [row[0] for row in rows]
+
+    return result
+
+
+
+
+def set_video_playlist(vid, plpk):
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(SQL_SET_VIDEO_PLAYLIST, {'vid': vid, 'plpk': plpk})
+        conn.commit()
+        row = cur.fetchone()
+
+    result = [
+        row[IDX_VIDEO__pk],
+        row[IDX_VIDEO__id],
+        row[IDX_VIDEO__playlist],
+    ]
+
+    return result
+
+
 
 
 

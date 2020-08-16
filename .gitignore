@@ -4,3 +4,4 @@
 # directories:
 .venv/
 .volumes/
+.download/
