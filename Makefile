@@ -33,5 +33,8 @@ test: build initdb_test upd
 		pytest
 	@make down
 
-pgdump:
+db:
+	@docker-compose up -d ymdb_db
+
+pgdump: db
 	@docker-compose exec ymdb_db pg_dump -U postgres -d ymdb --disable-dollar-quoting --inserts -a
