@@ -1,15 +1,14 @@
 import os
 import psycopg2
 import pytest
+import tests.setup
 import app.data as data
 import app.youtube as youtube
 
 
 
 
-TEST_DB_NAME = 'ymdb_test'
-os.environ['PGDATABASE'] = TEST_DB_NAME
-SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
+
 PLAYLIST_DATA = [{
         'id': 'pl-id_{}'.format(idx),
         'title': 'pl-title_{}'.format(idx),
@@ -29,7 +28,7 @@ VIDEO_DATA = [
 
 
 def setup_module():
-    with open(SCHEMA_FILE, 'r') as schemafile:
+    with open(tests.setup.SCHEMA_FILE, 'r') as schemafile:
         schemasql = schemafile.read()
 
     with data.PGConnection(dbname='postgres') as conn1:
@@ -38,11 +37,11 @@ def setup_module():
         cur = conn1.cursor()
 
         try:
-            cur.execute(query="drop database %s;" % TEST_DB_NAME)
+            cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
         except psycopg2.errors.InvalidCatalogName:
             pass
 
-        cur.execute(query="create database %s;" % TEST_DB_NAME)
+        cur.execute(query="create database %s;" % tests.setup.TEST_DB_NAME)
 
     with data.PGConnection() as conn2:
         conn2.set_isolation_level(
@@ -58,7 +57,7 @@ def teardown_module():
         conn1.set_isolation_level(
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn1.cursor()
-        cur.execute(query="drop database %s;" % TEST_DB_NAME)
+        cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
 
 
 

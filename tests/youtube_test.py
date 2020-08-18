@@ -1,6 +1,7 @@
 import pytest
 import app.youtube
 import tests.data_test
+import tests.setup
 
 
 YOUTUBE_PLAYLISTS = [

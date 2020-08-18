@@ -1,3 +1,14 @@
+import os
+
+
+TEST_DB_NAME = 'ymdb_test'
+os.environ['PGDATABASE'] = TEST_DB_NAME
+
+SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
+
+
+
+
 YOUTUBE_PLAYLISTS = [
     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
     'https://www.youtube.com/playlist?list=PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
@@ -12,4 +23,4 @@ YOUTUBE_VIDEOS = [
     'https://www.youtube.com/watch?v=EDQ1dmFEGiI',
     'https://www.youtube.com/watch?v=BPopaJsNWd4',
 ]
-YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_IDS
+YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_VIDEOS
