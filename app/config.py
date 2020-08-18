@@ -1,0 +1,1 @@
+DOWNLOAD_ZIP_NAME = 'download_{plid}_{uuid}'

@@ -2,7 +2,8 @@ import os
 import flask
 import json
 import zipfile
-import app.config as config
+import uuid
+import app.config
 import app.data as data
 import app.youtube as youtube
 
@@ -77,24 +78,32 @@ def download_playlist():
         print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
-    if os.path.isfile(ARCHIVE_NAME):
-        os.remove(ARCHIVE_NAME)
+    archivename = app.config.DOWNLOAD_ZIP_NAME.format(
+        plid=ytid,
+        uuid=uuid.uuid4(),
+    )
+
+    # if os.path.isfile(ARCHIVE_NAME):
+    #     os.remove(ARCHIVE_NAME)
 
     downloads = os.listdir(DOWNLOAD_DIR)
 
-    with zipfile.ZipFile(ARCHIVE_NAME, 'w') as downlfile:
+    with zipfile.ZipFile(archivename, 'w') as downlfile:
         for fname in downloads:
             downlfile.write('{}'.format(fname))
 
     videofiles = os.listdir(path=DOWNLOAD_DIR)
     
     for vfile in videofiles:
-        if vfile == 'download.zip':
+        if vfile == archivename:
             continue
-        
+
         os.remove(vfile)
 
-    response = {'videos': str(videoids)}
+    response = {
+        'videos': str(videoids),
+        'archive': archivename,
+    }
 
     return response
 
