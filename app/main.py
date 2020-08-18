@@ -7,9 +7,9 @@ import app.data as data
 import app.youtube as youtube
 
 ROOT_DIR = (
-    # os.path.dirname(
+    os.path.dirname(
         os.path.dirname(os.path.abspath(__file__))
-# )
+)
 )
 
 
