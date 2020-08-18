@@ -237,7 +237,6 @@ def test_set_video_as_downloaded(conn):
     row = cur.fetchone()
     is_downloaded = row[0]
 
-    assert vpk == 1
     assert is_downloaded is True
 
 
