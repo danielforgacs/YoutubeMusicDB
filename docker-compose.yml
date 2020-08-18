@@ -20,8 +20,8 @@ services:
       - 5000:5000
     env_file: .env
     command: ["python", "app/main.py"]
-    volumes:
-      - ./.download/:/home/download/
+    # volumes:
+    #   - ./.download/:/home/download/
     image: ymdb-app
     depends_on:
       - ymdb_db
