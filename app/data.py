@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import datetime
 
 
 
@@ -15,8 +16,8 @@ IDX_VIDEO__playlist = 3
 
 
 SQL_INSERT_PLAYLIST = """
-    INSERT INTO playlist (id, title, uploader_id)
-    VALUES (%(id)s, %(title)s, %(uploader_id)s)
+    INSERT INTO playlist (id, title, uploader_id, added)
+    VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
         title = %(title)s,
         uploader_id = %(uploader_id)s
@@ -25,8 +26,8 @@ SQL_INSERT_PLAYLIST = """
 """
 
 SQL_INSERT_VIDEO = """
-    INSERT INTO video (id, title, playlist)
-    VALUES (%(id)s, %(title)s, %(playlist)s)
+    INSERT INTO video (id, title, playlist, added)
+    VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
         title = %(title)s,
         playlist = %(playlist)s
@@ -72,6 +73,8 @@ class PGConnection:
 
 
 def insert_playlist(pldict):
+    pldict['added'] = datetime.datetime.now()
+
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_INSERT_PLAYLIST, pldict)
@@ -86,6 +89,7 @@ def insert_playlist(pldict):
 
 def insert_video(vdata):
     vdata.setdefault('playlist', None)
+    vdata['added'] = datetime.datetime.now()
 
     with PGConnection() as conn:
         cur = conn.cursor()
