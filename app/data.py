@@ -135,6 +135,25 @@ def set_video_playlist(vid, plpk):
 
 
 
+def set_video_as_downloaded(vid):
+    data = {'id': vid}
+    sql =  """
+        UPDATE video
+        SET is_down = true
+        WHERE id = %(id)s
+        RETURNING pk
+        ;
+    """
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars=data)
+        conn.commit()
+        row = cur.fetchone()
+
+    pk = row[0]
+
+    return pk
+
 
 if __name__ == '__main__':
     pass
