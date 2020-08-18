@@ -1,7 +1,9 @@
+import os
 import pytest
 import app.main as main
 import app.youtube as ytdl
 import tests.data_test
+import tests.setup
 
 
 
@@ -62,16 +64,24 @@ def test_download_set_videos_as_is_down_True():
 
 
 
-def test_files_are_deleted_after_download():
-    pass
-
-
-
-def test_download_zip_is_deleted_after_archive(client):
-    plst = tests.setup.YOUTUBE_PLAYLISTS[0]
-
+@pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
+def test_files_are_deleted_after_download(client, plst):
     response = client.post('/', json={'id': plst})
     response = client.post('/download', json=response.json)
+
+    ls = os.listdir(main.DOWNLOAD_DIR)
+
+    assert len(ls) < 2
+    assert ls == ['download.zip']
+
+
+
+# def test_download_zip_is_deleted_after_archive(client):
+#     plst = tests.setup.YOUTUBE_PLAYLISTS[0]
+
+#     response = client.post('/', json={'id': plst})
+#     response = client.post('/download', json=response.json)
+#     response = client.get('/archive')
 
     
 

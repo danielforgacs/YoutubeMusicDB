@@ -86,6 +86,14 @@ def download_playlist():
         for fname in downloads:
             downlfile.write('{}'.format(fname))
 
+    videofiles = os.listdir(path=DOWNLOAD_DIR)
+    
+    for vfile in videofiles:
+        if vfile == 'download.zip':
+            continue
+        
+        os.remove(vfile)
+
     response = {'videos': str(videoids)}
 
     return response
