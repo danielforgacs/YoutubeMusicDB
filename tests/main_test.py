@@ -59,6 +59,20 @@ def test_post_playlist_returns_error_json_on_missing_id(client):
 
 def test_download_set_videos_as_is_down_True():
     pass
+
+
+
+def test_files_are_deleted_after_download():
+    pass
+
+
+
+def test_download_zip_is_deleted_after_archive(client):
+    plst = tests.setup.YOUTUBE_PLAYLISTS[0]
+
+    response = client.post('/', json={'id': plst})
+    response = client.post('/download', json=response.json)
+
     
 
 
