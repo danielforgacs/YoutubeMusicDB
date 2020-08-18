@@ -212,7 +212,34 @@ def test_set_video_playlist_sets_updates(conn):
 
 
 
+def test_set_video_as_downloaded(conn):
+    videdict = {
+        'id': 'id_test',
+        'title': 'title_test',
+    }
+    video1 = data.insert_video(vdata=videdict)
 
+    sql = """
+        SELECT is_down
+        FROM video
+        WHERE video.id = %(id)s
+        ;
+    """
+    cur = conn.cursor()
+    cur.execute(query=sql, vars=videdict)
+    row = cur.fetchone()
+    is_downloaded = row[0]
+
+    assert is_downloaded is False
+
+    videDown = data.set_video_as_downloaded(vid=videdict['id'])
+
+    cur.execute(query=sql, vars=videdict)
+    row = cur.fetchone()
+    is_downloaded = row[0]
+
+    assert videDown == 1
+    assert is_downloaded is True
 
 
 if __name__ == '__main__':
