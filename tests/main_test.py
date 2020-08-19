@@ -1,5 +1,6 @@
 import os
 import pytest
+import app.data
 import app.main as main
 import app.youtube as ytdl
 import tests.data_test
@@ -76,9 +77,33 @@ def test_files_are_deleted_after_download(client, plst):
 
 
 
-@pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
-def test_download_set_videos_as_is_down_True(plst):
-    pass
+# @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
+@pytest.mark.parametrize('plst', [tests.setup.YOUTUBE_PLAYLISTS[0]])
+def test_download_set_videos_as_is_down_True(client, plst):
+    response = client.post('/', json={'id': plst})
+    response = client.post('/download', json=response.json)
+
+    sql = """
+        SELECT is_down
+        FROM video
+        WHERE id in %s
+        ;
+    """
+
+    videoids = response.json
+    # videoids = response.json['videos']
+    videoids = tuple(response.json['videos'])
+    print(response.json)
+    print(videoids)
+
+    with app.data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars=(videoids,))
+        rows = cur.fetchall()
+
+    is_down_vals = [row[0] for row in rows]
+    
+    assert all(is_down_vals)
 
 
 
