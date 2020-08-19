@@ -77,8 +77,7 @@ def test_files_are_deleted_after_download(client, plst):
 
 
 
-# @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
-@pytest.mark.parametrize('plst', [tests.setup.YOUTUBE_PLAYLISTS[0]])
+@pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
 def test_download_set_videos_as_is_down_True(client, plst):
     response = client.post('/', json={'id': plst})
     response = client.post('/download', json=response.json)
@@ -91,7 +90,6 @@ def test_download_set_videos_as_is_down_True(client, plst):
     """
 
     videoids = response.json
-    # videoids = response.json['videos']
     videoids = tuple(response.json['videos'])
     print(response.json)
     print(videoids)
@@ -102,7 +100,7 @@ def test_download_set_videos_as_is_down_True(client, plst):
         rows = cur.fetchall()
 
     is_down_vals = [row[0] for row in rows]
-    
+
     assert all(is_down_vals)
 
 
