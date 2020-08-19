@@ -91,8 +91,6 @@ def test_download_set_videos_as_is_down_True(client, plst):
 
     videoids = response.json
     videoids = tuple(response.json['videos'])
-    print(response.json)
-    print(videoids)
 
     with app.data.PGConnection() as conn:
         cur = conn.cursor()
@@ -111,8 +109,6 @@ def test_download_returns_the_archive_name(client, plst):
     response = client.post('/', json={'id': plst})
     response = client.post('/download', json=response.json)
     archivefile = os.path.join(main.DOWNLOAD_DIR, response.json['archive'])
-    print(response.json)
-    print(archivefile)
 
     assert os.path.isfile(archivefile)
 

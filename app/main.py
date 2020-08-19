@@ -25,10 +25,6 @@ if not os.path.isdir(DOWNLOAD_DIR):
 
 ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
 
-print('-'*79)
-print('ROOT_DIR:', ROOT_DIR)
-print('DOWNLOAD_DIR:', DOWNLOAD_DIR)
-print('ARCHIVE_NAME:', ARCHIVE_NAME)
 
 app = flask.Flask(__name__)
 
@@ -61,9 +57,6 @@ def post_playlist():
 
 @app.route('/download', methods=['POST'])
 def download_playlist():
-    print()
-    print(os.getcwd())
-    print(__file__)
     ytid = flask.request.json.get('id')
 
     if not ytid:
@@ -76,10 +69,8 @@ def download_playlist():
             plid=ytid,
             ver=archver,
         )
-        print('\n/// archivename: ', archivename)
 
         if os.path.isfile(os.path.join(DOWNLOAD_DIR, archivename)):
-            # print(os.path.isfile(archivename))
             archver += 1
         else:
             break
@@ -89,11 +80,9 @@ def download_playlist():
     titles = []
 
     for videoid in videoids:
-        print('<<< DOWNLOADING >>>', videoid)
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=videoid, do_download=True)
         data.set_video_as_downloaded(vid=videoid)
-        print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
 

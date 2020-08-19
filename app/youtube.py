@@ -140,7 +140,6 @@ class Youtube(youtube_dl.YoutubeDL):
                     process=self.do_download,
                 )
             except youtube_dl.utils.DownloadError as err:
-                print(err)
                 self.error = ''.join(err.args)
 
                 return
