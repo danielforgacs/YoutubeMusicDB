@@ -107,8 +107,14 @@ def test_download_set_videos_as_is_down_True(client, plst):
 
 
 @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
-def test_download_returns_the_archive_name(plst):
-    pass
+def test_download_returns_the_archive_name(client, plst):
+    response = client.post('/', json={'id': plst})
+    response = client.post('/download', json=response.json)
+    archivefile = os.path.join(main.DOWNLOAD_DIR, response.json['archive'])
+    print(response.json)
+    print(archivefile)
+
+    assert os.path.isfile(archivefile)
 
 
 
@@ -125,6 +131,12 @@ def test_archive_deletes_archive_after_some_time():
 
 
 def test_downloaded_videos_are_converted_to_mp3():
+    pass
+
+
+
+def test_downloaded_videos_have_specific_file_name():
+    # title.id.ext
     pass
     
 
