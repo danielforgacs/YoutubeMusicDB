@@ -51,6 +51,14 @@ SQL_SET_VIDEO_PLAYLIST = """
     ;
 """
 
+SQL_SET_VIDEO_AS_DOWNLOADED = """
+    UPDATE video
+    SET is_down = true
+    WHERE id = %(id)s
+    RETURNING pk
+    ;
+"""
+
 class PGConnection:
     def __init__(self, dbname=None):
         self.dbname = dbname or os.getenv('PGDATABASE')
@@ -137,16 +145,10 @@ def set_video_playlist(vid, plpk):
 
 def set_video_as_downloaded(vid):
     data = {'id': vid}
-    sql =  """
-        UPDATE video
-        SET is_down = true
-        WHERE id = %(id)s
-        RETURNING pk
-        ;
-    """
+    
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql, vars=data)
+        cur.execute(query=SQL_SET_VIDEO_AS_DOWNLOADED, vars=data)
         conn.commit()
         row = cur.fetchone()
 

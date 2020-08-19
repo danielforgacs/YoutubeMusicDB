@@ -1,6 +1,7 @@
 import sys
 import youtube_dl
 import app.data as datab
+import app.config
 
 
 
@@ -124,6 +125,12 @@ class Youtube(youtube_dl.YoutubeDL):
             params.update({'quiet': True})
         else:
             params = {'quiet': True}
+
+        if app.config.YOUTUBE_DL_FORMAT:
+            params['format'] = app.config.YOUTUBE_DL_FORMAT
+
+        if app.config.YOUTUBE_DL_OUTPUT_TEMPLATE:
+            params['outtmpl'] = app.config.YOUTUBE_DL_OUTPUT_TEMPLATE
 
         super().__init__(params=params, auto_init=True)
 
