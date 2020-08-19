@@ -117,7 +117,8 @@ def download_playlist():
         os.remove(vfile)
 
     response = {
-        'videos': str(videoids),
+        # 'videos': str(videoids),
+        'videos': videoids,
         'archive': archivename,
     }
 
