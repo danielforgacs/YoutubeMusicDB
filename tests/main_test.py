@@ -77,7 +77,7 @@ def test_files_are_deleted_after_download(client, plst):
 
 
 @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
-def test_download_set_videos_as_is_down_True():
+def test_download_set_videos_as_is_down_True(plst):
     pass
 
 
