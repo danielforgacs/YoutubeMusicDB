@@ -92,6 +92,7 @@ def download_playlist():
         print('<<< DOWNLOADING >>>', videoid)
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=videoid, do_download=True)
+        data.set_video_as_downloaded(vid=videoid)
         print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
