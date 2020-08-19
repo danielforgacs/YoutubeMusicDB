@@ -57,6 +57,10 @@ class Video(BaseEntity):
     _attrs = YOUTUBEDL_VIDEO_ATTRS
 
     def __init__(self, attrs):
+        # print('::init Video:', attrs.keys())
+        if 'playlist' in attrs:
+            del attrs['playlist']
+        print('::init Video playlist:', attrs.get('playlist', '--NA--'))
         super().__init__(attrs=attrs)
         self.pk = datab.insert_video(vdata=self.as_dict)
 
@@ -156,7 +160,7 @@ class Youtube(youtube_dl.YoutubeDL):
             if '_type' in result.keys():
                 self.playlist = Playlist(attrs=result)
             else:
-                result['playlist'] = None
+                # result['playlist'] = None
                 self.video = Video(attrs=result)
 
 
