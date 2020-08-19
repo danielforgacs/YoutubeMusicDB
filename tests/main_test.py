@@ -4,6 +4,7 @@ import app.main as main
 import app.youtube as ytdl
 import tests.data_test
 import tests.setup
+from app import config
 
 
 
@@ -71,8 +72,10 @@ def test_files_are_deleted_after_download(client, plst):
 
     ls = os.listdir(main.DOWNLOAD_DIR)
 
-    assert len(ls) < 2
-    assert ls == ['download.zip']
+    for item in ls:
+        assert item.startswith(config.DOWNLOAD_ZIP_PREFIX)
+
+    # assert len(ls) == 1
 
 
 

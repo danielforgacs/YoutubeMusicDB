@@ -3,9 +3,9 @@ import flask
 import json
 import zipfile
 import uuid
-import app.config
 import app.data as data
 import app.youtube as youtube
+from app import config
 
 ROOT_DIR = (
     os.path.dirname(
@@ -68,6 +68,13 @@ def download_playlist():
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
+    archivename = config.DOWNLOAD_ZIP_NAME.format(
+        plid=ytid,
+        uuid=uuid.uuid4(),
+    )
+
+    print('\n/// archivename: ', archivename)
+
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
     titles = []
 
@@ -78,10 +85,6 @@ def download_playlist():
         print('-- downloaded: ', ytdl.video.title)
         titles.append(ytdl.video.title)
 
-    archivename = app.config.DOWNLOAD_ZIP_NAME.format(
-        plid=ytid,
-        uuid=uuid.uuid4(),
-    )
 
     # if os.path.isfile(ARCHIVE_NAME):
     #     os.remove(ARCHIVE_NAME)
@@ -90,12 +93,15 @@ def download_playlist():
 
     with zipfile.ZipFile(archivename, 'w') as downlfile:
         for fname in downloads:
+            if fname.startswith(config.DOWNLOAD_ZIP_PREFIX):
+                continue
+
             downlfile.write('{}'.format(fname))
 
     videofiles = os.listdir(path=DOWNLOAD_DIR)
     
     for vfile in videofiles:
-        if vfile == archivename:
+        if vfile.startswith(config.DOWNLOAD_ZIP_PREFIX):
             continue
 
         os.remove(vfile)

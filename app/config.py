@@ -1,1 +1,2 @@
-DOWNLOAD_ZIP_NAME = 'download_{plid}_{uuid}'
+DOWNLOAD_ZIP_PREFIX = 'DOWNLOAD__'
+DOWNLOAD_ZIP_NAME = DOWNLOAD_ZIP_PREFIX + '_{plid}_{uuid}.zip'
