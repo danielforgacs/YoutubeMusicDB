@@ -106,7 +106,8 @@ def test_download_set_videos_as_is_down_True(client, plst):
 
 
 
-def test_download_returns_the_archive_name():
+@pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
+def test_download_returns_the_archive_name(plst):
     pass
 
 
@@ -121,6 +122,10 @@ def test_archive_deletes_archive_after_some_time():
     pass
 
 
+
+
+def test_downloaded_videos_are_converted_to_mp3():
+    pass
     
 
 
