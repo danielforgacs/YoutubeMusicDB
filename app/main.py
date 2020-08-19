@@ -17,10 +17,11 @@ ROOT_DIR = (
 DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
 
 if not os.path.isdir(DOWNLOAD_DIR):
-    raise Exception('[DOWNLOAD DIR IS MISSING: "{}"!]'.format(DOWNLOAD_DIR))
+    os.mkdir(DOWNLOAD_DIR)
+    # raise Exception('[DOWNLOAD DIR IS MISSING: "{}"!]'.format(DOWNLOAD_DIR))
 
-if not os.access(path=DOWNLOAD_DIR, mode=os.W_OK):
-    raise Exception('[CAN`T WRITE DOWNLOAD DIR!]')
+# if not os.access(path=DOWNLOAD_DIR, mode=os.W_OK):
+#     raise Exception('[CAN`T WRITE DOWNLOAD DIR!]')
 
 ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
 
