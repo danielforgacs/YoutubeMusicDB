@@ -29,8 +29,7 @@ SQL_INSERT_VIDEO = """
     INSERT INTO video (id, title, playlist, added)
     VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
-        title = %(title)s,
-        playlist = %(playlist)s
+        title = %(title)s
     RETURNING pk
     ;
 """
@@ -145,7 +144,7 @@ def set_video_playlist(vid, plpk):
 
 def set_video_as_downloaded(vid):
     data = {'id': vid}
-    
+
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SET_VIDEO_AS_DOWNLOADED, vars=data)
