@@ -68,12 +68,21 @@ def download_playlist():
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
-    archivename = config.DOWNLOAD_ZIP_NAME.format(
-        plid=ytid,
-        uuid=uuid.uuid4(),
-    )
+    archver = 0
 
-    print('\n/// archivename: ', archivename)
+    while True:
+        archivename = config.DOWNLOAD_ZIP_NAME.format(
+            plid=ytid,
+            ver=archver,
+        )
+        print('\n/// archivename: ', archivename)
+
+        if os.path.isfile(os.path.join(DOWNLOAD_DIR, archivename)):
+            # print(os.path.isfile(archivename))
+            archver += 1
+        else:
+            break
+
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
     titles = []
