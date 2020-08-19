@@ -18,10 +18,6 @@ DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
 
 if not os.path.isdir(DOWNLOAD_DIR):
     os.mkdir(DOWNLOAD_DIR)
-    # raise Exception('[DOWNLOAD DIR IS MISSING: "{}"!]'.format(DOWNLOAD_DIR))
-
-# if not os.access(path=DOWNLOAD_DIR, mode=os.W_OK):
-#     raise Exception('[CAN`T WRITE DOWNLOAD DIR!]')
 
 ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
 
@@ -85,10 +81,6 @@ def download_playlist():
         data.set_video_as_downloaded(vid=videoid)
         titles.append(ytdl.video.title)
 
-
-    # if os.path.isfile(ARCHIVE_NAME):
-    #     os.remove(ARCHIVE_NAME)
-
     downloads = os.listdir(DOWNLOAD_DIR)
 
     with zipfile.ZipFile(archivename, 'w') as downlfile:
@@ -107,7 +99,6 @@ def download_playlist():
         os.remove(vfile)
 
     response = {
-        # 'videos': str(videoids),
         'videos': videoids,
         'archive': archivename,
     }
@@ -119,8 +110,6 @@ def download_playlist():
 
 @app.route('/archive')
 def archive():
-    # return flask.send_file('/home/download/download.zip')
-    # return flask.send_file('/home/ford/storage/dev/YoutubeMusicDB/.download/download.zip')
     return flask.send_file(ARCHIVE_NAME)
 
 
