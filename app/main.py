@@ -17,7 +17,7 @@ ROOT_DIR = (
 DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
 
 if not os.path.isdir(DOWNLOAD_DIR):
-    raise Exception('[DOWNLOAD DIR IS MISSING!]')
+    raise Exception('[DOWNLOAD DIR IS MISSING: "{}"!]'.format(DOWNLOAD_DIR))
 
 if not os.access(path=DOWNLOAD_DIR, mode=os.W_OK):
     raise Exception('[CAN`T WRITE DOWNLOAD DIR!]')
