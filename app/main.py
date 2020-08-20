@@ -118,6 +118,13 @@ def archive():
 
 
 
+@app.route('/playlists')
+def view_playlists():
+    return 'lkjhlkjh'
+
+
+
+
 if __name__ == '__main__':
     app.run(
         debug=os.getenv('DEBUG'),
