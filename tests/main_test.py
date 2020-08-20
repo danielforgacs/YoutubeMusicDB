@@ -21,7 +21,7 @@ def test_post_playlist(ytid):
     else:
         expected = youtube.video.as_dict
 
-    with main.app.test_client() as test_client:
+    with main.app.test_client() as client:
         response = client.post('/', json={'id': ytid})
 
     data = response.get_json()
@@ -33,7 +33,7 @@ def test_post_playlist(ytid):
 def test_post_playlist_returns_error_json_on_missing_id():
     expected = {'error': 'missing id'}
 
-    with main.app.test_client() as test_client:
+    with main.app.test_client() as client:
         response = client.post('/', json={'NOid': tests.setup.YOUTUBE_PLAYLISTS[0]})
 
     data = response.get_json()
@@ -46,7 +46,7 @@ def test_post_playlist_returns_error_json_on_missing_id():
 
 @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
 def test_files_are_deleted_after_download(plst):
-    with main.app.test_client() as test_client:
+    with main.app.test_client() as client:
         response = client.post('/', json={'id': plst})
         response = client.post('/download', json=response.json)
 
@@ -61,7 +61,7 @@ def test_files_are_deleted_after_download(plst):
 
 @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
 def test_download_set_videos_as_is_down_True(plst):
-    with main.app.test_client() as test_client:
+    with main.app.test_client() as client:
         response = client.post('/', json={'id': plst})
         response = client.post('/download', json=response.json)
 
@@ -89,7 +89,7 @@ def test_download_set_videos_as_is_down_True(plst):
 
 @pytest.mark.parametrize('plst', tests.setup.YOUTUBE_PLAYLISTS)
 def test_download_returns_the_archive_name(plst):
-    with main.app.test_client() as test_client:
+    with main.app.test_client() as client:
         response = client.post('/', json={'id': plst})
         response = client.post('/download', json=response.json)
 
