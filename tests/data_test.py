@@ -7,27 +7,13 @@ import app.youtube as youtube
 
 
 
-PLAYLIST_DATA = [{
-        'id': 'pl-id_{}'.format(idx),
-        'title': 'pl-title_{}'.format(idx),
-        'uploader_id': 'pl-uploader_id_{}'.format(idx),
-    } for idx in range(3)
-]
-VIDEO_DATA = [
-    {
-        'id': 'v-id_{}'.format(idx),
-        'title': 'v-title_{}'.format(idx),
-    } for idx in range(3)
-]
-
-
-
 def setup():
     tests.setup.init_test_db()
 
 
 
-@pytest.mark.parametrize('pldata', PLAYLIST_DATA)
+
+@pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
     plpk = data.insert_playlist(pldict=pldata)
 
@@ -51,7 +37,7 @@ def test_insert_playlist(pldata):
 
 
 def test_playlist_insert_updates_data_if_playlist_extsts():
-    playlist = dict(PLAYLIST_DATA[0])
+    playlist = dict(tests.setup.PLAYLIST_DATA[0])
     newtitle = 'new_title'
     plpk = data.insert_playlist(pldict=playlist)
 
@@ -75,7 +61,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
 
 
 
-@pytest.mark.parametrize('vdata', VIDEO_DATA)
+@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video(vdata):
     vpk = data.insert_video(vdata=vdata)
 
@@ -101,11 +87,11 @@ def test_insert_video(vdata):
 
 
 def test_get_video_ids_by_playlist():
-    plpk1 = data.insert_playlist(pldict=dict(PLAYLIST_DATA[0]))
-    plpk2 = data.insert_playlist(pldict=dict(PLAYLIST_DATA[1]))
-    videodata1 = dict(VIDEO_DATA[0])
-    videodata2 = dict(VIDEO_DATA[1])
-    videodata3 = dict(VIDEO_DATA[2])
+    plpk1 = data.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
+    plpk2 = data.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
+    videodata1 = dict(tests.setup.VIDEO_DATA[0])
+    videodata2 = dict(tests.setup.VIDEO_DATA[1])
+    videodata3 = dict(tests.setup.VIDEO_DATA[2])
     videodata1['playlist'] = plpk1
     videodata2['playlist'] = plpk1
     videodata3['playlist'] = plpk2
@@ -113,9 +99,9 @@ def test_get_video_ids_by_playlist():
     vpk2 = data.insert_video(vdata=videodata2)
     vpk3 = data.insert_video(vdata=videodata3)
     videoids1 = data.query_videos_by_playlistid(
-        playlistid=dict(PLAYLIST_DATA[0])['id'])
+        playlistid=dict(tests.setup.PLAYLIST_DATA[0])['id'])
     videoids2 = data.query_videos_by_playlistid(
-        playlistid=dict(PLAYLIST_DATA[1])['id'])
+        playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
 
     assert videoids1 == [videodata1['id'], videodata2['id']]
     assert videoids2 == [videodata3['id']]
@@ -131,10 +117,10 @@ def test_set_video_playlist_sets_updates():
         WHERE video.id = %(vid)s
         ;
     """
-    videodata = dict(VIDEO_DATA[0])
+    videodata = dict(tests.setup.VIDEO_DATA[0])
 
-    plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
-    plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
+    plpk1 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
     vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
