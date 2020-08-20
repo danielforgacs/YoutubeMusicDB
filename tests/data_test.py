@@ -28,37 +28,59 @@ VIDEO_DATA = [
 
 
 def setup_module():
-    with open(tests.setup.SCHEMA_FILE, 'r') as schemafile:
-        schemasql = schemafile.read()
+    tests.setup.init_test_db()
+    # with open(tests.setup.SCHEMA_FILE, 'r') as schemafile:
+    #     schemasql = schemafile.read()
 
-    with data.PGConnection(dbname='postgres') as conn1:
-        conn1.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = conn1.cursor()
+    # with data.PGConnection(dbname='postgres') as conn1:
+    #     conn1.set_isolation_level(
+    #         psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+    #     cur = conn1.cursor()
 
-        try:
-            cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
-        except psycopg2.errors.InvalidCatalogName:
-            pass
+    #     try:
+    #         cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
+    #     except psycopg2.errors.InvalidCatalogName:
+    #         pass
 
-        cur.execute(query="create database %s;" % tests.setup.TEST_DB_NAME)
+    #     cur.execute(query="create database %s;" % tests.setup.TEST_DB_NAME)
 
-    with data.PGConnection() as conn2:
-        conn2.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = conn2.cursor()
-        cur.execute(query=schemasql)
+    # with data.PGConnection() as conn2:
+    #     conn2.set_isolation_level(
+    #         psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+    #     cur = conn2.cursor()
+    #     cur.execute(query=schemasql)
 
 
 
 
 def teardown_module():
-    with data.PGConnection(dbname='postgres') as conn1:
-        conn1.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = conn1.cursor()
-        cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
+    tests.setup.delete_test_db()
+    # with data.PGConnection(dbname='postgres') as conn1:
+    #     conn1.set_isolation_level(
+    #         psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+    #     cur = conn1.cursor()
+    #     cur.execute(query="drop database %s;" % tests.setup.TEST_DB_NAME)
 
+
+
+def setup():
+    with data.PGConnection() as conn:
+        curs = conn.cursor()
+        curs.execute("""
+            DELETE FROM video;
+            DELETE FROM playlist;
+        """)
+        conn.commit()
+
+
+def teardown():
+    with data.PGConnection() as conn:
+        curs = conn.cursor()
+        curs.execute("""
+            DELETE FROM video;
+            DELETE FROM playlist;
+        """)
+        conn.commit()
 
 
 
