@@ -19,13 +19,16 @@ YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_VIDEOS
 
 
 
-def setup_module():
+# def setup_module():
+#     tests.setup.init_test_db()
+# 
+# 
+# def teardown_module():
+#     tests.setup.delete_test_db()
+
+
+def setup():
     tests.setup.init_test_db()
-
-
-def teardown_module():
-    tests.setup.delete_test_db()
-
 
 
 
