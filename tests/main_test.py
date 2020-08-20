@@ -20,11 +20,12 @@ youtubeids = [
 
 
 def setup_module():
-    tests.data_test.setup_module()
+    tests.setup.init_test_db()
 
 
 def teardown_module():
-    tests.data_test.teardown_module()
+    tests.setup.delete_test_db()
+
 
 
 
