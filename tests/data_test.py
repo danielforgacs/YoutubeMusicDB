@@ -127,9 +127,9 @@ def test_insert_video(conn, vdata):
 def test_get_video_ids_by_playlist(conn):
     plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
     plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
-    videodata1 = VIDEO_DATA[0]
-    videodata2 = VIDEO_DATA[1]
-    videodata3 = VIDEO_DATA[2]
+    videodata1 = dict(VIDEO_DATA[0])
+    videodata2 = dict(VIDEO_DATA[1])
+    videodata3 = dict(VIDEO_DATA[2])
     videodata1['playlist'] = plpk1
     videodata2['playlist'] = plpk1
     videodata3['playlist'] = plpk2
