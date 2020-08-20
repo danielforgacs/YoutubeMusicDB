@@ -1,30 +1,7 @@
 import pytest
 import app.youtube
-# import tests.data_test
 import tests.setup
 
-
-# YOUTUBE_PLAYLISTS = [
-#     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
-#     'PL9YsudagsL6hicXrha4zBId875lRXxc32',
-#     'PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
-# ]
-# YOUTUBE_VIDEOS = [
-#     'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
-#     'HJq-6y2IYEQ',
-#     'FIQ2F3T1ydM',
-# ]
-# 
-# YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_VIDEOS
-
-
-
-# def setup_module():
-#     tests.setup.init_test_db()
-# 
-# 
-# def teardown_module():
-#     tests.setup.delete_test_db()
 
 
 def setup():
