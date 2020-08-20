@@ -64,23 +64,25 @@ def teardown_module():
 
 
 def setup():
-    with data.PGConnection() as conn:
-        curs = conn.cursor()
-        curs.execute("""
-            DELETE FROM video;
-            DELETE FROM playlist;
-        """)
-        conn.commit()
+    tests.setup.delete_test_db_data()
+    # with data.PGConnection() as conn:
+    #     curs = conn.cursor()
+    #     curs.execute("""
+    #         DELETE FROM video;
+    #         DELETE FROM playlist;
+    #     """)
+    #     conn.commit()
 
 
 def teardown():
-    with data.PGConnection() as conn:
-        curs = conn.cursor()
-        curs.execute("""
-            DELETE FROM video;
-            DELETE FROM playlist;
-        """)
-        conn.commit()
+    tests.setup.delete_test_db_data()
+    # with data.PGConnection() as conn:
+    #     curs = conn.cursor()
+    #     curs.execute("""
+    #         DELETE FROM video;
+    #         DELETE FROM playlist;
+    #     """)
+    #     conn.commit()
 
 
 
