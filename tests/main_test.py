@@ -9,14 +9,14 @@ from app import config
 
 
 
-youtubeids = [
-    'PL9YsudagsL6hicXrha4zBId875lRXxc32',
-    'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
-    'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
-    'HJq-6y2IYEQ',
-    'FIQ2F3T1ydM',
-    'PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
-]
+# youtubeids = [
+#     'PL9YsudagsL6hicXrha4zBId875lRXxc32',
+#     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
+#     'https://www.youtube.com/watch?v=HJq-6y2IYEQ',
+#     'HJq-6y2IYEQ',
+#     'FIQ2F3T1ydM',
+#     'PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
+# ]
 
 
 
@@ -33,7 +33,7 @@ def client():
 
 
 
-@pytest.mark.parametrize('ytid', youtubeids)
+@pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
 def test_post_playlist(client, ytid):
     youtube = ytdl.Youtube(url=ytid)
 
@@ -51,7 +51,7 @@ def test_post_playlist(client, ytid):
 
 def test_post_playlist_returns_error_json_on_missing_id(client):
     expected = {'error': 'missing id'}
-    response = client.post('/', json={'NOid': youtubeids[0]})
+    response = client.post('/', json={'NOid': tests.setup.YOUTUBE_PLAYLISTS[0]})
     data = response.get_json()
 
     assert data == expected
