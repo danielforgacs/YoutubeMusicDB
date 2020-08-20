@@ -19,13 +19,9 @@ youtubeids = [
 ]
 
 
-def setup_module():
+
+def setup():
     tests.setup.init_test_db()
-
-
-def teardown_module():
-    tests.setup.delete_test_db()
-
 
 
 
