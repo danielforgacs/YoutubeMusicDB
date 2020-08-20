@@ -47,36 +47,3 @@ def init_test_db():
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn2.cursor()
         cur.execute(query=schemasql)
-
-
-
-
-def delete_test_db():
-    with app.data.PGConnection(dbname='postgres') as conn1:
-        conn1.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = conn1.cursor()
-        cur.execute(query="drop database %s;" % TEST_DB_NAME)
-
-
-
-def delete_test_db_data():
-    with app.data.PGConnection() as conn:
-        curs = conn.cursor()
-        curs.execute("""
-            DELETE FROM video;
-            DELETE FROM playlist;
-        """)
-        conn.commit()
-
-    with app.data.PGConnection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("""SELECT pk FROM playlist;""")
-        rows = cursor.fetchall()
-
-        assert not rows
-
-        cursor.execute("""SELECT pk FROM video;""")
-        rows = cursor.fetchall()
-
-        assert not rows
