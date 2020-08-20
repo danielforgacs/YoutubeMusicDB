@@ -22,23 +22,8 @@ VIDEO_DATA = [
 
 
 
-
-# def setup_module():
-#     tests.setup.init_test_db()
-# 
-# 
-# def teardown_module():
-#     tests.setup.delete_test_db()
-
-
 def setup():
     tests.setup.init_test_db()
-    # tests.setup.delete_test_db_data()
-
-
-# def teardown():
-#     tests.setup.delete_test_db_data()
-
 
 
 
