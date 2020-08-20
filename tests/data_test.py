@@ -218,5 +218,12 @@ def test_set_video_as_downloaded(conn):
     assert is_downloaded is True
 
 
+
+def test_select_all_videos_returns_all_video_rows_once(conn):
+    pass
+
+
+
+
 if __name__ == '__main__':
     pass
