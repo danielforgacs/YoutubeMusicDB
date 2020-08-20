@@ -23,49 +23,40 @@ VIDEO_DATA = [
 
 
 
-def setup_module():
-    tests.setup.init_test_db()
-
-
-def teardown_module():
-    tests.setup.delete_test_db()
+# def setup_module():
+#     tests.setup.init_test_db()
+# 
+# 
+# def teardown_module():
+#     tests.setup.delete_test_db()
 
 
 def setup():
-    tests.setup.delete_test_db_data()
+    tests.setup.init_test_db()
+    # tests.setup.delete_test_db_data()
 
 
-def teardown():
-    tests.setup.delete_test_db_data()
+# def teardown():
+#     tests.setup.delete_test_db_data()
 
 
-
-@pytest.fixture
-def conn():
-    with data.PGConnection() as conn:
-        yield conn
-
-
-
-def test_test_db_is_ready(conn):
-    pass
 
 
 @pytest.mark.parametrize('pldata', PLAYLIST_DATA)
-def test_insert_playlist(conn, pldata):
+def test_insert_playlist(pldata):
     plpk = data.insert_playlist(pldict=pldata)
 
     assert isinstance(plpk, int)
 
-    cur = conn.cursor()
-    cur.execute(query="""
-        SELECT pk, id, title, uploader_id
-        FROM playlist
-        WHERE id = %(id)s
-        ;
-    """, vars=pldata)
-    result = cur.fetchone()
-    cur.close()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query="""
+            SELECT pk, id, title, uploader_id
+            FROM playlist
+            WHERE id = %(id)s
+            ;
+        """, vars=pldata)
+        result = cur.fetchone()
 
     assert result[data.IDX_PLAYLIST__pk] == plpk
     assert result[data.IDX_PLAYLIST__id] == pldata['id']
@@ -74,8 +65,8 @@ def test_insert_playlist(conn, pldata):
 
 
 
-def test_playlist_insert_updates_data_if_playlist_extsts(conn):
-    playlist = PLAYLIST_DATA[0]
+def test_playlist_insert_updates_data_if_playlist_extsts():
+    playlist = dict(PLAYLIST_DATA[0])
     newtitle = 'new_title'
     plpk = data.insert_playlist(pldict=playlist)
 
@@ -84,15 +75,15 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
 
     assert plpk == plpk2
 
-    cur = conn.cursor()
-    cur.execute(query="""
-        SELECT pk, id, title, uploader_id
-        FROM playlist
-        WHERE id = %(id)s
-        ;
-    """, vars=playlist)
-    result = cur.fetchall()
-    cur.close()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query="""
+            SELECT pk, id, title, uploader_id
+            FROM playlist
+            WHERE id = %(id)s
+            ;
+        """, vars=playlist)
+        result = cur.fetchall()
 
     assert len(result) == 1
     assert result[0][data.IDX_PLAYLIST__title] == newtitle
@@ -100,20 +91,20 @@ def test_playlist_insert_updates_data_if_playlist_extsts(conn):
 
 
 @pytest.mark.parametrize('vdata', VIDEO_DATA)
-def test_insert_video(conn, vdata):
+def test_insert_video(vdata):
     vpk = data.insert_video(vdata=vdata)
 
     assert isinstance(vpk, int)
 
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT pk, id, title, playlist
-        FROM video
-        WHERE id = %(id)s
-    ;
-    """, vars=vdata)
-    result = cur.fetchall()
-    cur.close()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT pk, id, title, playlist
+            FROM video
+            WHERE id = %(id)s
+        ;
+        """, vars=vdata)
+        result = cur.fetchall()
 
     assert len(result) == 1
     assert result[0][data.IDX_VIDEO__pk] == vpk
@@ -124,9 +115,9 @@ def test_insert_video(conn, vdata):
 
 
 
-def test_get_video_ids_by_playlist(conn):
-    plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
-    plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
+def test_get_video_ids_by_playlist():
+    plpk1 = data.insert_playlist(pldict=dict(PLAYLIST_DATA[0]))
+    plpk2 = data.insert_playlist(pldict=dict(PLAYLIST_DATA[1]))
     videodata1 = dict(VIDEO_DATA[0])
     videodata2 = dict(VIDEO_DATA[1])
     videodata3 = dict(VIDEO_DATA[2])
@@ -137,9 +128,9 @@ def test_get_video_ids_by_playlist(conn):
     vpk2 = data.insert_video(vdata=videodata2)
     vpk3 = data.insert_video(vdata=videodata3)
     videoids1 = data.query_videos_by_playlistid(
-        playlistid=PLAYLIST_DATA[0]['id'])
+        playlistid=dict(PLAYLIST_DATA[0])['id'])
     videoids2 = data.query_videos_by_playlistid(
-        playlistid=PLAYLIST_DATA[1]['id'])
+        playlistid=dict(PLAYLIST_DATA[1])['id'])
 
     assert videoids1 == [videodata1['id'], videodata2['id']]
     assert videoids2 == [videodata3['id']]
@@ -148,31 +139,35 @@ def test_get_video_ids_by_playlist(conn):
 
 
 
-def test_set_video_playlist_sets_updates(conn):
+def test_set_video_playlist_sets_updates():
     sql = """
         SELECT pk, id, title, playlist
         FROM video
         WHERE video.id = %(vid)s
         ;
     """
-    cur = conn.cursor()
-    videodata = VIDEO_DATA[0]
+    videodata = dict(VIDEO_DATA[0])
+
     plpk1 = data.insert_playlist(pldict=PLAYLIST_DATA[0])
     plpk2 = data.insert_playlist(pldict=PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
     vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
 
-    cur.execute(query=sql, vars={'vid': videodata['id']})
-    result = cur.fetchone()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'vid': videodata['id']})
+        result = cur.fetchone()
 
     assert result[data.IDX_VIDEO__playlist] == plpk1 == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
 
     vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2)
 
-    cur.execute(query=sql, vars={'vid': videodata['id']})
-    result = cur.fetchone()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'vid': videodata['id']})
+        result = cur.fetchone()
 
     assert result[data.IDX_VIDEO__playlist] == plpk2 == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
@@ -181,15 +176,17 @@ def test_set_video_playlist_sets_updates(conn):
 
     vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
 
-    cur.execute(query=sql, vars={'vid': videodata['id']})
-    result = cur.fetchone()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'vid': videodata['id']})
+        result = cur.fetchone()
 
     assert result[data.IDX_VIDEO__playlist] == plpk3 == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
 
 
 
-def test_set_video_as_downloaded(conn):
+def test_set_video_as_downloaded():
     videdict = {
         'id': 'id_test',
         'title': 'title_test',
@@ -202,24 +199,29 @@ def test_set_video_as_downloaded(conn):
         WHERE video.id = %(id)s
         ;
     """
-    cur = conn.cursor()
-    cur.execute(query=sql, vars=videdict)
-    row = cur.fetchone()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars=videdict)
+        row = cur.fetchone()
+
     is_downloaded = row[0]
 
     assert is_downloaded is False
 
     vpk = data.set_video_as_downloaded(vid=videdict['id'])
 
-    cur.execute(query=sql, vars=videdict)
-    row = cur.fetchone()
+    with data.PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars=videdict)
+        row = cur.fetchone()
+
     is_downloaded = row[0]
 
     assert is_downloaded is True
 
 
 
-def test_select_all_videos_returns_all_video_rows_once(conn):
+def test_select_all_videos_returns_all_video_rows_once():
     pass
 
 
