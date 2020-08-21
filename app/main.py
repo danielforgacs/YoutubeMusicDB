@@ -118,8 +118,11 @@ def archive():
 
 
 
-@app.route('/playlists')
+@app.route('/playlists', methods=['GET', 'POST'])
 def view_playlists():
+    if flask.request.method == 'POST':
+        ytdl = youtube.Youtube(url=flask.request.form['id'])
+
     allvids = data.select_all_videos()
     context = {
         'videos': allvids
