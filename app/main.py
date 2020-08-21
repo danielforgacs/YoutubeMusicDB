@@ -121,8 +121,11 @@ def archive():
 @app.route('/playlists')
 def view_playlists():
     allvids = data.select_all_videos()
+    context = {
+        'videos': allvids
+    }
 
-    return str(allvids)
+    return flask.render_template(template_name_or_list='allvideos.html', context=context)
 
 
 

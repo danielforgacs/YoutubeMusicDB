@@ -1,0 +1,21 @@
+<table>
+    <tbody>
+        <thead>
+            <tr>
+                <th>pk</th>
+                <th>title</th>
+                <th>is_down</th>
+                <th>added</th>
+                <th>youtube_id</th>
+                <th>playlist</th>
+            </tr>
+        </thead>
+        {% for video in context.videos %}
+            <tr>
+                {% for attr in video %}
+                    <td>{{ attr }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
