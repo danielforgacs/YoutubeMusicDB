@@ -11,8 +11,8 @@
     <title>Hello, world!</title>
 </head>
 <body>
-    <table>
-        <tbody>
+    <div class="container">
+        <table class="table table-dark">
             <thead>
                 <tr>
                     <th>pk</th>
@@ -23,16 +23,17 @@
                     <th>playlist</th>
                 </tr>
             </thead>
-            {% for video in context.videos %}
-                <tr>
-                    {% for attr in video %}
-                        <td>{{ attr }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+            <tbody>
+                {% for video in context.videos %}
+                    <tr>
+                        {% for attr in video %}
+                            <td>{{ attr }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
