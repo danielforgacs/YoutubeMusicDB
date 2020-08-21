@@ -59,15 +59,18 @@ SQL_SET_VIDEO_AS_DOWNLOADED = """
 """
 
 SQL_SELECT_ALL_VIDEOS = """
-    SELECT
-        video.pk,
-        video.title,
-        playlist.title AS playlist,
-        video.is_down,
-        video.added,
-        video.id AS youtube_id
-    FROM video
-    JOIN playlist ON playlist.pk = video.playlist
+--    SELECT
+--        video.pk,
+--        video.title,
+--        playlist.title AS playlist,
+--        video.is_down,
+--        video.added,
+--        video.id AS youtube_id
+--    FROM video
+--    JOIN playlist ON playlist.pk = video.playlist
+--    ;
+    select *
+    from video
     ;
 """
 
@@ -177,7 +180,6 @@ def select_all_videos():
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
-        conn.commit()
         rows = cur.fetchall()
 
     return rows
