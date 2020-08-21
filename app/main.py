@@ -120,7 +120,9 @@ def archive():
 
 @app.route('/playlists')
 def view_playlists():
-    return 'lkjhlkjh'
+    allvids = data.select_all_videos()
+
+    return str(allvids)
 
 
 
