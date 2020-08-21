@@ -192,41 +192,35 @@ def test_set_video_as_downloaded():
 
 
 
-def test_select_all_videos_returns_all_video_rows_once():
+@pytest.mark.parametrize('sql', [
+    """
+    INSERT INTO public.video (id,  title,   playlist, added, is_down)
+    VALUES ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false);
+    """,
+    """
+    INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+    ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false),
+    ('b', 'vid02', NULL, '2020-08-18 14:53:24.035011', false),
+    ('c', 'vid03', NULL, '2020-08-18 14:58:58.980937', false);
+    """,
+])
+def test_select_all_videos_returns_all_video_rows_once(sql):
     with data.PGConnection() as conn:
         curs = conn.cursor()
-        curs.execute("""
-            INSERT INTO public.video 
-                (id,  title,   playlist, added, is_down) VALUES
-                ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false),
-                ('b', 'vid02', NULL, '2020-08-18 14:53:24.035011', false)
-                ('c', 'vid03', NULL, '2020-08-18 14:58:58.980937', false)
-            ;
-        """)
+        curs.execute(sql)
         conn.commit()
 
-    with data.PGConnection() as conn:
-        curs = conn.cursor()
         curs.execute("""
             SELECT count (pk)
-            FROM video
-            ;
+            FROM video;
         """)
         rows = curs.fetchone()
-        # rows = curs.fetchall()
 
     rowcount = rows[0]
     allvids = data.select_all_videos()
-    print()
-    print('::rows:', rows)
-    print('::rowcount:', rowcount)
-    print(len(allvids))
-
-
 
     assert rowcount == len(allvids)
-    # print(allvids)
-    # assert 
+
 
 
 
