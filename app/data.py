@@ -59,18 +59,15 @@ SQL_SET_VIDEO_AS_DOWNLOADED = """
 """
 
 SQL_SELECT_ALL_VIDEOS = """
---    SELECT
---        video.pk,
---        video.title,
---        playlist.title AS playlist,
---        video.is_down,
---        video.added,
---        video.id AS youtube_id
---    FROM video
---    JOIN playlist ON playlist.pk = video.playlist
---    ;
-    select *
-    from video
+    SELECT
+        video.pk,
+        video.title,
+        video.is_down,
+        video.added,
+        video.id AS youtube_id,
+        playlist.title AS playlist
+    FROM video
+    LEFT JOIN playlist ON playlist.pk = video.playlist
     ;
 """
 

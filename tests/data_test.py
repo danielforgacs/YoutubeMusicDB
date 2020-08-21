@@ -221,6 +221,9 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 
     assert rowcount == len(allvids)
 
+    print()
+    print(allvids)
+
 
 
 
