@@ -13,12 +13,14 @@
 <body>
     <div class="container">
         
-        <form class="form-inline" action="/" method="POST">
+        <!-- <form class="form-inline" action="/" method="POST"> -->
+            <div  class="form-inline">
             <div class="form-group mx-sm-3 mb-2">
                 <input type="text" class="form-control" id="playlist_uri" placeholder="playlist uri" name="id">
             </div>
-            <button type="submit" class="btn btn-primary mb-2">submit playlist</button>
-        </form>
+            <button type="submit" class="btn btn-primary mb-2" onclick="submitPlaylist();">submit playlist</button>
+            </div>
+        <!-- </form> -->
 
         <button type="submit" onclick="submitPlaylist();">press this...</button>
         <input type="submit" value="input_value" onclick="submitPlaylist();">

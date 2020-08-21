@@ -124,8 +124,9 @@ def view_playlists():
     print('--> flask.request', flask.request)
     print('--> flask.request.json', flask.request.json)
     
-    # if flask.request.method == 'POST':
-    #     ytdl = youtube.Youtube(url=flask.request.form['id'])
+    if flask.request.method == 'POST':
+        if flask.request.form:
+            ytdl = youtube.Youtube(url=flask.request.form['id'])
 
     allvids = data.select_all_videos()
     context = {
