@@ -26,7 +26,7 @@ app = flask.Flask(__name__)
 
 
 
-@app.route('/', methods=['POST'])
+@app.route('/api/createplaylist', methods=['POST'])
 def post_playlist():
     ytid = flask.request.json.get('id')
 
@@ -51,7 +51,7 @@ def post_playlist():
 
 
 
-@app.route('/download', methods=['POST'])
+@app.route('/api/download', methods=['POST'])
 def download_playlist():
     ytid = flask.request.json.get('id')
 
@@ -111,7 +111,7 @@ def download_playlist():
 
 
 
-@app.route('/archive')
+@app.route('/api/archive')
 def archive():
     return flask.send_file(ARCHIVE_NAME)
 
