@@ -53,17 +53,41 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <script>
-        function submitPlaylist() {
-            console.log("submitPlaylist pressed...")
-            playlist_id = document.getElementById("playlist_uri");
-            data = {
-                "id": playlist_id.value
-            }
+//         function submitPlaylist() {
+//             console.log("submitPlaylist pressed...")
+//             playlist_id = document.getElementById("playlist_uri");
+//             data = {
+//                 "id": playlist_id.value
+//             }
+// 
+//             var xhr = new XMLHttpRequest();
+//             xhr.open("POST", "/", true);
+//             xhr.setRequestHeader('Content-Type', 'application/json');
+//             xhr.send(JSON.stringify(data));
+//         }
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(data));
+        function submitPlaylist() {
+            console.log("button presses --> submitPlaylist()")
+            
+            let plst = {
+                id: document.getElementById("playlist_uri").value,
+            };
+            
+            let response = fetch('/api/createplaylist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(plst)
+            });
+            
+            document.getElementById("playlist_uri").value = "";
+
+            console.log(response)
+            // let result = response.json;
+            // alert(result.message);
+            
+            // location.reload()
         }
     </script>
 
