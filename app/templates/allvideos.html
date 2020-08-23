@@ -77,15 +77,15 @@
         function buildVideoList() {
             url = '/api/all_videos'
             fetch(url)
-                .then(response => response.json())
-                .then(B)
+                .then(function k(params) {
+                    return params.json()
+                })
+                .then(function success(data) {
+                    console.log("all", data)
+                    console.log("json", data['videos'][0])
+                    console.log("video title:", data['videos'][0][1])
+                })
         };
-
-
-        function B(BP) {
-            console.log(BP)
-            console.log(BP['videos'][0])
-        }
 
     </script>
 
