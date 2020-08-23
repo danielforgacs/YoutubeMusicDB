@@ -87,11 +87,6 @@
         };
 
         function createVideoTable(data) {
-            for (video of data['videos']) {
-                console.log('VVVV', video)
-
-            }
-
             headers = [
                 "pk",
                 "title",
@@ -108,6 +103,8 @@
             headrow = document.createElement('tr');
             head.appendChild(headrow)
             table.appendChild(head)
+            body = document.createElement('tbody')
+            table.appendChild(body)
             
             for (idx in headers) {
                 hpk = document.createElement('th')
@@ -115,6 +112,16 @@
                 headrow.appendChild(hpk)
             }
             
+            for (video of data['videos']) {
+                tr = document.createElement('tr')
+                body.appendChild(tr)
+
+                for (attr of video) {
+                    td = document.createElement('td')
+                    td.innerHTML = attr
+                    tr.appendChild(td)
+                }
+            }
         }
 
     </script>
