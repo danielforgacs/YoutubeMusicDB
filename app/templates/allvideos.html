@@ -77,15 +77,15 @@
         function buildVideoList() {
             url = '/api/all_videos'
             fetch(url)
-                .then(function k(params) {
-                    return params.json()
-                })
-                .then(function success(data) {
-                    console.log("all", data)
-                    console.log("json", data['videos'][0])
-                    console.log("video title:", data['videos'][0][1])
-                })
+                .then(response => response.json())
+                .then(createVideoTable)
         };
+
+        function createVideoTable(data) {
+            console.log("all", data)
+            console.log("json", data['videos'][0])
+            console.log("video title:", data['videos'][0][1])
+        }
 
     </script>
 
