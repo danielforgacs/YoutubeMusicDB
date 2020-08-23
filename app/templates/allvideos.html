@@ -22,7 +22,7 @@
             </div>
         <!-- </form> -->
 
-        <table class="table table-striped table-hover table-sm">
+        <!-- <table class="table table-striped table-hover table-sm">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">pk</th>
@@ -42,7 +42,7 @@
                     </tr>
                 {% endfor %}
             </tbody>
-        </table>
+        </table> -->
         
         <table id="videotable">
         </table>
@@ -57,45 +57,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <script>
+        window.addEventListener("load", createVideoTable, false);
         window.addEventListener("load", buildVideoList, false);
-        // window.addEventListener("load", book, false);
+        headers = [ "pk", "title", "is_down", "added", "youtube_id", "playlist", ]
 
-        function submitPlaylist() {
-            console.log("button presses --> submitPlaylist()")
-            
-            let plst = {
-                id: document.getElementById("playlist_uri").value,
-            };
-            
-            let response = fetch('/api/createplaylist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(plst)
-            });
-            
-            document.getElementById("playlist_uri").value = "";
-        };
-
-
-        function buildVideoList() {
-            url = '/api/all_videos'
-            fetch(url)
-                .then(response => response.json())
-                .then(createVideoTable)
-        };
 
         function createVideoTable(data) {
-            headers = [
-                "pk",
-                "title",
-                "is_down",
-                "added",
-                "youtube_id",
-                "playlist",
-            ]
-
             table = document.getElementById("videotable");
             table.setAttribute("class", "table table-striped table-hover table-sm")
             head = document.createElement('thead');
@@ -104,6 +71,7 @@
             head.appendChild(headrow)
             table.appendChild(head)
             body = document.createElement('tbody')
+            body.setAttribute("id", "videotableBody")
             table.appendChild(body)
             
             for (idx in headers) {
@@ -111,17 +79,64 @@
                 hpk.innerHTML = headers[idx]
                 headrow.appendChild(hpk)
             }
+        }
+
+
+
+
+
+
+        
+        function submitPlaylist() {
+            let plst = {
+                id: document.getElementById("playlist_uri").value,
+            };
+
+            document.getElementById("playlist_uri").value = "";
             
-            for (video of data['videos']) {
+            let response = fetch('/api/createplaylist', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(plst)
+            });
+
+            response
+                .then(response => response.json())
+                .then(buildVideoList)
+
+        };
+
+
+        function buildVideoList() {
+            url = '/api/all_videos'
+            fetch(url)
+                .then(response => response.json())
+                .then(addVidoTableRows)
+        };
+
+
+
+        
+        
+        function addVidoTableRows(data) {
+            console.log("data:", data)
+            videos = data['videos']
+            console.log("videos:", videos)
+            body = document.getElementById("videotableBody")
+            console.log("body:", body)
+
+            for (video of videos) {
                 tr = document.createElement('tr')
                 body.appendChild(tr)
-
+    
                 for (attr of video) {
                     td = document.createElement('td')
                     td.innerHTML = attr
                     tr.appendChild(td)
                 }
             }
+    
+            // console.log("--> Done builing video table...")
         }
 
     </script>
