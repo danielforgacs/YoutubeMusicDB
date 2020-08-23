@@ -53,18 +53,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <script>
-//         function submitPlaylist() {
-//             console.log("submitPlaylist pressed...")
-//             playlist_id = document.getElementById("playlist_uri");
-//             data = {
-//                 "id": playlist_id.value
-//             }
-// 
-//             var xhr = new XMLHttpRequest();
-//             xhr.open("POST", "/", true);
-//             xhr.setRequestHeader('Content-Type', 'application/json');
-//             xhr.send(JSON.stringify(data));
-//         }
+        window.addEventListener("load", buildVideoList, false);
+
 
         function submitPlaylist() {
             console.log("button presses --> submitPlaylist()")
@@ -82,13 +72,29 @@
             });
             
             document.getElementById("playlist_uri").value = "";
+        };
 
-            console.log(response)
-            // let result = response.json;
-            // alert(result.message);
-            
-            // location.reload()
+
+        function buildVideoList() {
+            // console.log("--> buildVideoList()")
+            url = '/api/all_videos'
+            // console.log("--> url:", url)
+            fetch(url)
+                .then(response => response.json())
+                .then(B)
+        };
+
+        function B(BP) {
+            console.log(BP)
+            console.log(BP['videos'][0])
         }
+
+        // function promCB(params) {
+        //     console.log("params", params)
+        //     console.log("params.json", params.json)
+        //     console.log("params.json()", params.json())
+        //     return params
+        // }
     </script>
 
 </body>
