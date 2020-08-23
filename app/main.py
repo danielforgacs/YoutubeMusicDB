@@ -118,6 +118,19 @@ def archive():
 
 
 
+@app.route('/api/all_videos', methods=['GET'])
+def GET_all_videos():
+    allvids = data.select_all_videos()
+    context = {
+        'videos': allvids
+    }
+
+    return flask.jsonify(context)
+    
+
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def view_playlists():
     print('--> view_playlists')
