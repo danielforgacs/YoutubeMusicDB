@@ -46,13 +46,7 @@ def post_playlist():
 
     response = flask.jsonify(download)
 
-    # return response
-    allvids = data.select_all_videos()
-    context = {
-        'videos': allvids
-    }
-
-    return flask.jsonify(context)
+    return response
 
 
 
