@@ -232,6 +232,7 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
     [('id_aa', 'id_aa', 'id_aa',), 1],
     [('id_aa', 'id_cc', 'id_dd'), 3],
     [('id_aa', '--id_cc', '--id_dd'), 1],
+    [('--id_aa', '--id_cc', '--id_dd'), 0],
 ))
 def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
     sql = """
