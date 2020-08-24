@@ -33,18 +33,19 @@ def post_playlist():
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
-
     ytdl = youtube.Youtube(url=ytid)
 
     if ytdl.error:
         return {'error': ytdl.error}
 
     if ytdl.playlist:
-        download = ytdl.playlist.as_dict
+        vids = [video.id for video in ytdl.playlist.videos]
     else:
-        download = ytdl.video.as_dict
+        vids = [ytdl.video.id]
 
-    response = flask.jsonify(download)
+    videos = data.select_videos_by_id(vids=vids)
+    context = {'videos': videos}
+    response = flask.jsonify(context)
 
     return response
 
