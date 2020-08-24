@@ -4,15 +4,15 @@
       <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    
+
     <title>Hello, world!</title>
 </head>
 <body>
     <div class="container">
-        
+
         <!-- <form class="form-inline" action="/" method="POST"> -->
             <div  class="form-inline">
             <div class="form-group mx-sm-3 mb-2">
@@ -43,13 +43,13 @@
                 {% endfor %}
             </tbody>
         </table> -->
-        
+
         <table id="videotable">
         </table>
 
     </div>
 
-    
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -57,9 +57,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
     <script>
+        var indexes = []
+        headers = [ "pk", "title", "is_down", "added", "youtube_id", "playlist", ]
+
+
         window.addEventListener("load", createVideoTable, false);
         window.addEventListener("load", buildVideoList, false);
-        headers = [ "pk", "title", "is_down", "added", "youtube_id", "playlist", ]
 
 
         function createVideoTable(data) {
@@ -73,7 +76,7 @@
             body = document.createElement('tbody')
             body.setAttribute("id", "videotableBody")
             table.appendChild(body)
-            
+
             for (idx in headers) {
                 hpk = document.createElement('th')
                 hpk.innerHTML = headers[idx]
@@ -86,14 +89,14 @@
 
 
 
-        
+
         function submitPlaylist() {
             let plst = {
                 id: document.getElementById("playlist_uri").value,
             };
 
             document.getElementById("playlist_uri").value = "";
-            
+
             let response = fetch('/api/createplaylist', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -116,8 +119,8 @@
 
 
 
-        
-        
+
+
         function addVidoTableRows(data) {
             console.log("data:", data)
             videos = data['videos']
@@ -128,15 +131,20 @@
             for (video of videos) {
                 tr = document.createElement('tr')
                 body.appendChild(tr)
-    
+                pk = video[0]
+
+                if (indexes.includes(pk)) {
+                    continue
+                }
+
                 for (attr of video) {
                     td = document.createElement('td')
                     td.innerHTML = attr
                     tr.appendChild(td)
                 }
+
+                indexes.push(video[0])
             }
-    
-            // console.log("--> Done builing video table...")
         }
 
     </script>
