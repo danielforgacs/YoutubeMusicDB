@@ -74,7 +74,6 @@ SQL_SELECT_ALL_VIDEOS = """
 
 SQL_SELECT_VIDEOS_BY_IDS = """
     SELECT
-        video.title,
         video.pk,
         video.title,
         video.is_down,
