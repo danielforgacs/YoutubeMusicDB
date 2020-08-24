@@ -93,6 +93,10 @@ class Playlist(BaseEntity):
                 params=self.youtube.params,
                 do_download=self.youtube.do_download,
             )
+            if not yout.video:
+                print('--> [ERROR] can`t youtube video: {}'.format(item['url']))
+                continue
+
             yout.video.playlist = self
             self._videos.append(yout.video)
 
