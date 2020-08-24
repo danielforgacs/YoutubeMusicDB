@@ -63,17 +63,18 @@ def test_files_are_deleted_after_download(plst):
 def test_download_set_videos_as_is_down_True(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
+
+    videoids = response.json
+    videoids = tuple(response.json['videos'])
 
     sql = """
         SELECT is_down
         FROM video
-        WHERE id in %s
-        ;
+        WHERE id in %s;
     """
-
-    videoids = response.json
-    videoids = tuple(response.json['videos'])
 
     with app.data.PGConnection() as conn:
         cur = conn.cursor()
