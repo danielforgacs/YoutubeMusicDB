@@ -24,10 +24,10 @@
 
 
 echo "--> post playlist:"
-curl http://127.0.0.1:5000 -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
-curl http://127.0.0.1:5000 -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU\"}"
-curl http://127.0.0.1:5000 -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6ipb5Yd7QKz0x9byLncwEs_\"}"
-curl http://127.0.0.1:5000 -H "Content-type: application/json" -d "{\"id\": \"BPopaJsNWd4\"}"
+curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
+curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU\"}"
+curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6ipb5Yd7QKz0x9byLncwEs_\"}"
+curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"BPopaJsNWd4\"}"
 
 echo "--> download playlist:"
 curl http://127.0.0.1:5000/download -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
