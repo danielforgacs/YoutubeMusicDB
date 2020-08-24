@@ -227,5 +227,31 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 
 
 
+@pytest.mark.parametrize('vids, count', (
+    [('id_aa',), 1],
+    [('id_aa', 'id_aa', 'id_aa',), 1],
+    [('id_aa', 'id_cc', 'id_dd'), 3],
+    [('id_aa', '--id_cc', '--id_dd'), 1],
+))
+def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
+    sql = """
+        INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+            ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
+            ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
+            ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
+            ('id_dd', 'title_dd', NULL, '2020-01-01 12:12:12.12', false),
+            ('id_ff', 'title_ff', NULL, '2020-01-01 12:12:12.12', false)
+    """
+
+    with data.PGConnection() as conn:
+        curs = conn.cursor()
+        curs.execute(sql)
+        conn.commit()
+
+    videos = data.select_videos_by_id(vids=vids)
+
+    assert len(videos) == count
+
+
 if __name__ == '__main__':
     pass
