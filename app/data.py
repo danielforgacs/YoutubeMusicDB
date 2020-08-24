@@ -72,6 +72,22 @@ SQL_SELECT_ALL_VIDEOS = """
 """
 
 
+SQL_SELECT_VIDEOS_BY_IDS = """
+    SELECT
+        video.title,
+        video.pk,
+        video.title,
+        video.is_down,
+        video.added,
+        video.id AS youtube_id,
+        playlist.title AS playlist
+    FROM video
+    LEFT JOIN playlist ON playlist.pk = video.playlist
+    WHERE video.id in %(vids)s
+    ;
+"""
+
+
 
 
 class PGConnection:
@@ -180,6 +196,19 @@ def select_all_videos():
         rows = cur.fetchall()
 
     return rows
+
+
+
+
+def select_videos_by_id(vids):
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=SQL_SELECT_VIDEOS_BY_IDS, vars={'vids': tuple(vids)})
+        rows = cur.fetchall()
+
+    return rows
+
+
 
 
 
