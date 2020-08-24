@@ -33,30 +33,39 @@ def post_playlist():
     if not ytid:
         return flask.jsonify({'error': 'missing id'})
 
-
     ytdl = youtube.Youtube(url=ytid)
 
     if ytdl.error:
         return {'error': ytdl.error}
 
     if ytdl.playlist:
-        download = ytdl.playlist.as_dict
+        vids = [video.id for video in ytdl.playlist.videos]
     else:
-        download = ytdl.video.as_dict
+        vids = [ytdl.video.id]
 
-    response = flask.jsonify(download)
+    videos = data.select_videos_by_id(vids=vids)
+    context = {'videos': videos}
+    response = flask.jsonify(context)
 
     return response
 
 
 
 
+
 @app.route('/api/download', methods=['POST'])
 def download_playlist():
-    ytid = flask.request.json.get('id')
+    ytid_raw = flask.request.json.get('id')
 
-    if not ytid:
+    if not ytid_raw:
         return flask.jsonify({'error': 'missing id'})
+
+    yout = youtube.Youtube(url=ytid_raw, do_download=False)
+
+    if not yout.playlist:
+        return flask.jsonify({'error': 'id is not a playlist'})
+
+    ytid = yout.playlist.id
 
     print('::ytid:', ytid)
     archver = 0
@@ -86,7 +95,7 @@ def download_playlist():
 
     downloads = os.listdir(DOWNLOAD_DIR)
 
-    with zipfile.ZipFile(archivename, 'w') as downlfile:
+    with zipfile.ZipFile(archivepath, 'w') as downlfile:
         for fname in downloads:
             if fname.startswith(config.DOWNLOAD_ZIP_PREFIX):
                 continue
@@ -94,7 +103,7 @@ def download_playlist():
             downlfile.write('{}'.format(fname))
 
     videofiles = os.listdir(path=DOWNLOAD_DIR)
-    
+
     for vfile in videofiles:
         if vfile.startswith(config.DOWNLOAD_ZIP_PREFIX):
             continue
@@ -118,12 +127,25 @@ def archive():
 
 
 
+@app.route('/api/all_videos', methods=['GET'])
+def GET_all_videos():
+    allvids = data.select_all_videos()
+    context = {
+        'videos': allvids
+    }
+
+    return flask.jsonify(context)
+
+
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def view_playlists():
     print('--> view_playlists')
     print('--> flask.request', flask.request)
     print('--> flask.request.json', flask.request.json)
-    
+
     if flask.request.method == 'POST':
         if flask.request.form:
             ytdl = youtube.Youtube(url=flask.request.form['id'])

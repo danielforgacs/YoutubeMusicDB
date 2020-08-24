@@ -12,21 +12,21 @@ def setup():
     tests.setup.init_test_db()
 
 
-@pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
-def test_post_playlist(ytid):
-    youtube = ytdl.Youtube(url=ytid)
-
-    if youtube.playlist:
-        expected = youtube.playlist.as_dict
-    else:
-        expected = youtube.video.as_dict
-
-    with main.app.test_client() as client:
-        response = client.post('/api/createplaylist', json={'id': ytid})
-
-    data = response.get_json()
-
-    assert data == expected
+# @pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
+# def test_post_playlist(ytid):
+#     youtube = ytdl.Youtube(url=ytid)
+#
+#     if youtube.playlist:
+#         expected = youtube.playlist.as_dict
+#     else:
+#         expected = youtube.video.as_dict
+#
+#     with main.app.test_client() as client:
+#         response = client.post('/api/createplaylist', json={'id': ytid})
+#
+#     data = response.get_json()
+#
+#     assert data == expected
 
 
 
@@ -48,7 +48,9 @@ def test_post_playlist_returns_error_json_on_missing_id():
 def test_files_are_deleted_after_download(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
 
     ls = os.listdir(main.DOWNLOAD_DIR)
 
@@ -63,17 +65,18 @@ def test_files_are_deleted_after_download(plst):
 def test_download_set_videos_as_is_down_True(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
+
+    videoids = response.json
+    videoids = tuple(response.json['videos'])
 
     sql = """
         SELECT is_down
         FROM video
-        WHERE id in %s
-        ;
+        WHERE id in %s;
     """
-
-    videoids = response.json
-    videoids = tuple(response.json['videos'])
 
     with app.data.PGConnection() as conn:
         cur = conn.cursor()
@@ -91,7 +94,9 @@ def test_download_set_videos_as_is_down_True(plst):
 def test_download_returns_the_archive_name(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
 
     archivefile = os.path.join(main.DOWNLOAD_DIR, response.json['archive'])
 
@@ -118,7 +123,7 @@ def test_downloaded_videos_are_converted_to_mp3():
 
 def test_downloaded_videos_have_specific_file_name():
     pass
-    
+
 
 
 
