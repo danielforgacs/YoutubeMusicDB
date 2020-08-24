@@ -55,10 +55,17 @@ def post_playlist():
 
 @app.route('/api/download', methods=['POST'])
 def download_playlist():
-    ytid = flask.request.json.get('id')
+    ytid_raw = flask.request.json.get('id')
 
-    if not ytid:
+    if not ytid_raw:
         return flask.jsonify({'error': 'missing id'})
+
+    yout = youtube.Youtube(url=ytid_raw, do_download=False)
+
+    if not yout.playlist:
+        return flask.jsonify({'error': 'id is not a playlist'})
+
+    ytid = yout.playlist.id
 
     print('::ytid:', ytid)
     archver = 0
@@ -88,7 +95,7 @@ def download_playlist():
 
     downloads = os.listdir(DOWNLOAD_DIR)
 
-    with zipfile.ZipFile(archivename, 'w') as downlfile:
+    with zipfile.ZipFile(archivepath, 'w') as downlfile:
         for fname in downloads:
             if fname.startswith(config.DOWNLOAD_ZIP_PREFIX):
                 continue
@@ -96,7 +103,7 @@ def download_playlist():
             downlfile.write('{}'.format(fname))
 
     videofiles = os.listdir(path=DOWNLOAD_DIR)
-    
+
     for vfile in videofiles:
         if vfile.startswith(config.DOWNLOAD_ZIP_PREFIX):
             continue
@@ -128,7 +135,7 @@ def GET_all_videos():
     }
 
     return flask.jsonify(context)
-    
+
 
 
 
@@ -138,7 +145,7 @@ def view_playlists():
     print('--> view_playlists')
     print('--> flask.request', flask.request)
     print('--> flask.request.json', flask.request.json)
-    
+
     if flask.request.method == 'POST':
         if flask.request.form:
             ytdl = youtube.Youtube(url=flask.request.form['id'])
