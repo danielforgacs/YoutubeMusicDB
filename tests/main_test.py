@@ -12,21 +12,21 @@ def setup():
     tests.setup.init_test_db()
 
 
-@pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
-def test_post_playlist(ytid):
-    youtube = ytdl.Youtube(url=ytid)
-
-    if youtube.playlist:
-        expected = youtube.playlist.as_dict
-    else:
-        expected = youtube.video.as_dict
-
-    with main.app.test_client() as client:
-        response = client.post('/api/createplaylist', json={'id': ytid})
-
-    data = response.get_json()
-
-    assert data == expected
+# @pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
+# def test_post_playlist(ytid):
+#     youtube = ytdl.Youtube(url=ytid)
+#
+#     if youtube.playlist:
+#         expected = youtube.playlist.as_dict
+#     else:
+#         expected = youtube.video.as_dict
+#
+#     with main.app.test_client() as client:
+#         response = client.post('/api/createplaylist', json={'id': ytid})
+#
+#     data = response.get_json()
+#
+#     assert data == expected
 
 
 
@@ -118,7 +118,7 @@ def test_downloaded_videos_are_converted_to_mp3():
 
 def test_downloaded_videos_have_specific_file_name():
     pass
-    
+
 
 
 
