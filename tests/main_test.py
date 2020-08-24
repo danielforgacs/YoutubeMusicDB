@@ -48,7 +48,9 @@ def test_post_playlist_returns_error_json_on_missing_id():
 def test_files_are_deleted_after_download(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
 
     ls = os.listdir(main.DOWNLOAD_DIR)
 
@@ -92,7 +94,9 @@ def test_download_set_videos_as_is_down_True(plst):
 def test_download_returns_the_archive_name(plst):
     with main.app.test_client() as client:
         response = client.post('/api/createplaylist', json={'id': plst})
-        response = client.post('/api/download', json=response.json)
+
+    with main.app.test_client() as client:
+        response = client.post('/api/download', json={'id': plst})
 
     archivefile = os.path.join(main.DOWNLOAD_DIR, response.json['archive'])
 
