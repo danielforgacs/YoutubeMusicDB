@@ -120,9 +120,10 @@ def download_playlist():
 
 
 
-@app.route('/api/archive')
-def archive():
-    return flask.send_file(ARCHIVE_NAME)
+@app.route('/api/archive/<string:zipname>')
+def archive(zipname):
+    print('--> zipname:', zipname)
+    return flask.send_file(zipname)
 
 
 
