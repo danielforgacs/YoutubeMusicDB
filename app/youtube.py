@@ -33,13 +33,6 @@ class BaseEntity:
         self.youtube = attrs['youtube']
 
 
-
-    def print_info(self):
-        for attr in ['pk']+self._attrs:
-            print('{:<50}{}'.format(attr, getattr(self, attr)))
-
-
-
     @property
     def as_dict(self):
         result = {}
@@ -59,11 +52,6 @@ class Video(BaseEntity):
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
         self.pk = datab.insert_video(vdata=self.as_dict)
-
-
-    def print_info(self):
-        super().print_info()
-        print('{:<50}{}'.format('playlist', self.playlist))
 
 
     def set_playlist(self, playlist):
