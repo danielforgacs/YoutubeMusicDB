@@ -19,7 +19,6 @@ DOWNLOAD_DIR = os.path.join(ROOT_DIR, '.download')
 if not os.path.isdir(DOWNLOAD_DIR):
     os.mkdir(DOWNLOAD_DIR)
 
-ARCHIVE_NAME = os.path.join(DOWNLOAD_DIR, 'download.zip')
 
 
 app = flask.Flask(__name__)
@@ -122,8 +121,12 @@ def download_playlist():
 
 @app.route('/api/archive/<string:zipname>')
 def archive(zipname):
+    print('--> ROOT_DIR:', ROOT_DIR)
+    print('--> DOWNLOAD_DIR:', DOWNLOAD_DIR)
     print('--> zipname:', zipname)
-    return flask.send_file(zipname)
+    print('--> zipname 2:', os.path.join(DOWNLOAD_DIR, zipname))
+    # return flask.send_file(zipname)
+    return flask.send_file(os.path.join(DOWNLOAD_DIR, zipname))
 
 
 
