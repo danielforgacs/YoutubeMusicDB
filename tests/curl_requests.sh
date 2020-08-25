@@ -33,4 +33,4 @@ echo "--> download playlist:"
 curl http://127.0.0.1:5000/api/download -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
 
 echo "--> downloading archive:"
-curl http://localhost:5000/api/archive -o <ARCHIVE NAME>
+curl http://localhost:5000/api/archive/DOWNLOAD___PL9YsudagsL6hicXrha4zBId875lRXxc32.000.zip -o download.zip
