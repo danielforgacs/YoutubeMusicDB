@@ -1,23 +1,26 @@
-var loadedIndexes = []
-tableHeaders = ["pk", "title", "is_down", "added", "youtube_id", "playlist"]
-videoTableID = "videotable"
-playlistURIinputID = "playlist_uri"
+var loadedIndexes       = []
+tableHeaders            = ["pk", "title", "is_down", "added", "youtube_id", "playlist"]
+videoTableID            = "videotable"
+playlistURIinputID      = "playlist_uri"
 
 
 window.addEventListener("load", createVideoTable, false);
 window.addEventListener("load", buildVideoList, false);
 
 
+
 function createVideoTable(data) {
-    table = document.getElementById(videoTableID);
+    table       = document.getElementById(videoTableID);
+    head        = document.createElement('thead');
+    headrow     = document.createElement('tr');
+    body        = document.createElement('tbody')
+    
     table.setAttribute("class", "table table-striped table-hover table-sm")
-    head = document.createElement('thead');
     head.setAttribute("class", "thead-dark")
-    headrow = document.createElement('tr');
+    body.setAttribute("id", "videotableBody")
+
     head.appendChild(headrow)
     table.appendChild(head)
-    body = document.createElement('tbody')
-    body.setAttribute("id", "videotableBody")
     table.appendChild(body)
 
     for (idx in tableHeaders) {
@@ -29,16 +32,10 @@ function createVideoTable(data) {
 
 
 
-
-
-
-
 function submitPlaylist() {
-    let plst = {
-        id: document.getElementById(playlistURIinputID).value,
-    };
-
-    document.getElementById("playlist_uri").value = "";
+    plstInput = document.getElementById(playlistURIinputID)
+    plst = {id: plstInput.value};
+    plstInput.value = "";
 
     let response = fetch('/api/createplaylist', {
         method: 'POST',
