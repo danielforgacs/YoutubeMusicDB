@@ -66,7 +66,6 @@ def download_playlist():
 
     ytid = yout.playlist.id
 
-    print('::ytid:', ytid)
     archver = 0
 
     while True:
@@ -83,7 +82,6 @@ def download_playlist():
 
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
-    print('::videoids:', videoids)
     titles = []
 
     for videoid in videoids:
@@ -121,11 +119,6 @@ def download_playlist():
 
 @app.route('/api/archive/<string:zipname>')
 def archive(zipname):
-    print('--> ROOT_DIR:', ROOT_DIR)
-    print('--> DOWNLOAD_DIR:', DOWNLOAD_DIR)
-    print('--> zipname:', zipname)
-    print('--> zipname 2:', os.path.join(DOWNLOAD_DIR, zipname))
-    # return flask.send_file(zipname)
     return flask.send_file(os.path.join(DOWNLOAD_DIR, zipname))
 
 
@@ -146,10 +139,6 @@ def GET_all_videos():
 
 @app.route('/', methods=['GET', 'POST'])
 def view_playlists():
-    print('--> view_playlists')
-    print('--> flask.request', flask.request)
-    print('--> flask.request.json', flask.request.json)
-
     if flask.request.method == 'POST':
         if flask.request.form:
             ytdl = youtube.Youtube(url=flask.request.form['id'])
