@@ -1,7 +1,7 @@
-console.log("YEEEEEEAAAH")
-
-var indexes = []
-headers = [ "pk", "title", "is_down", "added", "youtube_id", "playlist", ]
+var loadedIndexes = []
+tableHeaders = ["pk", "title", "is_down", "added", "youtube_id", "playlist"]
+videoTableID = "videotable"
+playlistURIinputID = "playlist_uri"
 
 
 window.addEventListener("load", createVideoTable, false);
@@ -9,7 +9,7 @@ window.addEventListener("load", buildVideoList, false);
 
 
 function createVideoTable(data) {
-    table = document.getElementById("videotable");
+    table = document.getElementById(videoTableID);
     table.setAttribute("class", "table table-striped table-hover table-sm")
     head = document.createElement('thead');
     head.setAttribute("class", "thead-dark")
@@ -20,9 +20,9 @@ function createVideoTable(data) {
     body.setAttribute("id", "videotableBody")
     table.appendChild(body)
 
-    for (idx in headers) {
+    for (idx in tableHeaders) {
         hpk = document.createElement('th')
-        hpk.innerHTML = headers[idx]
+        hpk.innerHTML = tableHeaders[idx]
         headrow.appendChild(hpk)
     }
 }
@@ -35,7 +35,7 @@ function createVideoTable(data) {
 
 function submitPlaylist() {
     let plst = {
-        id: document.getElementById("playlist_uri").value,
+        id: document.getElementById(playlistURIinputID).value,
     };
 
     document.getElementById("playlist_uri").value = "";
@@ -76,7 +76,7 @@ function addVidoTableRows(data) {
         body.appendChild(tr)
         pk = video[0]
 
-        if (indexes.includes(pk)) {
+        if (loadedIndexes.includes(pk)) {
             continue
         }
 
@@ -86,6 +86,6 @@ function addVidoTableRows(data) {
             tr.appendChild(td)
         }
 
-        indexes.push(video[0])
+        loadedIndexes.push(video[0])
     }
 }
