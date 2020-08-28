@@ -1,5 +1,5 @@
 loadedIndexes           = []
-tableHeaders            = ["pk", "title", "is_down", "added", "youtube_id", "playlist"]
+tableHeaders            = ["title", "is_down", "playlist", "added"]
 videoTableID            = "videotable"
 playlistURIinputID      = "playlist_uri"
 archiveBtnID            = "archiveBtn"
@@ -76,9 +76,9 @@ function addVidoTableRows(data) {
             continue
         }
 
-        for (attr of video) {
+        for (idx of [1, 2, 5, 3]) {
             td = document.createElement('td')
-            td.innerHTML = attr
+            td.innerHTML = video[idx]
             tr.appendChild(td)
         }
 

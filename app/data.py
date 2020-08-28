@@ -65,7 +65,8 @@ SQL_SELECT_ALL_VIDEOS = """
         video.is_down,
         video.added,
         video.id AS youtube_id,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        playlist.id AS playlistid
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist
     ;
@@ -79,7 +80,8 @@ SQL_SELECT_VIDEOS_BY_IDS = """
         video.is_down,
         video.added,
         video.id AS youtube_id,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        playlist.id AS playlistid
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist
     WHERE video.id in %(vids)s
