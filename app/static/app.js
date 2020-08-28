@@ -79,6 +79,7 @@ function addVidoTableRows(data) {
         for (idx of [1, 2, 5, 3]) {
             td = document.createElement('td')
             td.innerHTML = video[idx]
+            td.setAttribute('data-playlistid', video[6])
             tr.appendChild(td)
         }
 
