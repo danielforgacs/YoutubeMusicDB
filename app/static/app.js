@@ -6,6 +6,7 @@ archiveBtnID            = "archiveBtn"
 videoTable              = document.getElementById(videoTableID)
 plstInput               = document.getElementById(playlistURIinputID)
 archiveBtn              = document.getElementById(archiveBtnID)
+archiveFileName         = ''
 
 
 window.addEventListener("load", createVideoTable, false)
@@ -107,14 +108,31 @@ function downloadPaylist() {
 
 
 function createArchiveLink(data) {
-    console.log(data)
-    console.log(data.videos)
-    console.log(data.archive)
+    // console.log(data)
+    // console.log(data.videos)
+    // console.log(data.archive)
+    archiveFileName = data.archive
     archiveBtn.setAttribute('class', 'btn btn-success mb-2')
 }
 
 
 
 function downloadArchive() {
-    console.log('[ARCHIVE]')
+    console.log('[ARCHIVE]', archiveFileName)
+
+    makeArchiveLink(archiveFileName)
+}
+
+
+function makeArchiveLink(filename) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'api/archive/' + encodeURIComponent(filename));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
 }
