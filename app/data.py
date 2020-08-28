@@ -35,7 +35,7 @@ SQL_INSERT_VIDEO = """
 """
 
 SQL_VIDEO_BY_PLAYLIST = """
-    SELECT video.id
+    SELECT video.id, video.is_down
     FROM video
     JOIN playlist ON playlist.pk = video.playlist
     WHERE playlist.id = %(plid)s

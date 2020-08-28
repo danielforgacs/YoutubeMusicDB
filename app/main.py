@@ -82,9 +82,12 @@ def download_playlist():
 
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
+    # print(videoids)
+    videoids_new = [vid for vid in videoids if vid[1] is False]
+    # print(videoids_new)
     titles = []
 
-    for videoid in videoids:
+    for videoid in videoids_new:
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=videoid, do_download=True)
         data.set_video_as_downloaded(vid=videoid)
