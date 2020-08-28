@@ -80,6 +80,7 @@ function addVidoTableRows(data) {
             td = document.createElement('td')
             td.innerHTML = video[idx]
             td.setAttribute('data-playlistid', video[6])
+            td.onclick = setPlaylist
             tr.appendChild(td)
         }
 
@@ -136,4 +137,11 @@ function makeArchiveLink(filename) {
     element.click();
 
     document.body.removeChild(element);
+}
+
+
+
+function setPlaylist(e) {
+    plstInput.value = e.target.getAttribute('data-playlistid')
+
 }
