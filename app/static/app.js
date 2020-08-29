@@ -1,5 +1,10 @@
 loadedIndexes           = []
 tableHeaders            = ["title", "is_down", "playlist", "added"]
+videoProps              = {
+    'title': 'title',
+    'is_down': 'is_down',
+    'playlist': 'playlisttitle',
+    'added': 'added',}
 videoTableID            = "videotable"
 playlistURIinputID      = "playlist_uri"
 archiveBtnID            = "archiveBtn"
@@ -65,21 +70,26 @@ function buildVideoList() {
 
 
 function addVidoTableRows(data) {
-    videos      = data['videos']
+    videos      = data.videos
+    // console.log('VIDEOS:', typeof(videos), videos)
     body        = document.getElementById("videotableBody")
 
-    for (video of videos) {
+    for (title in videos) {
+        video = videos[title]
+        // console.log('SINGLE VIDEO:', video)
         tr = document.createElement('tr')
         body.appendChild(tr)
-        pk = video[0]
+        pk = video.pk
 
         if (loadedIndexes.includes(pk)) {
             continue
         }
 
-        for (idx of [1, 2, 5, 3]) {
+        // for (idx of [1, 2, 5, 3]) {
+        for (prop of tableHeaders) {
+            console.log('prop:', prop, video[prop], video[videoProps[prop]])
             td = document.createElement('td')
-            td.innerHTML = video[idx]
+            td.innerHTML = video[videoProps[prop]]
             td.setAttribute('data-playlistid', video[6])
             td.onclick = setPlaylist
             tr.appendChild(td)
