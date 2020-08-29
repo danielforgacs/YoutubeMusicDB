@@ -332,3 +332,14 @@ def test_set_video_playlist_returns_dict():
     result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
 
     assert isinstance(result, dict)
+
+
+
+
+@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
+def test_select_all_videos_returns_list_of_dicts(vdata):
+    vpk = data.insert_video(vdata=vdata)
+    result = data.select_all_videos()
+
+    assert isinstance(result, list)
+    assert all(map(lambda x: isinstance(x, dict), result))
