@@ -311,3 +311,22 @@ def test_insert_video_returns_dict(vdata):
     assert isinstance(result, dict)
     assert list(result.keys()) == ['pk']
     assert isinstance(result['pk'], int)
+
+
+
+def test_set_video_playlist_returns_dict():
+    sql = """
+        SELECT pk, id, title, playlist
+        FROM video
+        WHERE video.id = %(vid)s
+        ;
+    """
+    videodata = dict(tests.setup.VIDEO_DATA[0])
+
+    plpk1 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    vpk = data.insert_video(vdata=videodata)
+
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+
+    assert isinstance(result, dict)
