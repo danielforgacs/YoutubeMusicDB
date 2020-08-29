@@ -88,7 +88,7 @@ function addVidoTableRows(data) {
         for (prop of tableHeaders) {
             td = document.createElement('td')
             td.innerHTML = video[videoProps[prop]]
-            td.setAttribute('data-playlistid', video[6])
+            td.setAttribute('data-playlistid', video.playlistid)
             td.onclick = setPlaylist
             tr.appendChild(td)
         }
@@ -119,7 +119,7 @@ function downloadPaylist() {
 
 
 function createArchiveLink(data) {
-    // archiveFileName  = data.archive
+    archiveFileName  = data.archive
     archiveBtn.setAttribute('class', 'btn btn-success mb-2')
 }
 
