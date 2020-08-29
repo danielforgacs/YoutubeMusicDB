@@ -13,7 +13,7 @@ plstInput               = document.getElementById(playlistURIinputID)
 archiveBtn              = document.getElementById(archiveBtnID)
 archiveFileName         = ''
 createPlaylistURL       = '/api/createplaylist'
-
+downloadPlaylistURL     = '/api/download'
 
 window.addEventListener("load", createVideoTable, false)
 window.addEventListener("load", buildVideoList, false)
@@ -104,7 +104,7 @@ function downloadPaylist() {
     plst                = {id: plstInput.value};
     plstInput.value     = "";
 
-    let response = fetch('/api/download', {
+    let response = fetch(downloadPlaylistURL, {
         method:     'POST',
         headers:    {'Content-Type': 'application/json'},
         body:       JSON.stringify(plst)
