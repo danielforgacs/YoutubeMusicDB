@@ -82,9 +82,10 @@ def download_playlist():
 
 
     videoids = data.query_videos_by_playlistid(playlistid=ytid)
-    # print(videoids)
-    videoids_new = [vid for vid in videoids if vid[1] is False]
-    # print(videoids_new)
+    print(videoids)
+    print(type(videoids[0]))
+    videoids_new = [vid[0] for vid in videoids if vid[1] is False]
+    print(videoids_new)
     titles = []
 
     for videoid in videoids_new:

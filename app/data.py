@@ -150,7 +150,8 @@ def query_videos_by_playlistid(playlistid):
         conn.commit()
         rows = cur.fetchall()
 
-    result = [row[0] for row in rows]
+    # result = [row[0] for row in rows]
+    result = rows
 
     return result
 
