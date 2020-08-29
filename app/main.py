@@ -81,13 +81,13 @@ def download_playlist():
             break
 
 
-    videoids = data.query_videos_by_playlistid(playlistid=ytid)
+    videos = data.query_videos_by_playlistid(playlistid=ytid)
     titles = []
 
-    for videoid in videoids:
+    for video in videos:
         os.chdir(DOWNLOAD_DIR)
-        ytdl = youtube.Youtube(url=videoid, do_download=True)
-        data.set_video_as_downloaded(vid=videoid)
+        ytdl = youtube.Youtube(url=video['id'], do_download=True)
+        data.set_video_as_downloaded(vid=video['id'])
         titles.append(ytdl.video.title)
 
     downloads = os.listdir(DOWNLOAD_DIR)
@@ -108,7 +108,7 @@ def download_playlist():
         os.remove(vfile)
 
     response = {
-        'videos': videoids,
+        'videos': videos,
         'archive': archivename,
     }
 
