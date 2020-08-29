@@ -122,8 +122,9 @@ def insert_playlist(pldict):
         row = cur.fetchone()
 
     pk = row[IDX_PLAYLIST__pk]
+    result = {'pk': pk}
 
-    return pk
+    return result
 
 
 
@@ -139,7 +140,9 @@ def insert_video(vdata):
 
     pk = row[IDX_VIDEO__pk]
 
-    return pk
+    result = {'pk': pk}
+
+    return result
 
 
 
