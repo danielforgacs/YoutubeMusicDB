@@ -190,6 +190,8 @@ def test_set_video_as_downloaded():
 
     vpk = data.set_video_as_downloaded(vid=videdict['id'])
 
+    assert isinstance(vpk, dict)
+
     with data.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars=videdict)
