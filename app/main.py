@@ -85,6 +85,9 @@ def download_playlist():
     titles = []
 
     for video in videos:
+        if video['is_down']:
+            continue
+
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=video['id'], do_download=True)
         data.set_video_as_downloaded(vid=video['id'])
