@@ -93,7 +93,7 @@ function addVidoTableRows(data) {
             tr.appendChild(td)
         }
 
-        loadedIndexes.push(video[0])
+        loadedIndexes.push(video.pk)
     }
 }
 
