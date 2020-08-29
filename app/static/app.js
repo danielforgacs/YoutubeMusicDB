@@ -14,6 +14,7 @@ archiveBtn              = document.getElementById(archiveBtnID)
 archiveFileName         = ''
 createPlaylistURL       = '/api/createplaylist'
 downloadPlaylistURL     = '/api/download'
+archivePlaylistURL      = '/api/archive/'
 
 window.addEventListener("load", createVideoTable, false)
 window.addEventListener("load", buildVideoList, false)
@@ -118,7 +119,7 @@ function downloadPaylist() {
 
 
 function createArchiveLink(data) {
-    archiveFileName = data.archive
+    // archiveFileName  = data.archive
     archiveBtn.setAttribute('class', 'btn btn-success mb-2')
 }
 
@@ -132,7 +133,7 @@ function downloadArchive() {
 
 function makeArchiveLink(filename) {
     var element = document.createElement('a');
-    element.setAttribute('href', 'api/archive/' + encodeURIComponent(filename));
+    element.setAttribute('href', archivePlaylistURL + encodeURIComponent(filename));
     element.setAttribute('download', filename);
 
     element.style.display = 'none';
