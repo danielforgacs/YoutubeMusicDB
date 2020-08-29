@@ -17,7 +17,7 @@ def setup():
 def test_insert_playlist(pldata):
     plpk = data.insert_playlist(pldict=pldata)
 
-    assert isinstance(plpk, int)
+    # assert isinstance(plpk, int)
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -29,7 +29,7 @@ def test_insert_playlist(pldata):
         """, vars=pldata)
         result = cur.fetchone()
 
-    assert result[data.IDX_PLAYLIST__pk] == plpk
+    assert result[data.IDX_PLAYLIST__pk] == plpk['pk']
     assert result[data.IDX_PLAYLIST__id] == pldata['id']
     assert result[data.IDX_PLAYLIST__title] == pldata['title']
     assert result[data.IDX_PLAYLIST__uploader_id] == pldata['uploader_id']
@@ -65,7 +65,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
 def test_insert_video(vdata):
     vpk = data.insert_video(vdata=vdata)
 
-    assert isinstance(vpk, int)
+    # assert isinstance(vpk, int)
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -78,7 +78,7 @@ def test_insert_video(vdata):
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][data.IDX_VIDEO__pk] == vpk
+    assert result[0][data.IDX_VIDEO__pk] == vpk['pk']
     assert result[0][data.IDX_VIDEO__id] == vdata['id']
     assert result[0][data.IDX_VIDEO__title] == vdata['title']
     assert result[0][data.IDX_VIDEO__playlist] == vdata['playlist']
@@ -92,9 +92,9 @@ def test_get_video_ids_by_playlist():
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
-    videodata1['playlist'] = plpk1
-    videodata2['playlist'] = plpk1
-    videodata3['playlist'] = plpk2
+    videodata1['playlist'] = plpk1['pk']
+    videodata2['playlist'] = plpk1['pk']
+    videodata3['playlist'] = plpk2['pk']
     vpk1 = data.insert_video(vdata=videodata1)
     vpk2 = data.insert_video(vdata=videodata2)
     vpk3 = data.insert_video(vdata=videodata3)
@@ -103,8 +103,8 @@ def test_get_video_ids_by_playlist():
     videoids2 = data.query_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
 
-    assert videoids1 == [videodata1['id'], videodata2['id']]
-    assert videoids2 == [videodata3['id']]
+    assert [vid['id'] for vid in videoids1] == [videodata1['id'], videodata2['id']]
+    assert [vid['id'] for vid in videoids2] == [videodata3['id']]
 
 
 
@@ -123,29 +123,38 @@ def test_set_video_playlist_sets_updates():
     plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1)
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk1 == plpk
+    assert result[data.IDX_VIDEO__playlist] == plpk1['pk'] == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2)
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk2 == plpk
+    assert result[data.IDX_VIDEO__playlist] == plpk2['pk'] == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
 
     plpk3 = None
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -180,6 +189,8 @@ def test_set_video_as_downloaded():
     assert is_downloaded is False
 
     vpk = data.set_video_as_downloaded(vid=videdict['id'])
+
+    assert isinstance(vpk, dict)
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -278,7 +289,58 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = data.select_videos_by_id(vids=vids)
     allvideos = data.select_all_videos()
 
-    assert len(videos[0]) == len(allvideos[0])
+    assert len(list(videos.values())[0]) == len(list(allvideos.values())[0])
 
-if __name__ == '__main__':
-    pass
+
+
+
+
+@pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
+def test_insert_playlist_returns_dict(pldata):
+    result = data.insert_playlist(pldict=pldata)
+
+    assert isinstance(result, dict)
+    assert list(result.keys()) == ['pk']
+    assert isinstance(result['pk'], int)
+
+
+
+
+@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
+def test_insert_video_returns_dict(vdata):
+    result = data.insert_video(vdata=vdata)
+
+    assert isinstance(result, dict)
+    assert list(result.keys()) == ['pk']
+    assert isinstance(result['pk'], int)
+
+
+
+def test_set_video_playlist_returns_dict():
+    sql = """
+        SELECT pk, id, title, playlist
+        FROM video
+        WHERE video.id = %(vid)s
+        ;
+    """
+    videodata = dict(tests.setup.VIDEO_DATA[0])
+
+    plpk1 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    vpk = data.insert_video(vdata=videodata)
+
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+
+    assert isinstance(result, dict)
+
+
+
+
+@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
+def test_select_all_videos_returns_dict_of_dicts(vdata):
+    vpk = data.insert_video(vdata=vdata)
+    vpk = data.insert_video(vdata=tests.setup.VIDEO_DATA[0])
+    result = data.select_all_videos()
+
+    assert isinstance(result, dict)
+    assert all(map(lambda x: isinstance(x, dict), result.values()))

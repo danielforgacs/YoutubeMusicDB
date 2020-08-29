@@ -1,5 +1,10 @@
 loadedIndexes           = []
 tableHeaders            = ["title", "is_down", "playlist", "added"]
+videoProps              = {
+    'title': 'title',
+    'is_down': 'is_down',
+    'playlist': 'playlisttitle',
+    'added': 'added',}
 videoTableID            = "videotable"
 playlistURIinputID      = "playlist_uri"
 archiveBtnID            = "archiveBtn"
@@ -7,7 +12,9 @@ videoTable              = document.getElementById(videoTableID)
 plstInput               = document.getElementById(playlistURIinputID)
 archiveBtn              = document.getElementById(archiveBtnID)
 archiveFileName         = ''
-
+createPlaylistURL       = '/api/createplaylist'
+downloadPlaylistURL     = '/api/download'
+archivePlaylistURL      = '/api/archive/'
 
 window.addEventListener("load", createVideoTable, false)
 window.addEventListener("load", buildVideoList, false)
@@ -42,7 +49,7 @@ function submitPlaylist() {
     plst                = {id: plstInput.value};
     plstInput.value     = "";
 
-    let response = fetch('/api/createplaylist', {
+    let response = fetch(createPlaylistURL, {
         method:     'POST',
         headers:    {'Content-Type': 'application/json'},
         body:       JSON.stringify(plst)
@@ -64,27 +71,29 @@ function buildVideoList() {
 
 
 function addVidoTableRows(data) {
-    videos      = data['videos']
+    videos      = data.videos
     body        = document.getElementById("videotableBody")
 
-    for (video of videos) {
+    for (title in videos) {
+        video = videos[title]
         tr = document.createElement('tr')
         body.appendChild(tr)
-        pk = video[0]
+        pk = video.pk
 
         if (loadedIndexes.includes(pk)) {
             continue
         }
 
-        for (idx of [1, 2, 5, 3]) {
+        // for (idx of [1, 2, 5, 3]) {
+        for (prop of tableHeaders) {
             td = document.createElement('td')
-            td.innerHTML = video[idx]
-            td.setAttribute('data-playlistid', video[6])
+            td.innerHTML = video[videoProps[prop]]
+            td.setAttribute('data-playlistid', video.playlistid)
             td.onclick = setPlaylist
             tr.appendChild(td)
         }
 
-        loadedIndexes.push(video[0])
+        loadedIndexes.push(video.pk)
     }
 }
 
@@ -96,7 +105,7 @@ function downloadPaylist() {
     plst                = {id: plstInput.value};
     plstInput.value     = "";
 
-    let response = fetch('/api/download', {
+    let response = fetch(downloadPlaylistURL, {
         method:     'POST',
         headers:    {'Content-Type': 'application/json'},
         body:       JSON.stringify(plst)
@@ -110,17 +119,13 @@ function downloadPaylist() {
 
 
 function createArchiveLink(data) {
-    // console.log(data)
-    // console.log(data.videos)
-    // console.log(data.archive)
-    archiveFileName = data.archive
+    archiveFileName  = data.archive
     archiveBtn.setAttribute('class', 'btn btn-success mb-2')
 }
 
 
 
 function downloadArchive() {
-    console.log('[ARCHIVE]', archiveFileName)
 
     makeArchiveLink(archiveFileName)
 }
@@ -128,7 +133,7 @@ function downloadArchive() {
 
 function makeArchiveLink(filename) {
     var element = document.createElement('a');
-    element.setAttribute('href', 'api/archive/' + encodeURIComponent(filename));
+    element.setAttribute('href', archivePlaylistURL + encodeURIComponent(filename));
     element.setAttribute('download', filename);
 
     element.style.display = 'none';

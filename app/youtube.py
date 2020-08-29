@@ -55,7 +55,7 @@ class Video(BaseEntity):
 
 
     def set_playlist(self, playlist):
-        vpk, vid, plpk = datab.set_video_playlist(self.id, plpk=playlist.pk)
+        datab.set_video_playlist(self.id, plpk=playlist.pk)
 
 
 
@@ -66,7 +66,8 @@ class Playlist(BaseEntity):
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
         self._videos = []
-        self.pk = datab.insert_playlist(pldict=self.as_dict)
+        result = datab.insert_playlist(pldict=self.as_dict)
+        self.pk = result['pk']
 
         for video in self.videos:
             video.set_playlist(playlist=self)

@@ -14,7 +14,7 @@ YOUTUBE_PLAYLISTS = [
     'https://www.youtube.com/playlist?list=PL9YsudagsL6ipb5Yd7QKz0x9byLncwEs_',
 ]
 YOUTUBE_VIDEOS = [
-    'https://www.youtube.com/watch?v=BPopaJsNWd4',
+    'https://www.youtube.com/watch?v=R2kovI6tpRE',
     'https://www.youtube.com/watch?v=EDQ1dmFEGiI',
     'https://www.youtube.com/watch?v=FIQ2F3T1ydM',
     'https://www.youtube.com/watch?v=HJq-6y2IYEQ',

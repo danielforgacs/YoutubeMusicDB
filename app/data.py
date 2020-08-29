@@ -35,7 +35,7 @@ SQL_INSERT_VIDEO = """
 """
 
 SQL_VIDEO_BY_PLAYLIST = """
-    SELECT video.id
+    SELECT video.id, video.is_down
     FROM video
     JOIN playlist ON playlist.pk = video.playlist
     WHERE playlist.id = %(plid)s
@@ -122,8 +122,9 @@ def insert_playlist(pldict):
         row = cur.fetchone()
 
     pk = row[IDX_PLAYLIST__pk]
+    result = {'pk': pk}
 
-    return pk
+    return result
 
 
 
@@ -139,7 +140,9 @@ def insert_video(vdata):
 
     pk = row[IDX_VIDEO__pk]
 
-    return pk
+    result = {'pk': pk}
+
+    return result
 
 
 
@@ -150,7 +153,11 @@ def query_videos_by_playlistid(playlistid):
         conn.commit()
         rows = cur.fetchall()
 
-    result = [row[0] for row in rows]
+    # result = [row[0] for row in rows]
+    result = [{
+        'id': row[0],
+        'is_down': row[1],
+    } for row in rows]
 
     return result
 
@@ -164,11 +171,17 @@ def set_video_playlist(vid, plpk):
         conn.commit()
         row = cur.fetchone()
 
-    result = [
-        row[IDX_VIDEO__pk],
-        row[IDX_VIDEO__id],
-        row[IDX_VIDEO__playlist],
-    ]
+    result = {
+        'pk': row[IDX_VIDEO__pk],
+        'id': row[IDX_VIDEO__id],
+        'title': row[IDX_VIDEO__title],
+        'playlist': row[IDX_VIDEO__playlist],
+    }
+    # result = [
+    #     row[IDX_VIDEO__pk],
+    #     row[IDX_VIDEO__id],
+    #     row[IDX_VIDEO__playlist],
+    # ]
 
     return result
 
@@ -184,9 +197,10 @@ def set_video_as_downloaded(vid):
         conn.commit()
         row = cur.fetchone()
 
-    pk = row[0]
+    # pk = row[0]
+    result = {'pk': row[0]}
 
-    return pk
+    return result
 
 
 
@@ -196,7 +210,19 @@ def select_all_videos():
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
-    return rows
+    result = {
+        row[1]: {
+            'pk': row[0],
+            'title': row[1],
+            'is_down': row[2],
+            'added': row[3],
+            'id': row[4],
+            'playlisttitle': row[5],
+            'playlistid': row[6],
+        } for row in rows
+    }
+
+    return result
 
 
 
@@ -207,7 +233,19 @@ def select_videos_by_id(vids):
         cur.execute(query=SQL_SELECT_VIDEOS_BY_IDS, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
-    return rows
+    result = {
+        row[1]: {
+            'pk': row[0],
+            'title': row[1],
+            'is_down': row[2],
+            'added': row[3],
+            'id': row[4],
+            'playlisttitle': row[5],
+            'playlistid': row[6],
+        } for row in rows
+    }
+
+    return result
 
 
 
