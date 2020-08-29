@@ -19,7 +19,7 @@
 
 
 # non playlist videos:
-# https://www.youtube.com/watch?v=BPopaJsNWd4
+# https://www.youtube.com/watch?v=R2kovI6tpRE
 
 
 
@@ -27,7 +27,7 @@ echo "--> post playlist:"
 curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
 curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU\"}"
 curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6ipb5Yd7QKz0x9byLncwEs_\"}"
-curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"BPopaJsNWd4\"}"
+curl http://127.0.0.1:5000/api/createplaylist -H "Content-type: application/json" -d "{\"id\": \"R2kovI6tpRE\"}"
 
 echo "--> download playlist:"
 curl http://127.0.0.1:5000/api/download -H "Content-type: application/json" -d "{\"id\": \"PL9YsudagsL6hicXrha4zBId875lRXxc32\"}"
