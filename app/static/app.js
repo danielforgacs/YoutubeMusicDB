@@ -71,12 +71,10 @@ function buildVideoList() {
 
 function addVidoTableRows(data) {
     videos      = data.videos
-    // console.log('VIDEOS:', typeof(videos), videos)
     body        = document.getElementById("videotableBody")
 
     for (title in videos) {
         video = videos[title]
-        // console.log('SINGLE VIDEO:', video)
         tr = document.createElement('tr')
         body.appendChild(tr)
         pk = video.pk
@@ -87,7 +85,6 @@ function addVidoTableRows(data) {
 
         // for (idx of [1, 2, 5, 3]) {
         for (prop of tableHeaders) {
-            console.log('prop:', prop, video[prop], video[videoProps[prop]])
             td = document.createElement('td')
             td.innerHTML = video[videoProps[prop]]
             td.setAttribute('data-playlistid', video[6])
@@ -121,9 +118,6 @@ function downloadPaylist() {
 
 
 function createArchiveLink(data) {
-    // console.log(data)
-    // console.log(data.videos)
-    // console.log(data.archive)
     archiveFileName = data.archive
     archiveBtn.setAttribute('class', 'btn btn-success mb-2')
 }
@@ -131,7 +125,6 @@ function createArchiveLink(data) {
 
 
 function downloadArchive() {
-    console.log('[ARCHIVE]', archiveFileName)
 
     makeArchiveLink(archiveFileName)
 }
