@@ -289,7 +289,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = data.select_videos_by_id(vids=vids)
     allvideos = data.select_all_videos()
 
-    assert len(videos[0]) == len(allvideos[0])
+    assert len(videos[0]) == len(list(allvideos.values())[0])
 
 
 
@@ -337,9 +337,10 @@ def test_set_video_playlist_returns_dict():
 
 
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
-def test_select_all_videos_returns_list_of_dicts(vdata):
+def test_select_all_videos_returns_dict_of_dicts(vdata):
     vpk = data.insert_video(vdata=vdata)
+    vpk = data.insert_video(vdata=tests.setup.VIDEO_DATA[0])
     result = data.select_all_videos()
 
-    assert isinstance(result, list)
-    assert all(map(lambda x: isinstance(x, dict), result))
+    assert isinstance(result, dict)
+    assert all(map(lambda x: isinstance(x, dict), result.values()))

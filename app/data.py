@@ -207,8 +207,8 @@ def select_all_videos():
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
-    result = [
-        {
+    result = {
+        row[1]: {
             'pk': row[0],
             'title': row[1],
             'is_down': row[2],
@@ -217,7 +217,7 @@ def select_all_videos():
             'playlisttitle': row[5],
             'playlistid': row[6],
         } for row in rows
-    ]
+    }
 
     return result
 
