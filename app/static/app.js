@@ -7,6 +7,7 @@ videoTable              = document.getElementById(videoTableID)
 plstInput               = document.getElementById(playlistURIinputID)
 archiveBtn              = document.getElementById(archiveBtnID)
 archiveFileName         = ''
+createPlaylistURL       = '/api/createplaylist'
 
 
 window.addEventListener("load", createVideoTable, false)
@@ -42,7 +43,7 @@ function submitPlaylist() {
     plst                = {id: plstInput.value};
     plstInput.value     = "";
 
-    let response = fetch('/api/createplaylist', {
+    let response = fetch(createPlaylistURL, {
         method:     'POST',
         headers:    {'Content-Type': 'application/json'},
         body:       JSON.stringify(plst)
