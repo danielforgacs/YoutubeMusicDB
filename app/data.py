@@ -194,9 +194,10 @@ def set_video_as_downloaded(vid):
         conn.commit()
         row = cur.fetchone()
 
-    pk = row[0]
+    # pk = row[0]
+    result = {'pk': row[0]}
 
-    return pk
+    return result
 
 
 
