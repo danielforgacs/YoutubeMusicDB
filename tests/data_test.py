@@ -123,7 +123,10 @@ def test_set_video_playlist_sets_updates():
     plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -133,7 +136,10 @@ def test_set_video_playlist_sets_updates():
     assert result[data.IDX_VIDEO__playlist] == plpk1['pk'] == plpk
     assert result[data.IDX_VIDEO__pk] == vpk
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -145,7 +151,10 @@ def test_set_video_playlist_sets_updates():
 
     plpk3 = None
 
-    vpk, vid, plpk = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    vpk = result['pk']
+    vid = result['id']
+    plpk = result['playlist']
 
     with data.PGConnection() as conn:
         cur = conn.cursor()

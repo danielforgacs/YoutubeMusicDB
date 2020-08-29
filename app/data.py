@@ -167,11 +167,17 @@ def set_video_playlist(vid, plpk):
         conn.commit()
         row = cur.fetchone()
 
-    result = [
-        row[IDX_VIDEO__pk],
-        row[IDX_VIDEO__id],
-        row[IDX_VIDEO__playlist],
-    ]
+    result = {
+        'pk': row[IDX_VIDEO__pk],
+        'id': row[IDX_VIDEO__id],
+        'title': row[IDX_VIDEO__title],
+        'playlist': row[IDX_VIDEO__playlist],
+    }
+    # result = [
+    #     row[IDX_VIDEO__pk],
+    #     row[IDX_VIDEO__id],
+    #     row[IDX_VIDEO__playlist],
+    # ]
 
     return result
 
