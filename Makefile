@@ -4,9 +4,9 @@ build: down
 initdb:
 	@docker-compose up -d ymdb_db
 	@sleep 5
-	@- docker-compose exec ymdb_db psql -U postgres -c "drop database $$PGDATABASE;"
-	@- docker-compose exec ymdb_db psql -U postgres -c "create database $$PGDATABASE;"
-	@docker-compose exec ymdb_db psql -U postgres -d $$PGDATABASE -f /home/sql/schema.sql
+	@- docker-compose exec ymdb_db psql -U postgres -c "drop database ymdb;"
+	@- docker-compose exec ymdb_db psql -U postgres -c "create database ymdb;"
+	@docker-compose exec ymdb_db psql -U postgres -d ymdb -f /home/sql/schema.sql
 
 initdb_test:
 	@docker-compose up -d ymdb_db
