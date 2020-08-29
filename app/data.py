@@ -35,7 +35,7 @@ SQL_INSERT_VIDEO = """
 """
 
 SQL_VIDEO_BY_PLAYLIST = """
-    SELECT video.id, video.is_down
+    SELECT video.id
     FROM video
     JOIN playlist ON playlist.pk = video.playlist
     WHERE playlist.id = %(plid)s
@@ -150,8 +150,7 @@ def query_videos_by_playlistid(playlistid):
         conn.commit()
         rows = cur.fetchall()
 
-    # result = [row[0] for row in rows]
-    result = rows
+    result = [row[0] for row in rows]
 
     return result
 
