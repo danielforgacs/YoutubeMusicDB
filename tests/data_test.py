@@ -289,7 +289,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = data.select_videos_by_id(vids=vids)
     allvideos = data.select_all_videos()
 
-    assert len(videos[0]) == len(list(allvideos.values())[0])
+    assert len(list(videos.values())[0]) == len(list(allvideos.values())[0])
 
 
 

@@ -230,7 +230,19 @@ def select_videos_by_id(vids):
         cur.execute(query=SQL_SELECT_VIDEOS_BY_IDS, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
-    return rows
+    result = {
+        row[1]: {
+            'pk': row[0],
+            'title': row[1],
+            'is_down': row[2],
+            'added': row[3],
+            'id': row[4],
+            'playlisttitle': row[5],
+            'playlistid': row[6],
+        } for row in rows
+    }
+
+    return result
 
 
 
