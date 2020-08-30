@@ -31,6 +31,7 @@ services:
     image: ymdb_dbaccess
     ports:
       - 5001:5001
+    env_file: .env
     command: ["python", "main.py"]
     depends_on:
       - ymdb_postgres
