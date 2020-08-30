@@ -8,6 +8,10 @@ os.environ['PGDATABASE'] = TEST_DB_NAME
 
 SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
 
+DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
+DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=HOST, port=PORT)
+
 YOUTUBE_PLAYLISTS = [
     'https://www.youtube.com/playlist?list=PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
     'https://www.youtube.com/playlist?list=PL9YsudagsL6hicXrha4zBId875lRXxc32',
