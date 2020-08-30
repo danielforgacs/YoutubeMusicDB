@@ -27,7 +27,8 @@ upd:
 down:
 	@docker-compose down --remove-orphans --volumes
 
-test: build initdb-test upd
+test: down build initdb-test
+	@docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
 	@sleep 5
 	@- export PYTHONPATH=$$PWD && \
 		export DB_HOST=127.0.0.1 && \

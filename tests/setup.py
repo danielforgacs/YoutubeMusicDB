@@ -69,7 +69,14 @@ def init_test_db():
 
 def run_sql_file(sqlfile):
     print('++++ [run_sql_file]')
-    sqlpath = os.path.join(os.getcwd(), 'sql', sqlfile+'.sql')
+    # sqlpath = os.path.join(os.getcwd(), 'sql', sqlfile+'.sql')
+    sqlpath = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                __file__
+            )
+        )
+        , 'sql', sqlfile+'.sql')
 
     with open(sqlpath, 'r') as schemafile:
         schemasql = schemafile.read()
