@@ -1,5 +1,5 @@
 import os
-import dbfuncs
+import dbaccess.dbfuncs
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -38,7 +38,7 @@ def server_test(data):
 def main():
     with Server() as server:
         server.register_function(function=server_test)
-        server.register_function(function=dbfuncs.select_all_videos)
+        server.register_function(function=dbaccess.dbfuncs.select_all_videos)
         server.serve_forever()
 
 

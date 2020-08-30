@@ -11,6 +11,6 @@ COPY .env .
 
 RUN pipenv install --system
 
-COPY dbaccess/ /home/
+COPY dbaccess/ /home/dbaccess/
 
 EXPOSE 5001

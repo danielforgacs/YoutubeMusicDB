@@ -10,7 +10,7 @@ SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
 
 DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
 DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
-DB_ACCESS_URL = 'http://{host}:{port}'.format(host=HOST, port=PORT)
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
 
 YOUTUBE_PLAYLISTS = [
     'https://www.youtube.com/playlist?list=PL9YsudagsL6h0n4ew9ibbicfGFIPdUKMU',
