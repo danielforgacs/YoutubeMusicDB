@@ -3,6 +3,13 @@ import psycopg2
 import datetime
 
 
+print("::os.getenv('PGDATABASE'):", os.getenv('PGDATABASE'))
+print("::os.getenv('DB_HOST'):", os.getenv('DB_HOST'))
+print("::os.getenv('DB_PORT'):", os.getenv('DB_PORT'))
+# print("::self.dbname:", self.dbname)
+print("::os.getenv('DB_USER'):", os.getenv('DB_USER'))
+print("::os.getenv('DB_PASSWORD'):", os.getenv('DB_PASSWORD'))
+
 
 class PGConnection:
     def __init__(self, dbname=None):

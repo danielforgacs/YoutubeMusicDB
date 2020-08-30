@@ -25,8 +25,3 @@ def test_select_all_videos_01():
     expected = {}
 
     assert videos == {}
-
-
-
-dbacces_svr = xmlrpc.client.ServerProxy(uri=tests.setup.DB_ACCESS_URL)
-videos = dbacces_svr.select_all_videos()
