@@ -6,6 +6,11 @@ RUN ln /usr/bin/python3.8 /usr/bin/python
 
 WORKDIR /home
 
+COPY Pipfile* ./
+COPY .env .
+
+RUN pipenv install --system
+
 COPY dbaccess/ /home/
 
 EXPOSE 5001

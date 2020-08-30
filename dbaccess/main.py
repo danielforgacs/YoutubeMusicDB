@@ -5,8 +5,8 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 
 
 HOST = os.environ['DBACCESS_RPC_HOST']
-PORT = os.environ['DBACCESS_RPC_PORT']
-ADDRESS = (HOST, int(PORT))
+PORT = int(os.environ['DBACCESS_RPC_PORT'])
+ADDRESS = (HOST, PORT)
 
 
 
@@ -28,8 +28,16 @@ class Server(SimpleXMLRPCServer):
 
 
 
+def server_test(data):
+    response = {'OK': data}
+
+    return response
+
+
+
 def main():
     with Server() as server:
+        server.register_function(function=server_test)
         server.serve_forever()
 
 
