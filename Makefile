@@ -1,6 +1,9 @@
 build: down
 	@docker-compose build --no-cache --force-rm --pull
 
+build-cached: down
+	@docker-compose build
+
 initdb:
 	@docker-compose up -d ymdb_postgres
 	@sleep 5
@@ -8,7 +11,7 @@ initdb:
 	@- docker-compose exec ymdb_postgres psql -U postgres -c "create database ymdb;"
 	@docker-compose exec ymdb_postgres psql -U postgres -d ymdb -f /home/sql/schema.sql
 
-initdb_test:
+initdb-test:
 	@docker-compose up -d ymdb_postgres
 	@sleep 5
 	@- docker-compose exec ymdb_postgres psql -U postgres -c "drop database ymdb_test;"
