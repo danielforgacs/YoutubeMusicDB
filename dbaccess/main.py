@@ -1,4 +1,5 @@
 import os
+import dbfuncs
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -15,15 +16,20 @@ class Server(SimpleXMLRPCServer):
 
 
     def __enter__(self, *args, **kwargs):
-        return super().__enter__(*args, **kwargs)
+        server = super().__enter__(*args, **kwargs)
+        print('--> Server started')
+
+        return server
+
+
+    def __exit__(self, *args, **kwargs):
+        super().__exit__(*args, **kwargs)
+        print('--> Server closed.')
 
 
 
 def main():
     with Server() as server:
-        server.register_introspection_functions()
-
-        print('--> serving...')
         server.serve_forever()
 
 
