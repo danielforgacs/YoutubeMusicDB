@@ -9,23 +9,20 @@ ADDRESS = (HOST, int(PORT))
 
 
 
-class MyFuncs:
-    def mul(self, x, y):
-        return x * y
-
-
-def adder_function(x, y):
-    return x + y
+class Server(SimpleXMLRPCServer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(addr=ADDRESS)
 
 
 
-with SimpleXMLRPCServer(addr=ADDRESS) as server:
-    server.register_introspection_functions()
-    server.register_function(pow)
-    server.register_function(adder_function, 'add')
+def main():
+    with Server() as server:
+        server.register_introspection_functions()
+
+        print('--> serving...')
+        server.serve_forever()
 
 
-    server.register_instance(MyFuncs())
 
-    print('--> serving...')
-    server.serve_forever()
+if __name__ == '__main__':
+    main()

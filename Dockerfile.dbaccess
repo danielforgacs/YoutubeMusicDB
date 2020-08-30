@@ -8,11 +8,4 @@ WORKDIR /home
 
 COPY dbaccess/ /home/
 
-# COPY Pipfile .
-# COPY Pipfile.lock .
-# COPY .env .
-# COPY app/ app/
-# 
-# RUN pipenv install --system
-
 EXPOSE 5001
