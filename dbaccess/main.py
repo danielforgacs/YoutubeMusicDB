@@ -14,6 +14,10 @@ class Server(SimpleXMLRPCServer):
         super().__init__(addr=ADDRESS)
 
 
+    def __enter__(self, *args, **kwargs):
+        return super().__enter__(*args, **kwargs)
+
+
 
 def main():
     with Server() as server:
