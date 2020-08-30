@@ -64,3 +64,17 @@ def init_test_db():
             psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn2.cursor()
         cur.execute(query=schemasql)
+
+
+
+def run_sql_file(sqlfile):
+    print('++++ [run_sql_file]')
+    sqlpath = os.path.join(os.getcwd(), 'sql', sqlfile+'.sql')
+
+    with open(sqlpath, 'r') as schemafile:
+        schemasql = schemafile.read()
+
+    with app.data.PGConnection() as conn:
+        conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn.cursor()
+        cur.execute(query=schemasql)

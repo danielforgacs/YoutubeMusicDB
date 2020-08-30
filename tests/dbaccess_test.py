@@ -25,3 +25,23 @@ def test_select_all_videos_01():
     expected = {}
 
     assert videos == {}
+
+
+
+def test_select_all_videos_02():
+    dbacces_svr = xmlrpc.client.ServerProxy(uri=tests.setup.DB_ACCESS_URL)
+    videos = dbacces_svr.select_all_videos()
+    expected = {}
+
+    assert videos == {}
+
+    tests.setup.run_sql_file(sqlfile='testData_01')
+
+    videos = dbacces_svr.select_all_videos()
+    expected = {
+        '1': {
+            'pk': 1
+        }
+    }
+
+    assert videos == expected
