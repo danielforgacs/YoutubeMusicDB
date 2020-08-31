@@ -196,7 +196,7 @@ def set_video_as_downloaded(vid):
     return result
 
 
-
+# MOVED TO DBACCESS
 def select_all_videos():
     with PGConnection() as conn:
         cur = conn.cursor()
