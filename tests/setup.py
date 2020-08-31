@@ -3,11 +3,8 @@ import psycopg2
 import app.data
 
 
-TEST_DB_NAME = 'ymdb_test'
-os.environ['PGDATABASE'] = TEST_DB_NAME
-
+PGDATABASE = os.environ['PGDATABASE']
 SCHEMA_FILE = os.path.join(os.getcwd(), 'sql', 'schema.sql')
-
 DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
 DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
 DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
@@ -48,20 +45,21 @@ def init_test_db():
         schemasql = schemafile.read()
 
     with app.data.PGConnection(dbname='postgres') as conn1:
-        conn1.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        conn1.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn1.cursor()
 
         try:
-            cur.execute(query="drop database %s;" % TEST_DB_NAME)
+            cur.execute(query="drop database %s;" % PGDATABASE)
         except psycopg2.errors.InvalidCatalogName:
             pass
 
-        cur.execute(query="create database %s;" % TEST_DB_NAME)
+    with app.data.PGConnection(dbname='postgres') as conn1:
+        conn1.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn1.cursor()
+        cur.execute(query="create database %s;" % PGDATABASE)
 
     with app.data.PGConnection() as conn2:
-        conn2.set_isolation_level(
-            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        conn2.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn2.cursor()
         cur.execute(query=schemasql)
 
@@ -69,11 +67,7 @@ def init_test_db():
 
 def run_sql_file(sqlfile):
     sqlpath = os.path.join(
-        os.path.dirname(
-            os.path.dirname(
-                __file__
-            )
-        )
+        os.path.dirname(os.path.dirname(__file__))
         , 'sql', sqlfile+'.sql')
 
     with open(sqlpath, 'r') as schemafile:
