@@ -1,11 +1,3 @@
-PYTHONPATH=$PWD
-
-DB_HOST=127.0.0.1
-PGDATABASE=ymdb_test
-
-FLASK_ENV=development
-FLASK_DEBUG=1
-
 export PYTHONPATH=$PWD
 
 export DB_HOST=127.0.0.1
