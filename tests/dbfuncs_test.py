@@ -117,9 +117,40 @@ def test_select_all_videos_03():
 
     data = dbf.select_all_videos()
 
-    # print('-'*79)
-    # print(expected)
-    # print(data)
-    # print('='*79)
+    assert data == expected
+
+
+
+
+def test_select_videos_by_id():
+    tests.setup.run_sql_file(sqlfile='testData_03')
+    expected = {
+        'id2': {
+            'id': 'id2',
+            'title': 'title2',
+            'playlistid': 'plid1',
+            'added': '2000-01-01 00:00:00',
+            'is_down': False,
+            'playlisttitle': 'pltitle1',
+        },
+        'id4': {
+            'id': 'id4',
+            'title': 'title4',
+            'playlistid': 'plid2',
+            'added': '2000-01-01 00:00:00',
+            'is_down': True,
+            'playlisttitle': 'pltitle2',
+        },
+        'id5': {
+            'id': 'id5',
+            'title': 'title5',
+            'playlistid': 'plid2',
+            'added': '2000-01-01 00:00:00',
+            'is_down': False,
+            'playlisttitle': 'pltitle2',
+        },
+    }
+
+    data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
 
     assert data == expected

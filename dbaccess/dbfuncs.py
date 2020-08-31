@@ -62,23 +62,42 @@ def select_all_videos():
         FROM video
         LEFT JOIN playlist ON playlist.pk = video.playlist
     """
-    # playlisttitle_idx = 6
 
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql)
         rows = cur.fetchall()
 
-    # data = {
-    #     row[VIDEO_ID_IDX]: {
-    #         'id': row[VIDEO_ID_IDX],
-    #         'title': row[VIDEO_TITLE_IDX],
-    #         'playlistid': row[VIDEO_PLAYLIST_IDX],
-    #         'added': str(row[VIDEO_ADDED_IDX]),
-    #         'is_down': row[VIDEO_IS_DOWN_IDX],
-    #         'playlisttitle': row[playlisttitle_idx] or None,
-    #     } for row in rows
-    # }
+    data = {
+        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
+        for row in rows
+    }
+
+    return data
+
+
+
+
+def select_videos_by_id(vids):
+    sql = """
+        SELECT
+            video.pk,
+            video.id AS youtube_id,
+            video.title,
+            playlist.id AS playlistid,
+            video.added,
+            video.is_down,
+            playlist.title AS playlist
+        FROM video
+        LEFT JOIN playlist ON playlist.pk = video.playlist
+        WHERE video.id in %(vids)s
+        ;
+    """
+
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'vids': vids})
+        rows = cur.fetchall()
 
     data = {
         row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
