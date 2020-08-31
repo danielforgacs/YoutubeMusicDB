@@ -12,23 +12,6 @@ def setup():
     tests.setup.init_test_db()
 
 
-# @pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
-# def test_post_playlist(ytid):
-#     youtube = ytdl.Youtube(url=ytid)
-#
-#     if youtube.playlist:
-#         expected = youtube.playlist.as_dict
-#     else:
-#         expected = youtube.video.as_dict
-#
-#     with main.app.test_client() as client:
-#         response = client.post('/api/createplaylist', json={'id': ytid})
-#
-#     data = response.get_json()
-#
-#     assert data == expected
-
-
 
 def test_post_playlist_returns_error_json_on_missing_id():
     expected = {'error': 'missing id'}
@@ -39,8 +22,6 @@ def test_post_playlist_returns_error_json_on_missing_id():
     data = response.get_json()
 
     assert data == expected
-
-
 
 
 

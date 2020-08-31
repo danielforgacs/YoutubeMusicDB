@@ -17,14 +17,14 @@ class Server(SimpleXMLRPCServer):
 
     def __enter__(self, *args, **kwargs):
         server = super().__enter__(*args, **kwargs)
-        print('--> Server started')
+        print('--> DBAccess RPC Server started...')
 
         return server
 
 
     def __exit__(self, *args, **kwargs):
         super().__exit__(*args, **kwargs)
-        print('--> Server closed.')
+        print('--> DBAccess RPC Server close.')
 
 
 

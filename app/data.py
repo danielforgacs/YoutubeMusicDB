@@ -153,7 +153,6 @@ def query_videos_by_playlistid(playlistid):
         conn.commit()
         rows = cur.fetchall()
 
-    # result = [row[0] for row in rows]
     result = [{
         'id': row[0],
         'is_down': row[1],
@@ -177,11 +176,6 @@ def set_video_playlist(vid, plpk):
         'title': row[IDX_VIDEO__title],
         'playlist': row[IDX_VIDEO__playlist],
     }
-    # result = [
-    #     row[IDX_VIDEO__pk],
-    #     row[IDX_VIDEO__id],
-    #     row[IDX_VIDEO__playlist],
-    # ]
 
     return result
 
@@ -197,7 +191,6 @@ def set_video_as_downloaded(vid):
         conn.commit()
         row = cur.fetchone()
 
-    # pk = row[0]
     result = {'pk': row[0]}
 
     return result

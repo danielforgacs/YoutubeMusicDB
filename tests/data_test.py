@@ -3,7 +3,6 @@ import psycopg2
 import pytest
 import tests.setup
 import app.data as data
-# import app.youtube as youtube
 
 
 
@@ -16,8 +15,6 @@ def setup():
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
     plpk = data.insert_playlist(pldict=pldata)
-
-    # assert isinstance(plpk, int)
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
@@ -64,8 +61,6 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video(vdata):
     vpk = data.insert_video(vdata=vdata)
-
-    # assert isinstance(vpk, int)
 
     with data.PGConnection() as conn:
         cur = conn.cursor()
