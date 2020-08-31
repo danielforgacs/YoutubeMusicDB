@@ -54,16 +54,6 @@ def select_all_videos():
         cur.execute(query=sql)
         rows = cur.fetchall()
 
-#     print(rows)
-#
-#     try:
-#         print('\nrow[playlisttitle_idx]', rows[0][playlisttitle_idx])
-#         print('\nrow[playlisttitle_idx]', rows[1][playlisttitle_idx])
-#         print('\nrow[playlisttitle_idx]', rows[2][playlisttitle_idx])
-#         print('\nrow[playlisttitle_idx]', rows[3][playlisttitle_idx])
-#         print('\nrow[playlisttitle_idx]', rows[4][playlisttitle_idx])
-#     except: pass
-
     data = {
         row[VIDEO_ID_IDX]: {
             'id': row[VIDEO_ID_IDX],
