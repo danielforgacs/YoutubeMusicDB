@@ -47,15 +47,22 @@ def select_all_videos():
         FROM video
         LEFT JOIN playlist ON playlist.pk = video.playlist
     """
-    playlisttitle_idx = 5
+    playlisttitle_idx = 6
 
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql)
         rows = cur.fetchall()
 
-    print()
-    print(rows)
+#     print(rows)
+#
+#     try:
+#         print('\nrow[playlisttitle_idx]', rows[0][playlisttitle_idx])
+#         print('\nrow[playlisttitle_idx]', rows[1][playlisttitle_idx])
+#         print('\nrow[playlisttitle_idx]', rows[2][playlisttitle_idx])
+#         print('\nrow[playlisttitle_idx]', rows[3][playlisttitle_idx])
+#         print('\nrow[playlisttitle_idx]', rows[4][playlisttitle_idx])
+#     except: pass
 
     data = {
         row[VIDEO_ID_IDX]: {
