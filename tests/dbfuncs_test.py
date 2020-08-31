@@ -154,3 +154,19 @@ def test_select_videos_by_id():
     data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
 
     assert data == expected
+
+
+
+def test_set_video_as_downloaded():
+    tests.setup.run_sql_file(sqlfile='testData_03')
+    expected = {'id5': {
+        'id': 'id5',
+        'title': 'title5',
+        'playlistid': 'plid2',
+        'added': '2000-01-01 00:00:00',
+        'is_down': True,
+        'playlisttitle': 'pltitle2',
+    }}
+    data = dbf.set_video_as_downloaded(vid='id5')
+
+    assert data == expected

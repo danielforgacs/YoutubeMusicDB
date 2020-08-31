@@ -105,3 +105,23 @@ def select_videos_by_id(vids):
     }
 
     return data
+
+
+
+
+def set_video_as_downloaded(vid):
+    sql = """
+        UPDATE video
+        SET is_down = true
+        WHERE id = %(id)s
+        ;
+    """
+
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'id': vid})
+        conn.commit()
+
+    result = select_videos_by_id(vids=(vid,))
+
+    return result

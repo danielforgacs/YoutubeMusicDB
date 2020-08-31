@@ -181,7 +181,7 @@ def set_video_playlist(vid, plpk):
 
 
 
-
+# MOVED TO DBACCESS
 def set_video_as_downloaded(vid):
     data = {'id': vid}
 
@@ -220,6 +220,7 @@ def select_all_videos():
 
 
 
+# MOVED TO DBACCESS
 def select_videos_by_id(vids):
     with PGConnection() as conn:
         cur = conn.cursor()
