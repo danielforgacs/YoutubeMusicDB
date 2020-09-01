@@ -211,3 +211,19 @@ def test_query_videos_by_playlistid(plid, expected):
     vids = [video['id'] for video in result.values()]
 
     assert vids == expected
+
+
+
+
+def test_insert_video():
+    video = {
+        'id': 'new_vid_id_1',
+        'title': 'new_vid_title_1',
+    }
+    result = dbf.insert_video(vdata=video)
+
+    assert list(result.keys()) == [video['id']]
+    assert list(result[video['id']].keys()) == [
+        'id', 'title', 'playlistid', 'added', 'is_down', 'playlisttitle']
+    assert result[video['id']]['id'] == video['id']
+    assert result[video['id']]['title'] == video['title']

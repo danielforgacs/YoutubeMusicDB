@@ -128,6 +128,7 @@ def insert_playlist(pldict):
 
 
 
+# MOVED TO DBACCESS
 def insert_video(vdata):
     vdata.setdefault('playlist', None)
     vdata['added'] = datetime.datetime.now()

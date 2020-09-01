@@ -176,3 +176,28 @@ def query_videos_by_playlistid(playlistid):
     }
 
     return data
+
+
+
+
+def insert_video(vdata):
+    sql = """
+        INSERT INTO video (id, title, playlist, added)
+        VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
+        ON CONFLICT (id) DO UPDATE SET
+            title = %(title)s
+        RETURNING pk, id
+        ;
+    """
+    vdata.setdefault('playlist', None)
+    vdata['added'] = datetime.datetime.now()
+
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(sql, vdata)
+        conn.commit()
+        row = cur.fetchone()
+
+    result = select_videos_by_id(vids=(row[VIDEO_ID_IDX],))
+
+    return result
