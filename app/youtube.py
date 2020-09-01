@@ -1,8 +1,14 @@
+import os
 import sys
 import youtube_dl
 import app.data as datab
 import app.config
+import xmlrpc.client
 
+
+DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
+DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
 
 
 YOUTUBEDL_VIDEO_ATTRS = [
@@ -55,7 +61,10 @@ class Video(BaseEntity):
 
 
     def set_playlist(self, playlist):
-        datab.set_video_playlist(self.id, plpk=playlist.pk)
+        # datab.set_video_playlist(self.id, plpk=playlist.pk)
+        dbacces_svr = xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL)
+        dbacces_svr.set_video_playlist(self.id, playlist.pk)
+
 
 
 

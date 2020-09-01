@@ -39,6 +39,7 @@ def main():
     with Server() as server:
         server.register_function(function=server_test)
         server.register_function(function=dbaccess.dbfuncs.select_all_videos)
+        server.register_function(function=dbaccess.dbfuncs.set_video_playlist)
         server.serve_forever()
 
 
