@@ -44,6 +44,7 @@ class PGConnection:
 def video_row_to_dict(row):
     playlisttitle_idx = 6
     row = {
+        'pk': row[VIDEO_PK_IDX],
         'id': row[VIDEO_ID_IDX],
         'title': row[VIDEO_TITLE_IDX],
         'playlistid': row[VIDEO_PLAYLIST_IDX],
@@ -57,6 +58,7 @@ def video_row_to_dict(row):
 
 def playlist_row_to_dict(row):
     rowdict = {
+        'pk': row[PLAYLIST_PK_IDX],
         'id': row[PLAYLIST_ID_IDX],
         'title': row[PLAYLIST_TITLE_IDX],
         'uploader_id': row[PLAYLIST_UPLOADER_ID_IDX],

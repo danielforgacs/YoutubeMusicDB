@@ -21,6 +21,7 @@ def test_select_all_videos_01():
     tests.setup.run_sql_file(sqlfile='testData_01')
     expected = {
         'id1': {
+            'pk': 1,
             'id': 'id1',
             'title': 'title1',
             'playlistid': None,
@@ -40,6 +41,7 @@ def test_select_all_videos_02():
     tests.setup.run_sql_file(sqlfile='testData_02')
     expected = {
         'id1': {
+            'pk': 1,
             'id': 'id1',
             'title': 'title1',
             'playlistid': None,
@@ -48,6 +50,7 @@ def test_select_all_videos_02():
             'playlisttitle': None,
         },
         'id2': {
+            'pk': 2,
             'id': 'id2',
             'title': 'title2',
             'playlistid': None,
@@ -56,6 +59,7 @@ def test_select_all_videos_02():
             'playlisttitle': None,
         },
         'id3': {
+            'pk': 3,
             'id': 'id3',
             'title': 'title3',
             'playlistid': None,
@@ -75,6 +79,7 @@ def test_select_all_videos_03():
     tests.setup.run_sql_file(sqlfile='testData_03')
     expected = {
         'id1': {
+            'pk': 1,
             'id': 'id1',
             'title': 'title1',
             'playlistid': None,
@@ -83,6 +88,7 @@ def test_select_all_videos_03():
             'playlisttitle': None,
         },
         'id2': {
+            'pk': 2,
             'id': 'id2',
             'title': 'title2',
             'playlistid': 'plid1',
@@ -91,6 +97,7 @@ def test_select_all_videos_03():
             'playlisttitle': 'pltitle1',
         },
         'id3': {
+            'pk': 3,
             'id': 'id3',
             'title': 'title3',
             'playlistid': None,
@@ -99,6 +106,7 @@ def test_select_all_videos_03():
             'playlisttitle': None,
         },
         'id4': {
+            'pk': 4,
             'id': 'id4',
             'title': 'title4',
             'playlistid': 'plid2',
@@ -107,6 +115,7 @@ def test_select_all_videos_03():
             'playlisttitle': 'pltitle2',
         },
         'id5': {
+            'pk': 5,
             'id': 'id5',
             'title': 'title5',
             'playlistid': 'plid2',
@@ -127,6 +136,7 @@ def test_select_videos_by_id():
     tests.setup.run_sql_file(sqlfile='testData_03')
     expected = {
         'id2': {
+            'pk': 2,
             'id': 'id2',
             'title': 'title2',
             'playlistid': 'plid1',
@@ -135,6 +145,7 @@ def test_select_videos_by_id():
             'playlisttitle': 'pltitle1',
         },
         'id4': {
+            'pk': 4,
             'id': 'id4',
             'title': 'title4',
             'playlistid': 'plid2',
@@ -143,6 +154,7 @@ def test_select_videos_by_id():
             'playlisttitle': 'pltitle2',
         },
         'id5': {
+            'pk': 5,
             'id': 'id5',
             'title': 'title5',
             'playlistid': 'plid2',
@@ -161,6 +173,7 @@ def test_select_videos_by_id():
 def test_set_video_as_downloaded():
     tests.setup.run_sql_file(sqlfile='testData_03')
     expected = {'id5': {
+        'pk': 5,
         'id': 'id5',
         'title': 'title5',
         'playlistid': 'plid2',
@@ -224,7 +237,7 @@ def test_insert_video():
 
     assert list(result.keys()) == [video['id']]
     assert list(result[video['id']].keys()) == [
-        'id', 'title', 'playlistid', 'added', 'is_down', 'playlisttitle']
+        'pk', 'id', 'title', 'playlistid', 'added', 'is_down', 'playlisttitle']
     assert result[video['id']]['id'] == video['id']
     assert result[video['id']]['title'] == video['title']
 
@@ -265,7 +278,7 @@ def test_insert_playlist(pldict):
     assert len(result.keys()) == 1
     assert list(result.keys()) == [pldict['id']]
     assert list(result[pldict['id']].keys()) == [
-        'id', 'title', 'uploader_id', 'added']
+        'pk', 'id', 'title', 'uploader_id', 'added']
     assert result[pldict['id']]['id'] == pldict['id']
     assert result[pldict['id']]['title'] == pldict['title']
     assert result[pldict['id']]['uploader_id'] == pldict['uploader_id']

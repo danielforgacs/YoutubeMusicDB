@@ -56,6 +56,7 @@ def test_select_all_videos_02():
     videos = dbacces_svr.select_all_videos()
     expected = {
         'id1': {
+            'pk': 1,
             'id': 'id1',
             'title': 'title1',
             'playlistid': None,
@@ -64,6 +65,7 @@ def test_select_all_videos_02():
             'playlisttitle': None,
         },
         'id2': {
+            'pk': 2,
             'id': 'id2',
             'title': 'title2',
             'playlistid': 'plid1',
@@ -72,6 +74,7 @@ def test_select_all_videos_02():
             'playlisttitle': 'pltitle1',
         },
         'id3': {
+            'pk': 3,
             'id': 'id3',
             'title': 'title3',
             'playlistid': None,
@@ -80,6 +83,7 @@ def test_select_all_videos_02():
             'playlisttitle': None,
         },
         'id4': {
+            'pk': 4,
             'id': 'id4',
             'title': 'title4',
             'playlistid': 'plid2',
@@ -88,6 +92,7 @@ def test_select_all_videos_02():
             'playlisttitle': 'pltitle2',
         },
         'id5': {
+            'pk': 5,
             'id': 'id5',
             'title': 'title5',
             'playlistid': 'plid2',
