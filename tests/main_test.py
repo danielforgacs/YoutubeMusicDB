@@ -1,10 +1,11 @@
 import os
 import pytest
-import app.data
+# import app.data
 import app.main as main
 import app.youtube as ytdl
 import tests.data_test
 import tests.setup
+import dbaccess.dbfuncs as dbf
 from app import config
 
 
@@ -60,7 +61,7 @@ def test_download_set_videos_as_is_down_True(plst):
         WHERE id in %s;
     """
 
-    with app.data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars=(videoids,))
         rows = cur.fetchall()

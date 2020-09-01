@@ -1,6 +1,7 @@
 import os
 import psycopg2
-import app.data
+# import dbf
+import dbaccess.dbfuncs as dbf
 
 
 PGDATABASE = os.environ['PGDATABASE']
@@ -44,7 +45,7 @@ def init_test_db():
     with open(SCHEMA_FILE, 'r') as schemafile:
         schemasql = schemafile.read()
 
-    with app.data.PGConnection(dbname='postgres') as conn1:
+    with dbf.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn1.cursor()
 
@@ -53,12 +54,12 @@ def init_test_db():
         except psycopg2.errors.InvalidCatalogName:
             pass
 
-    with app.data.PGConnection(dbname='postgres') as conn1:
+    with dbf.PGConnection(dbname='postgres') as conn1:
         conn1.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn1.cursor()
         cur.execute(query="create database %s;" % PGDATABASE)
 
-    with app.data.PGConnection() as conn2:
+    with dbf.PGConnection() as conn2:
         conn2.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn2.cursor()
         cur.execute(query=schemasql)
@@ -73,7 +74,7 @@ def run_sql_file(sqlfile):
     with open(sqlpath, 'r') as schemafile:
         schemasql = schemafile.read()
 
-    with app.data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
         cur.execute(query=schemasql)
