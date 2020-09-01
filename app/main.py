@@ -107,7 +107,10 @@ def download_playlist():
 
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=video['id'], do_download=True)
-        data.set_video_as_downloaded(vid=video['id'])
+        # data.set_video_as_downloaded(vid=video['id'])
+        with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+            dbacces_svr.set_video_as_downloaded(video['id'])
+
         titles.append(ytdl.video.title)
 
     downloads = os.listdir(DOWNLOAD_DIR)
@@ -146,10 +149,11 @@ def archive(zipname):
 
 @app.route('/api/all_videos', methods=['GET'])
 def GET_all_videos():
-    allvids = data.select_all_videos()
-    context = {
-        'videos': allvids
-    }
+    # allvids = data.select_all_videos()
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_all_videos()
+
+    context = {'videos': videos}
 
     return flask.jsonify(context)
 
