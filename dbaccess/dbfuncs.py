@@ -145,3 +145,34 @@ def set_video_playlist(vid, plpk):
     result = select_videos_by_id(vids=(vid,))
 
     return result
+
+
+
+
+def query_videos_by_playlistid(playlistid):
+    sql = """
+        SELECT
+            video.pk,
+            video.id AS youtube_id,
+            video.title,
+            playlist.id AS playlistid,
+            video.added,
+            video.is_down,
+            playlist.title AS playlist
+        FROM video
+        JOIN playlist ON playlist.pk = video.playlist
+        WHERE playlist.id = %(plid)s
+        ;
+    """
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(sql, {'plid': playlistid})
+        conn.commit()
+        rows = cur.fetchall()
+
+    data = {
+        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
+        for row in rows
+    }
+
+    return data

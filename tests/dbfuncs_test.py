@@ -1,3 +1,4 @@
+import pytest
 import dbaccess.dbfuncs as dbf
 import tests.setup
 
@@ -195,3 +196,18 @@ def test_set_video_playlist():
 
     assert video[vid]['playlistid'] == 'plid2'
     assert video[vid]['playlisttitle'] == 'pltitle2'
+
+
+
+
+@pytest.mark.parametrize('plid, expected', (
+    ('plid0', []),
+    ('plid1', ['id2']),
+    ('plid2', ['id4', 'id5']),
+))
+def test_query_videos_by_playlistid(plid, expected):
+    tests.setup.run_sql_file(sqlfile='testData_03')
+    result = dbf.query_videos_by_playlistid(playlistid=plid)
+    vids = [video['id'] for video in result.values()]
+
+    assert vids == expected
