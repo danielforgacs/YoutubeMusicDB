@@ -234,7 +234,7 @@ def test_insert_video():
 @pytest.mark.parametrize('plids', (
     ('plid1',),
     ('plid2',),
-    ('plid2', 'plid2'),
+    ('plid1', 'plid2'),
 ))
 def test_select_playlists_by_id(plids):
     tests.setup.run_sql_file(sqlfile='testData_03')
