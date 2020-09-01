@@ -81,7 +81,7 @@ def download_playlist():
             break
 
 
-    videos = data.query_videos_by_playlistid(playlistid=ytid)
+    videos = data.select_videos_by_playlistid(playlistid=ytid)
     titles = []
 
     for video in videos:

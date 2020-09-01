@@ -167,7 +167,7 @@ def set_video_playlist(vid, plpk):
 
 
 
-def query_videos_by_playlistid(playlistid):
+def select_videos_by_playlistid(playlistid):
     sql = """
         SELECT
             video.pk,

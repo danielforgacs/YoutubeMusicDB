@@ -149,7 +149,7 @@ def insert_video(vdata):
 
 
 # MOVED TO DBACCESS
-def query_videos_by_playlistid(playlistid):
+def select_videos_by_playlistid(playlistid):
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_VIDEO_BY_PLAYLIST, {'plid': playlistid})

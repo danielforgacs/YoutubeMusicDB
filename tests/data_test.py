@@ -93,9 +93,9 @@ def test_get_video_ids_by_playlist():
     vpk1 = data.insert_video(vdata=videodata1)
     vpk2 = data.insert_video(vdata=videodata2)
     vpk3 = data.insert_video(vdata=videodata3)
-    videoids1 = data.query_videos_by_playlistid(
+    videoids1 = data.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[0])['id'])
-    videoids2 = data.query_videos_by_playlistid(
+    videoids2 = data.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
 
     assert [vid['id'] for vid in videoids1] == [videodata1['id'], videodata2['id']]
