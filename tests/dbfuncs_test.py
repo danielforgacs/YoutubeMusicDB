@@ -253,8 +253,19 @@ def test_select_playlists_by_id(plids):
         'title': 'pl_title_1',
         'uploader_id': 'pl_uploader_id_1',
     },
+    {
+        'id': 'pl_id_2',
+        'title': 'pl_title_2',
+        'uploader_id': 'pl_uploader_id_2',
+    },
 ))
 def test_insert_playlist(pldict):
     result = dbf.insert_playlist(pldict=pldict)
 
+    assert len(result.keys()) == 1
     assert list(result.keys()) == [pldict['id']]
+    assert list(result[pldict['id']].keys()) == [
+        'id', 'title', 'uploader_id', 'added']
+    assert result[pldict['id']]['id'] == pldict['id']
+    assert result[pldict['id']]['title'] == pldict['title']
+    assert result[pldict['id']]['uploader_id'] == pldict['uploader_id']
