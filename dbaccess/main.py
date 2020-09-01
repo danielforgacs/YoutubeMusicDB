@@ -38,10 +38,19 @@ def server_test(data):
 def main():
     with Server() as server:
         server.register_function(function=server_test)
+
+        server.register_function(function=dbaccess.dbfuncs.video_row_to_dict)
+        server.register_function(function=dbaccess.dbfuncs.playlist_row_to_dict)
         server.register_function(function=dbaccess.dbfuncs.select_all_videos)
+        server.register_function(function=dbaccess.dbfuncs.select_videos_by_id)
+        server.register_function(function=dbaccess.dbfuncs.set_video_as_downloaded)
         server.register_function(function=dbaccess.dbfuncs.set_video_playlist)
+        server.register_function(function=dbaccess.dbfuncs.select_videos_by_playlistid)
         server.register_function(function=dbaccess.dbfuncs.insert_video)
+        server.register_function(function=dbaccess.dbfuncs.select_playlists_by_id)
         server.register_function(function=dbaccess.dbfuncs.insert_playlist)
+
+
         server.serve_forever()
 
 
