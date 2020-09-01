@@ -4,7 +4,7 @@ import json
 import zipfile
 import uuid
 import xmlrpc.client
-import app.data as data
+# import app.data as data
 import app.youtube as youtube
 from app import config
 
@@ -171,9 +171,12 @@ def view_playlists():
         vid = flask.request.json.get('id')
         ytdl = youtube.Youtube(url=vid)
 
-    allvids = data.select_all_videos()
+    # allvids = data.select_all_videos()
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.a.select_all_videos()
+
     context = {
-        'videos': allvids
+        'videos': videos
     }
 
     return flask.render_template(template_name_or_list='allvideos.html', context=context)
