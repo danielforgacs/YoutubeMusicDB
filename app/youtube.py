@@ -62,8 +62,9 @@ class Video(BaseEntity):
 
     def set_playlist(self, playlist):
         # datab.set_video_playlist(self.id, plpk=playlist.pk)
-        dbacces_svr = xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL)
-        dbacces_svr.set_video_playlist(self.id, playlist.pk)
+        # dbacces_svr = xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL)
+        with xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL) as dbacces_svr:
+            dbacces_svr.set_video_playlist(self.id, playlist.pk)
 
 
 
