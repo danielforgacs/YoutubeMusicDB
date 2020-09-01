@@ -256,3 +256,5 @@ def test_select_playlists_by_id(plids):
 ))
 def test_insert_playlist(pldict):
     result = dbf.insert_playlist(pldict=pldict)
+
+    assert list(result.keys()) == [pldict['id']]
