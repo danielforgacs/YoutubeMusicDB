@@ -247,12 +247,12 @@ def test_select_playlists_by_id(plids):
 
 
 
-@pytest.mark.skip()
-def test_insert_playlist():
-    pass
-    # pldict = {
-    #     'id':,
-    #     'title':,
-    #     'uploader_id':,
-    # }
-    # result = insert_playlist(pldict=pldict)
+@pytest.mark.parametrize('pldict', (
+    {
+        'id': 'pl_id_1',
+        'title': 'pl_title_1',
+        'uploader_id': 'pl_uploader_id_1',
+    },
+))
+def test_insert_playlist(pldict):
+    result = dbf.insert_playlist(pldict=pldict)

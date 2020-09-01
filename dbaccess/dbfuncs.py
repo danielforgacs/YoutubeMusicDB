@@ -248,7 +248,7 @@ def select_playlists_by_id(plids):
 
 
 
-def WIP____insert_playlist(pldict):
+def insert_playlist(pldict):
     sql = """
         INSERT INTO playlist (id, title, uploader_id, added)
         VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
@@ -262,11 +262,9 @@ def WIP____insert_playlist(pldict):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(SQL_INSERT_PLAYLIST, pldict)
+        cur.execute(sql, pldict)
         conn.commit()
-        row = cur.fetchone()
 
-    pk = row[IDX_PLAYLIST__pk]
-    result = {'pk': pk}
+    result = select_playlists_by_id(plids=(pldict['id'],))
 
     return result
