@@ -95,10 +95,13 @@ def download_playlist():
             break
 
 
-    videos = data.select_videos_by_playlistid(playlistid=ytid)
+    # videos = data.select_videos_by_playlistid(playlistid=ytid)
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_videos_by_playlistid(ytid)
+
     titles = []
 
-    for video in videos:
+    for video in videos.values():
         if video['is_down']:
             continue
 

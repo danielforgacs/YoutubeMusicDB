@@ -51,7 +51,8 @@ def test_download_set_videos_as_is_down_True(plst):
         response = client.post('/api/download', json={'id': plst})
 
     videoids = response.json
-    videoids = tuple(vid['id'] for vid in response.json['videos'])
+    # videoids = tuple(vid['id'] for vid in response.json['videos'])
+    videoids = tuple(videoids.keys())
 
     sql = """
         SELECT is_down
