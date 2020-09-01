@@ -2,7 +2,8 @@ import os
 import psycopg2
 import pytest
 import tests.setup
-import app.data as data
+import dbaccess.dbfuncs as dbf
+# import app.data as data
 
 
 
@@ -14,9 +15,9 @@ def setup():
 
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
-    plpk = data.insert_playlist(pldict=pldata)
+    plpk = dbf.insert_playlist(pldict=pldata)
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query="""
             SELECT pk, id, title, uploader_id
@@ -36,14 +37,14 @@ def test_insert_playlist(pldata):
 def test_playlist_insert_updates_data_if_playlist_extsts():
     playlist = dict(tests.setup.PLAYLIST_DATA[0])
     newtitle = 'new_title'
-    plpk = data.insert_playlist(pldict=playlist)
+    plpk = dbf.insert_playlist(pldict=playlist)
 
     playlist['title'] = newtitle
-    plpk2 = data.insert_playlist(pldict=playlist)
+    plpk2 = dbf.insert_playlist(pldict=playlist)
 
     assert plpk == plpk2
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query="""
             SELECT pk, id, title, uploader_id
@@ -62,7 +63,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
 def test_insert_video(vdata):
     vpk = data.insert_video(vdata=vdata)
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute("""
             SELECT pk, id, title, playlist
@@ -82,8 +83,8 @@ def test_insert_video(vdata):
 
 
 def test_get_video_ids_by_playlist():
-    plpk1 = data.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
-    plpk2 = data.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
+    plpk1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
+    plpk2 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
@@ -114,8 +115,8 @@ def test_set_video_playlist_sets_updates():
     """
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
-    plpk1 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    plpk1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
     result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
@@ -123,7 +124,7 @@ def test_set_video_playlist_sets_updates():
     vid = result['id']
     plpk = result['playlist']
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
@@ -136,7 +137,7 @@ def test_set_video_playlist_sets_updates():
     vid = result['id']
     plpk = result['playlist']
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
@@ -151,7 +152,7 @@ def test_set_video_playlist_sets_updates():
     vid = result['id']
     plpk = result['playlist']
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
@@ -174,7 +175,7 @@ def test_set_video_as_downloaded():
         WHERE video.id = %(id)s
         ;
     """
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars=videdict)
         row = cur.fetchone()
@@ -187,7 +188,7 @@ def test_set_video_as_downloaded():
 
     assert isinstance(vpk, dict)
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars=videdict)
         row = cur.fetchone()
@@ -211,7 +212,7 @@ def test_set_video_as_downloaded():
     """,
 ])
 def test_select_all_videos_returns_all_video_rows_once(sql):
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         curs = conn.cursor()
         curs.execute(sql)
         conn.commit()
@@ -248,7 +249,7 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
             ('id_ff', 'title_ff', NULL, '2020-01-01 12:12:12.12', false)
     """
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         curs = conn.cursor()
         curs.execute(sql)
         conn.commit()
@@ -276,7 +277,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
             ('id_ff', 'title_ff', NULL, '2020-01-01 12:12:12.12', false)
     """
 
-    with data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         curs = conn.cursor()
         curs.execute(sql)
         conn.commit()
@@ -292,7 +293,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
 
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist_returns_dict(pldata):
-    result = data.insert_playlist(pldict=pldata)
+    result = dbf.insert_playlist(pldict=pldata)
 
     assert isinstance(result, dict)
     assert list(result.keys()) == ['pk']
@@ -320,8 +321,8 @@ def test_set_video_playlist_returns_dict():
     """
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
-    plpk1 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk2 = data.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    plpk1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = data.insert_video(vdata=videodata)
 
     result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
