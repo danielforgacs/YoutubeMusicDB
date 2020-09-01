@@ -38,10 +38,12 @@ def test_insert_playlist(pldata):
 def test_playlist_insert_updates_data_if_playlist_extsts():
     playlist = dict(tests.setup.PLAYLIST_DATA[0])
     newtitle = 'new_title'
-    plpk = dbf.insert_playlist(pldict=playlist)
+    result = dbf.insert_playlist(pldict=playlist)
+    plpk = [playlist for playlist in result.values()][0]['pk']
 
     playlist['title'] = newtitle
-    plpk2 = dbf.insert_playlist(pldict=playlist)
+    result2 = dbf.insert_playlist(pldict=playlist)
+    plpk2 = [playlist for playlist in result2.values()][0]['pk']
 
     assert plpk == plpk2
 
@@ -56,7 +58,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][data.IDX_PLAYLIST__title] == newtitle
+    assert result[0][dbf.PLAYLIST_TITLE_IDX] == newtitle
 
 
 
