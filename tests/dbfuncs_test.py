@@ -38,31 +38,31 @@ def test_select_all_videos_01():
 def test_select_all_videos_02():
     tests.setup.run_sql_file(sqlfile='testData_02')
     expected = {
-    'id1': {
-        'id': 'id1',
-        'title': 'title1',
-        'playlistid': None,
-        'added': '2000-01-01 00:00:00',
-        'is_down': False,
-        'playlisttitle': None,
-    },
-    'id2': {
-        'id': 'id2',
-        'title': 'title2',
-        'playlistid': None,
-        'added': '2000-01-01 00:00:00',
-        'is_down': False,
-        'playlisttitle': None,
-    },
-    'id3': {
-        'id': 'id3',
-        'title': 'title3',
-        'playlistid': None,
-        'added': '2000-01-01 00:00:00',
-        'is_down': False,
-        'playlisttitle': None,
-    },
-}
+        'id1': {
+            'id': 'id1',
+            'title': 'title1',
+            'playlistid': None,
+            'added': '2000-01-01 00:00:00',
+            'is_down': False,
+            'playlisttitle': None,
+        },
+        'id2': {
+            'id': 'id2',
+            'title': 'title2',
+            'playlistid': None,
+            'added': '2000-01-01 00:00:00',
+            'is_down': False,
+            'playlisttitle': None,
+        },
+        'id3': {
+            'id': 'id3',
+            'title': 'title3',
+            'playlistid': None,
+            'added': '2000-01-01 00:00:00',
+            'is_down': False,
+            'playlisttitle': None,
+        },
+    }
 
     data = dbf.select_all_videos()
 
