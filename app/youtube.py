@@ -57,7 +57,13 @@ class Video(BaseEntity):
 
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
-        self.pk = datab.insert_video(vdata=self.as_dict)
+        # self.pk = datab.insert_video(vdata=self.as_dict)
+
+        with xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL, allow_none=True) as dbacces_svr:
+            response = dbacces_svr.insert_video(self.as_dict)
+
+        videoid = list(response.keys())[0]
+        self.pk = response[videoid]['pk']
 
 
     def set_playlist(self, playlist):

@@ -40,6 +40,7 @@ def main():
         server.register_function(function=server_test)
         server.register_function(function=dbaccess.dbfuncs.select_all_videos)
         server.register_function(function=dbaccess.dbfuncs.set_video_playlist)
+        server.register_function(function=dbaccess.dbfuncs.insert_video)
         server.serve_forever()
 
 
