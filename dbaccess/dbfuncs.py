@@ -130,4 +130,18 @@ def set_video_as_downloaded(vid):
 
 
 def set_video_playlist(vid, plpk):
-    pass
+    sql = """
+        UPDATE video
+        SET playlist = %(plpk)s
+        WHERE video.id = %(vid)s
+        RETURNING pk, id, title, playlist
+        ;
+    """
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(sql, {'vid': vid, 'plpk': plpk})
+        conn.commit()
+
+    result = select_videos_by_id(vids=(vid,))
+
+    return result

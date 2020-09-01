@@ -186,5 +186,12 @@ def test_set_video_playlist():
     result = dbf.set_video_playlist(vid=vid, plpk=plpk)
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] is 'plid1'
-    assert video[vid]['playlisttitle'] is 'pltitle1'
+    assert video[vid]['playlistid'] == 'plid1'
+    assert video[vid]['playlisttitle'] == 'pltitle1'
+
+    plpk = 2
+    result = dbf.set_video_playlist(vid=vid, plpk=plpk)
+    video = dbf.select_videos_by_id(vids=(vid,))
+
+    assert video[vid]['playlistid'] == 'plid2'
+    assert video[vid]['playlisttitle'] == 'pltitle2'

@@ -163,6 +163,7 @@ def query_videos_by_playlistid(playlistid):
 
 
 
+# MOVED TO DBACCESS
 def set_video_playlist(vid, plpk):
     with PGConnection() as conn:
         cur = conn.cursor()
