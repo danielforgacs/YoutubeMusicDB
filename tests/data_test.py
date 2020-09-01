@@ -15,7 +15,8 @@ def setup():
 
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
-    plpk = dbf.insert_playlist(pldict=pldata)
+    newplist = dbf.insert_playlist(pldict=pldata)
+    plpk = [pldict for pldict in newplist.values()][0]
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
@@ -27,10 +28,10 @@ def test_insert_playlist(pldata):
         """, vars=pldata)
         result = cur.fetchone()
 
-    assert result[data.IDX_PLAYLIST__pk] == plpk['pk']
-    assert result[data.IDX_PLAYLIST__id] == pldata['id']
-    assert result[data.IDX_PLAYLIST__title] == pldata['title']
-    assert result[data.IDX_PLAYLIST__uploader_id] == pldata['uploader_id']
+    assert result[dbf.PLAYLIST_PK_IDX] == plpk['pk']
+    assert result[dbf.PLAYLIST_ID_IDX] == pldata['id']
+    assert result[dbf.PLAYLIST_TITLE_IDX] == pldata['title']
+    assert result[dbf.PLAYLIST_UPLOADER_ID_IDX] == pldata['uploader_id']
 
 
 
