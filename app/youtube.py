@@ -1,7 +1,7 @@
 import os
 import sys
 import youtube_dl
-import app.data as datab
+# import app.data as datab
 import app.config
 import xmlrpc.client
 
