@@ -3,7 +3,8 @@ import flask
 import json
 import zipfile
 import uuid
-# import app.data as data
+import xmlrpc.client
+import app.data as data
 import app.youtube as youtube
 from app import config
 
@@ -52,7 +53,10 @@ def post_playlist():
     else:
         vids = [ytdl.video.id]
 
-    videos = data.select_videos_by_id(vids=vids)
+    # videos = data.select_videos_by_id(vids=vids)
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_videos_by_id(vids)
+
     context = {'videos': videos}
     response = flask.jsonify(context)
 

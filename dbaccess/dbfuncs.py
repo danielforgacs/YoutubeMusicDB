@@ -116,7 +116,7 @@ def select_videos_by_id(vids):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql, vars={'vids': vids})
+        cur.execute(query=sql, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
     data = {
