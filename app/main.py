@@ -3,9 +3,19 @@ import flask
 import json
 import zipfile
 import uuid
-import app.data as data
+# import app.data as data
 import app.youtube as youtube
 from app import config
+
+
+DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
+DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
+RPC_CLIENT_KWARGS = {
+    'uri': DB_ACCESS_URL,
+    'allow_none': True,
+}
+
 
 ROOT_DIR = (
     os.path.dirname(
