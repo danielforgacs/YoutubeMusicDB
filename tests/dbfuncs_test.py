@@ -170,3 +170,21 @@ def test_set_video_as_downloaded():
     data = dbf.set_video_as_downloaded(vid='id5')
 
     assert data == expected
+
+
+
+
+def test_set_video_playlist():
+    tests.setup.run_sql_file(sqlfile='testData_03')
+    vid = 'id1'
+    video = dbf.select_videos_by_id(vids=(vid,))
+
+    assert video[vid]['playlistid'] is None
+    assert video[vid]['playlisttitle'] is None
+
+    plpk = 1
+    result = dbf.set_video_playlist(vid=vid, plpk=plpk)
+    video = dbf.select_videos_by_id(vids=(vid,))
+
+    assert video[vid]['playlistid'] is 'plid1'
+    assert video[vid]['playlisttitle'] is 'pltitle1'

@@ -125,3 +125,9 @@ def set_video_as_downloaded(vid):
     result = select_videos_by_id(vids=(vid,))
 
     return result
+
+
+
+
+def set_video_playlist(vid, plpk):
+    pass
