@@ -4,6 +4,13 @@ import datetime
 import json
 
 
+PLAYLIST_PK_IDX = 0
+PLAYLIST_ID_IDX = 1
+PLAYLIST_TITLE_IDX = 2
+PLAYLIST_UPLOADER_ID_IDX = 3
+PLAYLIST_ADDED_IDX = 4
+
+
 VIDEO_PK_IDX = 0
 VIDEO_ID_IDX = 1
 VIDEO_TITLE_IDX = 2
@@ -45,6 +52,17 @@ def video_row_to_dict(row):
         'playlisttitle': row[playlisttitle_idx] or None,
     }
     return row
+
+
+
+def playlist_row_to_dict(row):
+    rowdict = {
+        'id': row[PLAYLIST_ID_IDX],
+        'title': row[PLAYLIST_TITLE_IDX],
+        'uploader_id': row[PLAYLIST_UPLOADER_ID_IDX],
+        'added': row[PLAYLIST_ADDED_IDX],
+    }
+    return rowdict
 
 
 
@@ -199,5 +217,56 @@ def insert_video(vdata):
         row = cur.fetchone()
 
     result = select_videos_by_id(vids=(row[VIDEO_ID_IDX],))
+
+    return result
+
+
+
+def select_playlists_by_id(plids):
+    sql = """
+        SELECT
+            pk,
+            id,
+            title,
+            uploader_id,
+            added
+        FROM playlist
+        WHERE id in %(plids)s
+        ;
+    """
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(query=sql, vars={'plids': plids})
+        rows = cur.fetchall()
+
+    result = {
+        row[PLAYLIST_ID_IDX]: playlist_row_to_dict(row=row)
+        for row in rows
+    }
+
+    return result
+
+
+
+def WIP____insert_playlist(pldict):
+    sql = """
+        INSERT INTO playlist (id, title, uploader_id, added)
+        VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
+        ON CONFLICT (id) DO UPDATE SET
+            title = %(title)s,
+            uploader_id = %(uploader_id)s
+        RETURNING pk
+        ;
+    """
+    pldict['added'] = datetime.datetime.now()
+
+    with PGConnection() as conn:
+        cur = conn.cursor()
+        cur.execute(SQL_INSERT_PLAYLIST, pldict)
+        conn.commit()
+        row = cur.fetchone()
+
+    pk = row[IDX_PLAYLIST__pk]
+    result = {'pk': pk}
 
     return result

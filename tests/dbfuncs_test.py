@@ -227,3 +227,24 @@ def test_insert_video():
         'id', 'title', 'playlistid', 'added', 'is_down', 'playlisttitle']
     assert result[video['id']]['id'] == video['id']
     assert result[video['id']]['title'] == video['title']
+
+
+
+
+def test_select_playlists_by_id():
+    tests.setup.run_sql_file(sqlfile='testData_03')
+    plid = 'plid1'
+    result = dbf.select_playlists_by_id(plids=(plid,))
+
+    assert list(result.keys()) == [plid]
+
+
+@pytest.mark.skip()
+def test_insert_playlist():
+    pass
+    # pldict = {
+    #     'id':,
+    #     'title':,
+    #     'uploader_id':,
+    # }
+    # result = insert_playlist(pldict=pldict)
