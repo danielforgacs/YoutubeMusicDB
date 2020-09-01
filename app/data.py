@@ -112,6 +112,7 @@ class PGConnection:
 
 
 
+# MOVED TO DBACCESS
 def insert_playlist(pldict):
     pldict['added'] = datetime.datetime.now()
 
