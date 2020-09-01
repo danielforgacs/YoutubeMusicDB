@@ -231,12 +231,19 @@ def test_insert_video():
 
 
 
-def test_select_playlists_by_id():
+@pytest.mark.parametrize('plids', (
+    ('plid1',),
+    ('plid2',),
+))
+def test_select_playlists_by_id(plids):
     tests.setup.run_sql_file(sqlfile='testData_03')
-    plid = 'plid1'
-    result = dbf.select_playlists_by_id(plids=(plid,))
+    expected = list(plids)
+    result = dbf.select_playlists_by_id(plids=plids)
 
-    assert list(result.keys()) == [plid]
+    assert list(result.keys()) == expected
+    assert [pl['id'] for pl in result.values()] == expected
+
+
 
 
 @pytest.mark.skip()
