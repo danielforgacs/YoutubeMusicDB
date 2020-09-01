@@ -87,8 +87,10 @@ def test_insert_video(vdata):
 
 
 def test_get_video_ids_by_playlist():
-    plpk1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
-    plpk2 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
+    result1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
+    plpk1 = [playlist for playlist in result1.values()][0]
+    result2 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
+    plpk2 = [playlist for playlist in result2.values()][0]
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
@@ -98,10 +100,12 @@ def test_get_video_ids_by_playlist():
     vpk1 = dbf.insert_video(vdata=videodata1)
     vpk2 = dbf.insert_video(vdata=videodata2)
     vpk3 = dbf.insert_video(vdata=videodata3)
-    videoids1 = data.select_videos_by_playlistid(
+    videoids1_raw = dbf.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[0])['id'])
-    videoids2 = data.select_videos_by_playlistid(
+    videoids1 = [video for video in videoids1_raw.values()]
+    videoids2_raw = dbf.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
+    videoids2 = [video for video in videoids2_raw.values()]
 
     assert [vid['id'] for vid in videoids1] == [videodata1['id'], videodata2['id']]
     assert [vid['id'] for vid in videoids2] == [videodata3['id']]
