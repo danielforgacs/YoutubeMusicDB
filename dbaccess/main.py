@@ -12,7 +12,11 @@ ADDRESS = (HOST, PORT)
 
 class Server(SimpleXMLRPCServer):
     def __init__(self, *args, **kwargs):
-        super().__init__(addr=ADDRESS, allow_none=True)
+        super().__init__(
+            addr=ADDRESS,
+            allow_none=True,
+            logRequests=False,
+        )
 
 
     def __enter__(self, *args, **kwargs):
