@@ -1,7 +1,6 @@
 import os
 import psycopg2
 import datetime
-import json
 
 
 PLAYLIST_PK_IDX = 0
@@ -14,10 +13,9 @@ PLAYLIST_ADDED_IDX = 4
 VIDEO_PK_IDX = 0
 VIDEO_ID_IDX = 1
 VIDEO_TITLE_IDX = 2
-VIDEO_PLAYLIST_IDX = 3
+VIDEO_PLAYLISTPK_IDX = 3
 VIDEO_ADDED_IDX = 4
 VIDEO_IS_DOWN_IDX = 5
-
 
 
 SQL_SELECT_ALL_VIDEOS = """
@@ -32,6 +30,7 @@ SQL_SELECT_ALL_VIDEOS = """
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlistpk
 """
+
 SQL_SELECT_VIDEOS_BY_ID = """
     SELECT
         video.pk,
@@ -46,12 +45,14 @@ SQL_SELECT_VIDEOS_BY_ID = """
     WHERE video.id in %(vids)s
     ;
 """
+
 SQL_SET_VIDEO_AS_DOWNLOADED = """
     UPDATE video
     SET is_down = true
     WHERE id = %(id)s
     ;
 """
+
 SQL_SET_VIDEO_PLAYLIST = """
     UPDATE video
     SET playlistpk = %(plpk)s
@@ -59,6 +60,7 @@ SQL_SET_VIDEO_PLAYLIST = """
     RETURNING pk, id, title, playlistpk
     ;
 """
+
 SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
     SELECT
         video.pk,
@@ -73,6 +75,7 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
     WHERE playlist.id = %(plid)s
     ;
 """
+
 SQL_INSERT_VIDEO = """
     INSERT INTO video (id, title, playlistpk, added)
     VALUES (%(id)s, %(title)s, %(playlistpk)s, %(added)s)
@@ -81,6 +84,7 @@ SQL_INSERT_VIDEO = """
     RETURNING pk, id
     ;
 """
+
 SQL_SELECT_PLAYLISTS_BY_ID = """
     SELECT
         pk,
@@ -92,6 +96,7 @@ SQL_SELECT_PLAYLISTS_BY_ID = """
     WHERE id in %(plids)s
     ;
 """
+
 SQL_INSERT_PLAYLIST = """
     INSERT INTO playlist (id, title, uploader_id, added)
     VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
@@ -131,7 +136,7 @@ def video_row_to_dict(row):
         'pk': row[VIDEO_PK_IDX],
         'id': row[VIDEO_ID_IDX],
         'title': row[VIDEO_TITLE_IDX],
-        'playlistid': row[VIDEO_PLAYLIST_IDX],
+        'playlistid': row[VIDEO_PLAYLISTPK_IDX],
         'added': str(row[VIDEO_ADDED_IDX]),
         'is_down': row[VIDEO_IS_DOWN_IDX],
         'playlisttitle': row[playlisttitle_idx] or None,
