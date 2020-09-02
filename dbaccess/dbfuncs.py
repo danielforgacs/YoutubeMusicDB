@@ -20,6 +20,90 @@ VIDEO_IS_DOWN_IDX = 5
 
 
 
+SQL_SELECT_ALL_VIDEOS = """
+    SELECT
+        video.pk,
+        video.id AS youtube_id,
+        video.title,
+        playlist.id AS playlistid,
+        video.added,
+        video.is_down,
+        playlist.title AS playlist
+    FROM video
+    LEFT JOIN playlist ON playlist.pk = video.playlist
+"""
+SQL_SELECT_VIDEOS_BY_ID = """
+    SELECT
+        video.pk,
+        video.id AS youtube_id,
+        video.title,
+        playlist.id AS playlistid,
+        video.added,
+        video.is_down,
+        playlist.title AS playlist
+    FROM video
+    LEFT JOIN playlist ON playlist.pk = video.playlist
+    WHERE video.id in %(vids)s
+    ;
+"""
+SQL_SET_VIDEO_AS_DOWNLOADED = """
+    UPDATE video
+    SET is_down = true
+    WHERE id = %(id)s
+    ;
+"""
+SQL_SET_VIDEO_PLAYLIST = """
+    UPDATE video
+    SET playlist = %(plpk)s
+    WHERE video.id = %(vid)s
+    RETURNING pk, id, title, playlist
+    ;
+"""
+SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
+    SELECT
+        video.pk,
+        video.id AS youtube_id,
+        video.title,
+        playlist.id AS playlistid,
+        video.added,
+        video.is_down,
+        playlist.title AS playlist
+    FROM video
+    JOIN playlist ON playlist.pk = video.playlist
+    WHERE playlist.id = %(plid)s
+    ;
+"""
+SQL_INSERT_VIDEO = """
+    INSERT INTO video (id, title, playlist, added)
+    VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
+    ON CONFLICT (id) DO UPDATE SET
+        title = %(title)s
+    RETURNING pk, id
+    ;
+"""
+SQL_SELECT_PLAYLISTS_BY_ID = """
+    SELECT
+        pk,
+        id,
+        title,
+        uploader_id,
+        added
+    FROM playlist
+    WHERE id in %(plids)s
+    ;
+"""
+SQL_INSERT_PLAYLIST = """
+    INSERT INTO playlist (id, title, uploader_id, added)
+    VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
+    ON CONFLICT (id) DO UPDATE SET
+        title = %(title)s,
+        uploader_id = %(uploader_id)s
+    RETURNING pk
+    ;
+"""
+
+
+
 class PGConnection:
     def __init__(self, dbname=None):
         self.dbname = dbname or os.getenv('PGDATABASE')
@@ -70,19 +154,6 @@ def playlist_row_to_dict(row):
 
 
 def select_all_videos():
-    SQL_SELECT_ALL_VIDEOS = """
-        SELECT
-            video.pk,
-            video.id AS youtube_id,
-            video.title,
-            playlist.id AS playlistid,
-            video.added,
-            video.is_down,
-            playlist.title AS playlist
-        FROM video
-        LEFT JOIN playlist ON playlist.pk = video.playlist
-    """
-
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
@@ -99,21 +170,6 @@ def select_all_videos():
 
 
 def select_videos_by_id(vids):
-    SQL_SELECT_VIDEOS_BY_ID = """
-        SELECT
-            video.pk,
-            video.id AS youtube_id,
-            video.title,
-            playlist.id AS playlistid,
-            video.added,
-            video.is_down,
-            playlist.title AS playlist
-        FROM video
-        LEFT JOIN playlist ON playlist.pk = video.playlist
-        WHERE video.id in %(vids)s
-        ;
-    """
-
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SELECT_VIDEOS_BY_ID, vars={'vids': tuple(vids)})
@@ -130,13 +186,6 @@ def select_videos_by_id(vids):
 
 
 def set_video_as_downloaded(vid):
-    SQL_SET_VIDEO_AS_DOWNLOADED = """
-        UPDATE video
-        SET is_down = true
-        WHERE id = %(id)s
-        ;
-    """
-
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SET_VIDEO_AS_DOWNLOADED, vars={'id': vid})
@@ -150,13 +199,6 @@ def set_video_as_downloaded(vid):
 
 
 def set_video_playlist(vid, plpk):
-    SQL_SET_VIDEO_PLAYLIST = """
-        UPDATE video
-        SET playlist = %(plpk)s
-        WHERE video.id = %(vid)s
-        RETURNING pk, id, title, playlist
-        ;
-    """
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_SET_VIDEO_PLAYLIST, {'vid': vid, 'plpk': plpk})
@@ -170,20 +212,6 @@ def set_video_playlist(vid, plpk):
 
 
 def select_videos_by_playlistid(playlistid):
-    SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
-        SELECT
-            video.pk,
-            video.id AS youtube_id,
-            video.title,
-            playlist.id AS playlistid,
-            video.added,
-            video.is_down,
-            playlist.title AS playlist
-        FROM video
-        JOIN playlist ON playlist.pk = video.playlist
-        WHERE playlist.id = %(plid)s
-        ;
-    """
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(SQL_SELECT_VIDEOS_BY_PLAYLISTID, {'plid': playlistid})
@@ -201,14 +229,6 @@ def select_videos_by_playlistid(playlistid):
 
 
 def insert_video(vdata):
-    SQL_INSERT_VIDEO = """
-        INSERT INTO video (id, title, playlist, added)
-        VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
-        ON CONFLICT (id) DO UPDATE SET
-            title = %(title)s
-        RETURNING pk, id
-        ;
-    """
     vdata.setdefault('playlist', None)
     vdata['added'] = datetime.datetime.now()
 
@@ -225,17 +245,6 @@ def insert_video(vdata):
 
 
 def select_playlists_by_id(plids):
-    SQL_SELECT_PLAYLISTS_BY_ID = """
-        SELECT
-            pk,
-            id,
-            title,
-            uploader_id,
-            added
-        FROM playlist
-        WHERE id in %(plids)s
-        ;
-    """
     with PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=SQL_SELECT_PLAYLISTS_BY_ID, vars={'plids': plids})
@@ -251,15 +260,6 @@ def select_playlists_by_id(plids):
 
 
 def insert_playlist(pldict):
-    SQL_INSERT_PLAYLIST = """
-        INSERT INTO playlist (id, title, uploader_id, added)
-        VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
-        ON CONFLICT (id) DO UPDATE SET
-            title = %(title)s,
-            uploader_id = %(uploader_id)s
-        RETURNING pk
-        ;
-    """
     pldict['added'] = datetime.datetime.now()
 
     with PGConnection() as conn:
