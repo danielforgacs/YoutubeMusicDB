@@ -52,3 +52,6 @@ db:
 
 pgdump: db
 	@docker-compose exec ymdb_postgres pg_dump -U postgres -d ymdb --disable-dollar-quoting --inserts -a
+
+sqlfile:
+	@docker-compose exec ymdb_postgres psql -U postgres -d $$PGDATABASE -f /home/sql/$(file)
