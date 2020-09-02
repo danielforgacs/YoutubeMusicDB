@@ -123,50 +123,55 @@ def test_set_video_playlist_sets_updates():
     """
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
-    plpk1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk1 = [playlist for playlist in res1.values()][0]
+    res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    plpk2 = [playlist for playlist in res2.values()][0]
     vpk = dbf.insert_video(vdata=videodata)
 
-    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    res3 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    result = [video for video in res3.values()][0]
     vpk = result['pk']
     vid = result['id']
-    plpk = result['playlist']
+    plpk = result['playlistid']
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk1['pk'] == plpk
-    assert result[data.IDX_VIDEO__pk] == vpk
+    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk1['pk']
+    assert result[dbf.VIDEO_PK_IDX] == vpk
 
-    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
+    result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
+    result = [video for video in result5.values()][0]
     vpk = result['pk']
     vid = result['id']
-    plpk = result['playlist']
+    plpk = result['playlistid']
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk2['pk'] == plpk
-    assert result[data.IDX_VIDEO__pk] == vpk
+    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk2['pk']
+    assert result[dbf.VIDEO_PK_IDX] == vpk
 
     plpk3 = None
 
-    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    result6 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk3)
+    result = [video for video in result6.values()][0]
     vpk = result['pk']
     vid = result['id']
-    plpk = result['playlist']
+    plpk = result['playlistid']
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[data.IDX_VIDEO__playlist] == plpk3 == plpk
-    assert result[data.IDX_VIDEO__pk] == vpk
+    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk3
+    assert result[dbf.VIDEO_PK_IDX] == vpk
 
 
 
@@ -333,7 +338,7 @@ def test_set_video_playlist_returns_dict():
     plpk2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
     vpk = dbf.insert_video(vdata=videodata)
 
-    result = data.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
+    result = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
 
     assert isinstance(result, dict)
 
