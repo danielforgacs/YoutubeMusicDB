@@ -14,11 +14,11 @@ insert into video
 ;
 
 update video
-set playlist = 1
+set playlistpk = 1
 where pk = 2
 ;
 
 update video
-set playlist = 2
+set playlistpk = 2
 where pk in (4, 5)
 ;

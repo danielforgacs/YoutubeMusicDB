@@ -66,7 +66,7 @@ def test_insert_video(vdata):
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT pk, id, title, playlist
+            SELECT pk, id, title, playlistpk
             FROM video
             WHERE id = %(id)s
         ;
@@ -77,7 +77,7 @@ def test_insert_video(vdata):
     assert result[0][dbf.VIDEO_PK_IDX] == vpk['pk']
     assert result[0][dbf.VIDEO_ID_IDX] == vdata['id']
     assert result[0][dbf.VIDEO_TITLE_IDX] == vdata['title']
-    assert result[0][dbf.VIDEO_PLAYLIST_IDX] == vdata['playlist']
+    assert result[0][dbf.VIDEO_PLAYLISTPK_IDX] == vdata['playlistpk']
 
 
 
@@ -90,9 +90,9 @@ def test_get_video_ids_by_playlist():
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
-    videodata1['playlist'] = plpk1['pk']
-    videodata2['playlist'] = plpk1['pk']
-    videodata3['playlist'] = plpk2['pk']
+    videodata1['playlistpk'] = plpk1['pk']
+    videodata2['playlistpk'] = plpk1['pk']
+    videodata3['playlistpk'] = plpk2['pk']
     vpk1 = dbf.insert_video(vdata=videodata1)
     vpk2 = dbf.insert_video(vdata=videodata2)
     vpk3 = dbf.insert_video(vdata=videodata3)
@@ -112,7 +112,7 @@ def test_get_video_ids_by_playlist():
 
 def test_set_video_playlist_sets_updates():
     sql = """
-        SELECT pk, id, title, playlist
+        SELECT pk, id, title, playlistpk
         FROM video
         WHERE video.id = %(vid)s
         ;
@@ -136,7 +136,7 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk1['pk']
+    assert result[dbf.VIDEO_PLAYLISTPK_IDX] == plpk1['pk']
     assert result[dbf.VIDEO_PK_IDX] == vpk
 
     result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
@@ -150,7 +150,7 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk2['pk']
+    assert result[dbf.VIDEO_PLAYLISTPK_IDX] == plpk2['pk']
     assert result[dbf.VIDEO_PK_IDX] == vpk
 
     plpk3 = None
@@ -166,7 +166,7 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_PLAYLIST_IDX] == plpk3
+    assert result[dbf.VIDEO_PLAYLISTPK_IDX] == plpk3
     assert result[dbf.VIDEO_PK_IDX] == vpk
 
 
@@ -211,11 +211,11 @@ def test_set_video_as_downloaded():
 
 @pytest.mark.parametrize('sql', [
     """
-    INSERT INTO public.video (id,  title,   playlist, added, is_down)
+    INSERT INTO public.video (id,  title,   playlistpk, added, is_down)
     VALUES ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false);
     """,
     """
-    INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+    INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
     ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false),
     ('b', 'vid02', NULL, '2020-08-18 14:53:24.035011', false),
     ('c', 'vid03', NULL, '2020-08-18 14:58:58.980937', false);
@@ -251,7 +251,7 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 ))
 def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
     sql = """
-        INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
             ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
             ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
             ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
@@ -279,7 +279,7 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
 ))
 def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     sql = """
-        INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
             ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
             ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
             ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
@@ -295,7 +295,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = dbf.select_videos_by_id(vids=vids)
     allvideos = dbf.select_all_videos()
 
-    assert len(list(videos.values())[0]) == len(list(allvideos.values())[0])
+    assert len(list(videos.values())[0]) == len(allvideos[0])
 
 
 
@@ -325,7 +325,7 @@ def test_insert_video_returns_dict(vdata):
 
 def test_set_video_playlist_returns_dict():
     sql = """
-        SELECT pk, id, title, playlist
+        SELECT pk, id, title, playlistpk
         FROM video
         WHERE video.id = %(vid)s
         ;
@@ -351,24 +351,24 @@ def test_select_all_videos_returns_dict_of_dicts(vdata):
     vpk = dbf.insert_video(vdata=tests.setup.VIDEO_DATA[0])
     result = dbf.select_all_videos()
 
-    assert isinstance(result, dict)
-    assert all(map(lambda x: isinstance(x, dict), result.values()))
+    assert isinstance(result, list)
+    assert all(map(lambda x: isinstance(x, dict), result))
 
 
 
 
 def test_select_all_videos_empty_db():
     data = dbf.select_all_videos()
-    expected = {}
+    expected = []
 
-    assert data == {}
+    assert data == expected
 
 
 
 def test_select_all_videos_01():
     tests.setup.run_sql_file(sqlfile='testData_01')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -377,7 +377,7 @@ def test_select_all_videos_01():
             'is_down': False,
             'playlisttitle': None,
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 
@@ -387,8 +387,8 @@ def test_select_all_videos_01():
 
 def test_select_all_videos_02():
     tests.setup.run_sql_file(sqlfile='testData_02')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -397,7 +397,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id2': {
+        {
             'pk': 2,
             'id': 'id2',
             'title': 'title2',
@@ -406,7 +406,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id3': {
+        {
             'pk': 3,
             'id': 'id3',
             'title': 'title3',
@@ -415,7 +415,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 
@@ -425,8 +425,8 @@ def test_select_all_videos_02():
 
 def test_select_all_videos_03():
     tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -435,7 +435,7 @@ def test_select_all_videos_03():
             'is_down': True,
             'playlisttitle': None,
         },
-        'id2': {
+        {
             'pk': 2,
             'id': 'id2',
             'title': 'title2',
@@ -444,7 +444,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': 'pltitle1',
         },
-        'id3': {
+        {
             'pk': 3,
             'id': 'id3',
             'title': 'title3',
@@ -453,7 +453,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id4': {
+        {
             'pk': 4,
             'id': 'id4',
             'title': 'title4',
@@ -462,7 +462,7 @@ def test_select_all_videos_03():
             'is_down': True,
             'playlisttitle': 'pltitle2',
         },
-        'id5': {
+        {
             'pk': 5,
             'id': 'id5',
             'title': 'title5',
@@ -471,7 +471,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': 'pltitle2',
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 

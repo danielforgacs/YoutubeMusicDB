@@ -1,7 +1,6 @@
 import os
 import psycopg2
 import datetime
-import json
 
 
 PLAYLIST_PK_IDX = 0
@@ -14,73 +13,81 @@ PLAYLIST_ADDED_IDX = 4
 VIDEO_PK_IDX = 0
 VIDEO_ID_IDX = 1
 VIDEO_TITLE_IDX = 2
-VIDEO_PLAYLIST_IDX = 3
+VIDEO_PLAYLISTPK_IDX = 3
 VIDEO_ADDED_IDX = 4
 VIDEO_IS_DOWN_IDX = 5
-
 
 
 SQL_SELECT_ALL_VIDEOS = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlist
+    LEFT JOIN playlist ON playlist.pk = video.playlistpk
+    ORDER BY video.pk
 """
+
 SQL_SELECT_VIDEOS_BY_ID = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlist
+    LEFT JOIN playlist ON playlist.pk = video.playlistpk
     WHERE video.id in %(vids)s
+    ORDER BY video.pk
     ;
 """
+
 SQL_SET_VIDEO_AS_DOWNLOADED = """
     UPDATE video
     SET is_down = true
     WHERE id = %(id)s
     ;
 """
+
 SQL_SET_VIDEO_PLAYLIST = """
     UPDATE video
-    SET playlist = %(plpk)s
+    SET playlistpk = %(plpk)s
     WHERE video.id = %(vid)s
-    RETURNING pk, id, title, playlist
+    RETURNING pk, id, title, playlistpk
     ;
 """
+
 SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
-    JOIN playlist ON playlist.pk = video.playlist
+    JOIN playlist ON playlist.pk = video.playlistpk
     WHERE playlist.id = %(plid)s
+    ORDER BY video.pk
     ;
 """
+
 SQL_INSERT_VIDEO = """
-    INSERT INTO video (id, title, playlist, added)
-    VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
+    INSERT INTO video (id, title, playlistpk, added)
+    VALUES (%(id)s, %(title)s, %(playlistpk)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
         title = %(title)s
     RETURNING pk, id
     ;
 """
+
 SQL_SELECT_PLAYLISTS_BY_ID = """
     SELECT
         pk,
@@ -90,8 +97,10 @@ SQL_SELECT_PLAYLISTS_BY_ID = """
         added
     FROM playlist
     WHERE id in %(plids)s
+    ORDER BY playlist.pk
     ;
 """
+
 SQL_INSERT_PLAYLIST = """
     INSERT INTO playlist (id, title, uploader_id, added)
     VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
@@ -131,7 +140,7 @@ def video_row_to_dict(row):
         'pk': row[VIDEO_PK_IDX],
         'id': row[VIDEO_ID_IDX],
         'title': row[VIDEO_TITLE_IDX],
-        'playlistid': row[VIDEO_PLAYLIST_IDX],
+        'playlistid': row[VIDEO_PLAYLISTPK_IDX],
         'added': str(row[VIDEO_ADDED_IDX]),
         'is_down': row[VIDEO_IS_DOWN_IDX],
         'playlisttitle': row[playlisttitle_idx] or None,
@@ -159,10 +168,7 @@ def select_all_videos():
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 
@@ -229,7 +235,7 @@ def select_videos_by_playlistid(playlistid):
 
 
 def insert_video(vdata):
-    vdata.setdefault('playlist', None)
+    vdata.setdefault('playlistpk', None)
     vdata['added'] = datetime.datetime.now()
 
     with PGConnection() as conn:
