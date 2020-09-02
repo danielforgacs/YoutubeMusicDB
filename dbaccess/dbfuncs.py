@@ -70,7 +70,7 @@ def playlist_row_to_dict(row):
 
 
 def select_all_videos():
-    sql_select_all_videos = """
+    SQL_SELECT_ALL_VIDEOS = """
         SELECT
             video.pk,
             video.id AS youtube_id,
@@ -85,7 +85,7 @@ def select_all_videos():
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql_select_all_videos)
+        cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
     data = {
@@ -99,7 +99,7 @@ def select_all_videos():
 
 
 def select_videos_by_id(vids):
-    sql_select_videos_by_id = """
+    SQL_SELECT_VIDEOS_BY_ID = """
         SELECT
             video.pk,
             video.id AS youtube_id,
@@ -116,7 +116,7 @@ def select_videos_by_id(vids):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql_select_videos_by_id, vars={'vids': tuple(vids)})
+        cur.execute(query=SQL_SELECT_VIDEOS_BY_ID, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
     data = {
@@ -130,7 +130,7 @@ def select_videos_by_id(vids):
 
 
 def set_video_as_downloaded(vid):
-    sql_set_video_as_downloaded = """
+    SQL_SET_VIDEO_AS_DOWNLOADED = """
         UPDATE video
         SET is_down = true
         WHERE id = %(id)s
@@ -139,7 +139,7 @@ def set_video_as_downloaded(vid):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql_set_video_as_downloaded, vars={'id': vid})
+        cur.execute(query=SQL_SET_VIDEO_AS_DOWNLOADED, vars={'id': vid})
         conn.commit()
 
     result = select_videos_by_id(vids=(vid,))
@@ -150,7 +150,7 @@ def set_video_as_downloaded(vid):
 
 
 def set_video_playlist(vid, plpk):
-    sql_set_video_playlist = """
+    SQL_SET_VIDEO_PLAYLIST = """
         UPDATE video
         SET playlist = %(plpk)s
         WHERE video.id = %(vid)s
@@ -159,7 +159,7 @@ def set_video_playlist(vid, plpk):
     """
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql_set_video_playlist, {'vid': vid, 'plpk': plpk})
+        cur.execute(SQL_SET_VIDEO_PLAYLIST, {'vid': vid, 'plpk': plpk})
         conn.commit()
 
     result = select_videos_by_id(vids=(vid,))
@@ -170,7 +170,7 @@ def set_video_playlist(vid, plpk):
 
 
 def select_videos_by_playlistid(playlistid):
-    sql_select_videos_by_playlistid = """
+    SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
         SELECT
             video.pk,
             video.id AS youtube_id,
@@ -186,7 +186,7 @@ def select_videos_by_playlistid(playlistid):
     """
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql_select_videos_by_playlistid, {'plid': playlistid})
+        cur.execute(SQL_SELECT_VIDEOS_BY_PLAYLISTID, {'plid': playlistid})
         conn.commit()
         rows = cur.fetchall()
 
@@ -201,7 +201,7 @@ def select_videos_by_playlistid(playlistid):
 
 
 def insert_video(vdata):
-    sql_insert_video = """
+    SQL_INSERT_VIDEO = """
         INSERT INTO video (id, title, playlist, added)
         VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
         ON CONFLICT (id) DO UPDATE SET
@@ -214,7 +214,7 @@ def insert_video(vdata):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql_insert_video, vdata)
+        cur.execute(SQL_INSERT_VIDEO, vdata)
         conn.commit()
         row = cur.fetchone()
 
@@ -225,7 +225,7 @@ def insert_video(vdata):
 
 
 def select_playlists_by_id(plids):
-    sql_select_playlists_by_id = """
+    SQL_SELECT_PLAYLISTS_BY_ID = """
         SELECT
             pk,
             id,
@@ -238,7 +238,7 @@ def select_playlists_by_id(plids):
     """
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql_select_playlists_by_id, vars={'plids': plids})
+        cur.execute(query=SQL_SELECT_PLAYLISTS_BY_ID, vars={'plids': plids})
         rows = cur.fetchall()
 
     result = {
@@ -251,7 +251,7 @@ def select_playlists_by_id(plids):
 
 
 def insert_playlist(pldict):
-    sql_insert_playlist = """
+    SQL_INSERT_PLAYLIST = """
         INSERT INTO playlist (id, title, uploader_id, added)
         VALUES (%(id)s, %(title)s, %(uploader_id)s, %(added)s)
         ON CONFLICT (id) DO UPDATE SET
@@ -264,7 +264,7 @@ def insert_playlist(pldict):
 
     with PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(sql_insert_playlist, pldict)
+        cur.execute(SQL_INSERT_PLAYLIST, pldict)
         conn.commit()
 
     result = select_playlists_by_id(plids=(pldict['id'],))
