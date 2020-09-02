@@ -336,8 +336,10 @@ def test_set_video_playlist_returns_dict():
     """
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
-    plpk1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
+    plpk1 = [playl for playl in res1.values()][0]
+    res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
+    plpk2 = [playl for playl in res2.values()][0]
     vpk = dbf.insert_video(vdata=videodata)
 
     result = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
