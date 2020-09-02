@@ -310,8 +310,8 @@ def test_insert_playlist_returns_dict(pldata):
     result = dbf.insert_playlist(pldict=pldata)
 
     assert isinstance(result, dict)
-    assert list(result.keys()) == ['pk']
-    assert isinstance(result['pk'], int)
+    assert list(result.keys()) == [[playl for playl in result.values()][0]['id']]
+    assert isinstance([plist for plist in result.values()][0]['pk'], int)
 
 
 
