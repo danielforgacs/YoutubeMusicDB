@@ -295,7 +295,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = dbf.select_videos_by_id(vids=vids)
     allvideos = dbf.select_all_videos()
 
-    assert len(list(videos.values())[0]) == len(list(allvideos.values())[0])
+    assert len(list(videos.values())[0]) == len(allvideos[0])
 
 
 
@@ -351,24 +351,24 @@ def test_select_all_videos_returns_dict_of_dicts(vdata):
     vpk = dbf.insert_video(vdata=tests.setup.VIDEO_DATA[0])
     result = dbf.select_all_videos()
 
-    assert isinstance(result, dict)
-    assert all(map(lambda x: isinstance(x, dict), result.values()))
+    assert isinstance(result, list)
+    assert all(map(lambda x: isinstance(x, dict), result))
 
 
 
 
 def test_select_all_videos_empty_db():
     data = dbf.select_all_videos()
-    expected = {}
+    expected = []
 
-    assert data == {}
+    assert data == expected
 
 
 
 def test_select_all_videos_01():
     tests.setup.run_sql_file(sqlfile='testData_01')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -377,7 +377,7 @@ def test_select_all_videos_01():
             'is_down': False,
             'playlisttitle': None,
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 
@@ -387,8 +387,8 @@ def test_select_all_videos_01():
 
 def test_select_all_videos_02():
     tests.setup.run_sql_file(sqlfile='testData_02')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -397,7 +397,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id2': {
+        {
             'pk': 2,
             'id': 'id2',
             'title': 'title2',
@@ -406,7 +406,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id3': {
+        {
             'pk': 3,
             'id': 'id3',
             'title': 'title3',
@@ -415,7 +415,7 @@ def test_select_all_videos_02():
             'is_down': False,
             'playlisttitle': None,
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 
@@ -425,8 +425,8 @@ def test_select_all_videos_02():
 
 def test_select_all_videos_03():
     tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = {
-        'id1': {
+    expected = [
+        {
             'pk': 1,
             'id': 'id1',
             'title': 'title1',
@@ -435,7 +435,7 @@ def test_select_all_videos_03():
             'is_down': True,
             'playlisttitle': None,
         },
-        'id2': {
+        {
             'pk': 2,
             'id': 'id2',
             'title': 'title2',
@@ -444,7 +444,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': 'pltitle1',
         },
-        'id3': {
+        {
             'pk': 3,
             'id': 'id3',
             'title': 'title3',
@@ -453,7 +453,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': None,
         },
-        'id4': {
+        {
             'pk': 4,
             'id': 'id4',
             'title': 'title4',
@@ -462,7 +462,7 @@ def test_select_all_videos_03():
             'is_down': True,
             'playlisttitle': 'pltitle2',
         },
-        'id5': {
+        {
             'pk': 5,
             'id': 'id5',
             'title': 'title5',
@@ -471,7 +471,7 @@ def test_select_all_videos_03():
             'is_down': False,
             'playlisttitle': 'pltitle2',
         },
-    }
+    ]
 
     data = dbf.select_all_videos()
 

@@ -29,6 +29,7 @@ SQL_SELECT_ALL_VIDEOS = """
         playlist.title
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlistpk
+    ORDER BY video.pk
 """
 
 SQL_SELECT_VIDEOS_BY_ID = """
@@ -43,6 +44,7 @@ SQL_SELECT_VIDEOS_BY_ID = """
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlistpk
     WHERE video.id in %(vids)s
+    ORDER BY video.pk
     ;
 """
 
@@ -73,6 +75,7 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
     FROM video
     JOIN playlist ON playlist.pk = video.playlistpk
     WHERE playlist.id = %(plid)s
+    ORDER BY video.pk
     ;
 """
 
@@ -94,6 +97,7 @@ SQL_SELECT_PLAYLISTS_BY_ID = """
         added
     FROM playlist
     WHERE id in %(plids)s
+    ORDER BY playlist.pk
     ;
 """
 
@@ -164,10 +168,7 @@ def select_all_videos():
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 
