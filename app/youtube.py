@@ -1,8 +1,18 @@
+import os
 import sys
 import youtube_dl
-import app.data as datab
+# import app.data as datab
 import app.config
+import xmlrpc.client
 
+
+DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
+DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
+RPC_CLIENT_KWARGS = {
+    'uri': DB_ACCESS_URL,
+    'allow_none': True,
+}
 
 
 YOUTUBEDL_VIDEO_ATTRS = [
@@ -51,11 +61,21 @@ class Video(BaseEntity):
 
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
-        self.pk = datab.insert_video(vdata=self.as_dict)
+        # self.pk = datab.insert_video(vdata=self.as_dict)
+
+        with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+            response = dbacces_svr.insert_video(self.as_dict)
+
+        videoid = list(response.keys())[0]
+        self.pk = response[videoid]['pk']
 
 
     def set_playlist(self, playlist):
-        datab.set_video_playlist(self.id, plpk=playlist.pk)
+        # datab.set_video_playlist(self.id, plpk=playlist.pk)
+        # dbacces_svr = xmlrpc.client.ServerProxy(uri=DB_ACCESS_URL)
+        with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+            dbacces_svr.set_video_playlist(self.id, playlist.pk)
+
 
 
 
@@ -66,8 +86,13 @@ class Playlist(BaseEntity):
     def __init__(self, attrs):
         super().__init__(attrs=attrs)
         self._videos = []
-        result = datab.insert_playlist(pldict=self.as_dict)
-        self.pk = result['pk']
+        # result = datab.insert_playlist(pldict=self.as_dict)
+        # self.pk = result['pk']
+        with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+            response = dbacces_svr.insert_playlist(self.as_dict)
+
+        plid = list(response.keys())[0]
+        self.pk = response[plid]['pk']
 
         for video in self.videos:
             video.set_playlist(playlist=self)

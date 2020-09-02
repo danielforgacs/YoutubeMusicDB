@@ -1,32 +1,16 @@
 import os
 import pytest
-import app.data
+# import app.data
 import app.main as main
 import app.youtube as ytdl
 import tests.data_test
 import tests.setup
+import dbaccess.dbfuncs as dbf
 from app import config
 
 
 def setup():
     tests.setup.init_test_db()
-
-
-# @pytest.mark.parametrize('ytid', tests.setup.YOUTUBE_IDS)
-# def test_post_playlist(ytid):
-#     youtube = ytdl.Youtube(url=ytid)
-#
-#     if youtube.playlist:
-#         expected = youtube.playlist.as_dict
-#     else:
-#         expected = youtube.video.as_dict
-#
-#     with main.app.test_client() as client:
-#         response = client.post('/api/createplaylist', json={'id': ytid})
-#
-#     data = response.get_json()
-#
-#     assert data == expected
 
 
 
@@ -39,8 +23,6 @@ def test_post_playlist_returns_error_json_on_missing_id():
     data = response.get_json()
 
     assert data == expected
-
-
 
 
 
@@ -70,7 +52,8 @@ def test_download_set_videos_as_is_down_True(plst):
         response = client.post('/api/download', json={'id': plst})
 
     videoids = response.json
-    videoids = tuple(vid['id'] for vid in response.json['videos'])
+    # videoids = tuple(vid['id'] for vid in response.json['videos'])
+    videoids = tuple(videoids.keys())
 
     sql = """
         SELECT is_down
@@ -78,7 +61,7 @@ def test_download_set_videos_as_is_down_True(plst):
         WHERE id in %s;
     """
 
-    with app.data.PGConnection() as conn:
+    with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute(query=sql, vars=(videoids,))
         rows = cur.fetchall()

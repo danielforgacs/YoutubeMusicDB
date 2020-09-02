@@ -3,9 +3,20 @@ import flask
 import json
 import zipfile
 import uuid
-import app.data as data
+import xmlrpc.client
+# import app.data as data
 import app.youtube as youtube
 from app import config
+
+
+DB_ACCESS_HOST = os.environ['DBACCESS_RPC_HOST']
+DB_ACCESS_PORT = int(os.environ['DBACCESS_RPC_PORT'])
+DB_ACCESS_URL = 'http://{host}:{port}'.format(host=DB_ACCESS_HOST, port=DB_ACCESS_PORT)
+RPC_CLIENT_KWARGS = {
+    'uri': DB_ACCESS_URL,
+    'allow_none': True,
+}
+
 
 ROOT_DIR = (
     os.path.dirname(
@@ -42,7 +53,10 @@ def post_playlist():
     else:
         vids = [ytdl.video.id]
 
-    videos = data.select_videos_by_id(vids=vids)
+    # videos = data.select_videos_by_id(vids=vids)
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_videos_by_id(vids)
+
     context = {'videos': videos}
     response = flask.jsonify(context)
 
@@ -81,16 +95,22 @@ def download_playlist():
             break
 
 
-    videos = data.query_videos_by_playlistid(playlistid=ytid)
+    # videos = data.select_videos_by_playlistid(playlistid=ytid)
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_videos_by_playlistid(ytid)
+
     titles = []
 
-    for video in videos:
+    for video in videos.values():
         if video['is_down']:
             continue
 
         os.chdir(DOWNLOAD_DIR)
         ytdl = youtube.Youtube(url=video['id'], do_download=True)
-        data.set_video_as_downloaded(vid=video['id'])
+        # data.set_video_as_downloaded(vid=video['id'])
+        with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+            dbacces_svr.set_video_as_downloaded(video['id'])
+
         titles.append(ytdl.video.title)
 
     downloads = os.listdir(DOWNLOAD_DIR)
@@ -129,10 +149,11 @@ def archive(zipname):
 
 @app.route('/api/all_videos', methods=['GET'])
 def GET_all_videos():
-    allvids = data.select_all_videos()
-    context = {
-        'videos': allvids
-    }
+    # allvids = data.select_all_videos()
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_all_videos()
+
+    context = {'videos': videos}
 
     return flask.jsonify(context)
 
@@ -150,9 +171,12 @@ def view_playlists():
         vid = flask.request.json.get('id')
         ytdl = youtube.Youtube(url=vid)
 
-    allvids = data.select_all_videos()
+    # allvids = data.select_all_videos()
+    with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
+        videos = dbacces_svr.select_all_videos()
+
     context = {
-        'videos': allvids
+        'videos': videos
     }
 
     return flask.render_template(template_name_or_list='allvideos.html', context=context)
