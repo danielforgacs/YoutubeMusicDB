@@ -268,7 +268,7 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
         curs.execute(sql)
         conn.commit()
 
-    videos = data.select_videos_by_id(vids=vids)
+    videos = dbf.select_videos_by_id(vids=vids)
 
     assert len(videos) == count
 
@@ -296,7 +296,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
         curs.execute(sql)
         conn.commit()
 
-    videos = data.select_videos_by_id(vids=vids)
+    videos = dbf.select_videos_by_id(vids=vids)
     allvideos = data.select_all_videos()
 
     assert len(list(videos.values())[0]) == len(list(allvideos.values())[0])
