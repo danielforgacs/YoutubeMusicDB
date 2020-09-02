@@ -319,10 +319,11 @@ def test_insert_playlist_returns_dict(pldata):
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video_returns_dict(vdata):
     result = dbf.insert_video(vdata=vdata)
+    video = list(result.values())[0]
 
     assert isinstance(result, dict)
-    assert list(result.keys()) == ['pk']
-    assert isinstance(result['pk'], int)
+    assert list(result.keys()) == [video['id']]
+    assert isinstance(video['pk'], int)
 
 
 
