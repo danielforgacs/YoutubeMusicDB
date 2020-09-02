@@ -22,7 +22,7 @@ services:
     command: ["python", "app/main.py"]
     image: ymdb-app
     depends_on:
-      - ymdb_postgres
+      - ymdb_dbaccess
 
   ymdb_dbaccess:
     build:
