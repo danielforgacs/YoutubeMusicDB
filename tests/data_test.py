@@ -197,7 +197,8 @@ def test_set_video_as_downloaded():
 
     assert is_downloaded is False
 
-    vpk = data.set_video_as_downloaded(vid=videdict['id'])
+    result3 = dbf.set_video_as_downloaded(vid=videdict['id'])
+    vpk = [video for video in result3.values()][0]
 
     assert isinstance(vpk, dict)
 
