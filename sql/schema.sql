@@ -14,8 +14,14 @@ CREATE TABLE video (
 	pk				SMALLSERIAL		PRIMARY KEY,
 	id				TEXT			NOT NULL UNIQUE,
 	title			TEXT			NOT NULL,
-	playlistpk		INTEGER			REFERENCES playlist,
+	-- playlistpk		INTEGER			REFERENCES playlist,
 	added			TIMESTAMP		NOT NUll,
 	is_down			BOOLEAN			NOT NULL DEFAULT false
+)
+;
+
+CREATE TABLE playlist_video (
+	playlistpk		INTEGER			REFERENCES playlist,
+	videopk			INTEGER			REFERENCES video
 )
 ;
