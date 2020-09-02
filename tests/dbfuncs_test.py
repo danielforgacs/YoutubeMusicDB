@@ -66,7 +66,7 @@ def test_insert_video(vdata):
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT pk, id, title, playlist
+            SELECT pk, id, title, playlistpk
             FROM video
             WHERE id = %(id)s
         ;
@@ -77,7 +77,7 @@ def test_insert_video(vdata):
     assert result[0][dbf.VIDEO_PK_IDX] == vpk['pk']
     assert result[0][dbf.VIDEO_ID_IDX] == vdata['id']
     assert result[0][dbf.VIDEO_TITLE_IDX] == vdata['title']
-    assert result[0][dbf.VIDEO_PLAYLIST_IDX] == vdata['playlist']
+    assert result[0][dbf.VIDEO_PLAYLIST_IDX] == vdata['playlistpk']
 
 
 
@@ -90,9 +90,9 @@ def test_get_video_ids_by_playlist():
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
-    videodata1['playlist'] = plpk1['pk']
-    videodata2['playlist'] = plpk1['pk']
-    videodata3['playlist'] = plpk2['pk']
+    videodata1['playlistpk'] = plpk1['pk']
+    videodata2['playlistpk'] = plpk1['pk']
+    videodata3['playlistpk'] = plpk2['pk']
     vpk1 = dbf.insert_video(vdata=videodata1)
     vpk2 = dbf.insert_video(vdata=videodata2)
     vpk3 = dbf.insert_video(vdata=videodata3)
@@ -112,7 +112,7 @@ def test_get_video_ids_by_playlist():
 
 def test_set_video_playlist_sets_updates():
     sql = """
-        SELECT pk, id, title, playlist
+        SELECT pk, id, title, playlistpk
         FROM video
         WHERE video.id = %(vid)s
         ;
@@ -211,11 +211,11 @@ def test_set_video_as_downloaded():
 
 @pytest.mark.parametrize('sql', [
     """
-    INSERT INTO public.video (id,  title,   playlist, added, is_down)
+    INSERT INTO public.video (id,  title,   playlistpk, added, is_down)
     VALUES ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false);
     """,
     """
-    INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+    INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
     ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false),
     ('b', 'vid02', NULL, '2020-08-18 14:53:24.035011', false),
     ('c', 'vid03', NULL, '2020-08-18 14:58:58.980937', false);
@@ -251,7 +251,7 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 ))
 def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
     sql = """
-        INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
             ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
             ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
             ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
@@ -279,7 +279,7 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
 ))
 def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     sql = """
-        INSERT INTO public.video (id,  title,   playlist, added, is_down) VALUES
+        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
             ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
             ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
             ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
@@ -325,7 +325,7 @@ def test_insert_video_returns_dict(vdata):
 
 def test_set_video_playlist_returns_dict():
     sql = """
-        SELECT pk, id, title, playlist
+        SELECT pk, id, title, playlistpk
         FROM video
         WHERE video.id = %(vid)s
         ;

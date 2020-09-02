@@ -30,7 +30,7 @@ SQL_SELECT_ALL_VIDEOS = """
         video.is_down,
         playlist.title
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlist
+    LEFT JOIN playlist ON playlist.pk = video.playlistpk
 """
 SQL_SELECT_VIDEOS_BY_ID = """
     SELECT
@@ -42,7 +42,7 @@ SQL_SELECT_VIDEOS_BY_ID = """
         video.is_down,
         playlist.title
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlist
+    LEFT JOIN playlist ON playlist.pk = video.playlistpk
     WHERE video.id in %(vids)s
     ;
 """
@@ -54,9 +54,9 @@ SQL_SET_VIDEO_AS_DOWNLOADED = """
 """
 SQL_SET_VIDEO_PLAYLIST = """
     UPDATE video
-    SET playlist = %(plpk)s
+    SET playlistpk = %(plpk)s
     WHERE video.id = %(vid)s
-    RETURNING pk, id, title, playlist
+    RETURNING pk, id, title, playlistpk
     ;
 """
 SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
@@ -69,13 +69,13 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
         video.is_down,
         playlist.title
     FROM video
-    JOIN playlist ON playlist.pk = video.playlist
+    JOIN playlist ON playlist.pk = video.playlistpk
     WHERE playlist.id = %(plid)s
     ;
 """
 SQL_INSERT_VIDEO = """
-    INSERT INTO video (id, title, playlist, added)
-    VALUES (%(id)s, %(title)s, %(playlist)s, %(added)s)
+    INSERT INTO video (id, title, playlistpk, added)
+    VALUES (%(id)s, %(title)s, %(playlistpk)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
         title = %(title)s
     RETURNING pk, id
@@ -229,7 +229,7 @@ def select_videos_by_playlistid(playlistid):
 
 
 def insert_video(vdata):
-    vdata.setdefault('playlist', None)
+    vdata.setdefault('playlistpk', None)
     vdata['added'] = datetime.datetime.now()
 
     with PGConnection() as conn:
