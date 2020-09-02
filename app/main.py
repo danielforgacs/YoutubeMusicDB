@@ -173,7 +173,7 @@ def view_playlists():
 
     # allvids = data.select_all_videos()
     with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
-        videos = dbacces_svr.a.select_all_videos()
+        videos = dbacces_svr.select_all_videos()
 
     context = {
         'videos': videos
