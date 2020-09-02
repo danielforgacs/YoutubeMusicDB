@@ -238,7 +238,7 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
         rows = curs.fetchone()
 
     rowcount = rows[0]
-    allvids = data.select_all_videos()
+    allvids = dbf.select_all_videos()
 
     assert rowcount == len(allvids)
 
