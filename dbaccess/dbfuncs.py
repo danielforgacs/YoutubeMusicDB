@@ -23,24 +23,24 @@ VIDEO_IS_DOWN_IDX = 5
 SQL_SELECT_ALL_VIDEOS = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist
 """
 SQL_SELECT_VIDEOS_BY_ID = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist
     WHERE video.id in %(vids)s
@@ -62,12 +62,12 @@ SQL_SET_VIDEO_PLAYLIST = """
 SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
     SELECT
         video.pk,
-        video.id AS youtube_id,
+        video.id,
         video.title,
-        playlist.id AS playlistid,
+        playlist.id,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title
     FROM video
     JOIN playlist ON playlist.pk = video.playlist
     WHERE playlist.id = %(plid)s
