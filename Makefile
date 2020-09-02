@@ -27,12 +27,23 @@ upd:
 down:
 	@docker-compose down --remove-orphans --volumes
 
-test: down build initdb-test
+test: down build
 	@docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
 	@sleep 5
 	@- export PYTHONPATH=$$PWD && \
 		export DB_HOST=127.0.0.1 && \
 		export PGDATABASE=ymdb_test && \
+		export DBACCESS_RPC_HOST=0.0.0.0 && \
+		pytest | tee tests/testlog_$$(date +%Y-%m-%d_%H-%M-%S).log
+	@make down
+
+test-nobuild:
+	@docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+	@sleep 5
+	@- export PYTHONPATH=$$PWD && \
+		export DB_HOST=127.0.0.1 && \
+		export PGDATABASE=ymdb_test && \
+		export DBACCESS_RPC_HOST=0.0.0.0 && \
 		pytest | tee tests/testlog_$$(date +%Y-%m-%d_%H-%M-%S).log
 	@make down
 
