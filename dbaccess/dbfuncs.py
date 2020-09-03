@@ -140,9 +140,9 @@ def video_row_to_dict(row):
         'pk': row[VIDEO_PK_IDX],
         'id': row[VIDEO_ID_IDX],
         'title': row[VIDEO_TITLE_IDX],
-        'playlistid': row[VIDEO_PLAYLISTPK_IDX],
         'added': str(row[VIDEO_ADDED_IDX]),
         'is_down': row[VIDEO_IS_DOWN_IDX],
+        'playlistid': row[VIDEO_PLAYLISTPK_IDX],
         'playlisttitle': row[playlisttitle_idx] or None,
     }
     return row

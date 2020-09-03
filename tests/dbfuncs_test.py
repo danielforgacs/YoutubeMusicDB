@@ -585,7 +585,7 @@ def test_insert_video():
 
     assert list(result.keys()) == [video['id']]
     assert list(result[video['id']].keys()) == [
-        'pk', 'id', 'title', 'playlistid', 'added', 'is_down', 'playlisttitle']
+        'pk', 'id', 'title',  'added', 'is_down', 'playlistid', 'playlisttitle']
     assert result[video['id']]['id'] == video['id']
     assert result[video['id']]['title'] == video['title']
 
