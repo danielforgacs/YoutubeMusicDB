@@ -13,9 +13,9 @@ PLAYLIST_ADDED_IDX = 4
 VIDEO_PK_IDX = 0
 VIDEO_ID_IDX = 1
 VIDEO_TITLE_IDX = 2
-VIDEO_PLAYLISTPK_IDX = 3
-VIDEO_ADDED_IDX = 4
-VIDEO_IS_DOWN_IDX = 5
+VIDEO_ADDED_IDX = 3
+VIDEO_IS_DOWN_IDX = 4
+VIDEO_PLAYLISTPK_IDX = 5
 
 
 SQL_SELECT_ALL_VIDEOS = """
@@ -23,9 +23,9 @@ SQL_SELECT_ALL_VIDEOS = """
         video.pk,
         video.id,
         video.title,
-        playlist.id,
         video.added,
         video.is_down,
+        playlist.id,
         playlist.title
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlistpk
@@ -37,9 +37,9 @@ SQL_SELECT_VIDEOS_BY_ID = """
         video.pk,
         video.id,
         video.title,
-        playlist.id,
         video.added,
         video.is_down,
+        playlist.id,
         playlist.title
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlistpk
@@ -68,9 +68,9 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
         video.pk,
         video.id,
         video.title,
-        playlist.id,
         video.added,
         video.is_down,
+        playlist.id,
         playlist.title
     FROM video
     JOIN playlist ON playlist.pk = video.playlistpk

@@ -112,7 +112,7 @@ def test_get_video_ids_by_playlist():
 
 def test_set_video_playlist_sets_updates():
     sql = """
-        SELECT pk, id, title, playlistpk
+        SELECT pk, id, title, added, is_down, playlistpk
         FROM video
         WHERE video.id = %(vid)s
         ;
