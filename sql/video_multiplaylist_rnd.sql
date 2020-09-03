@@ -42,3 +42,22 @@ SELECT
     )
 FROM video
 ;
+
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    array (
+        select playlistpk
+        from playlist_video
+        WHERE playlist_video.videopk = video.pk
+    )
+FROM video
+;
+
+EXPLAIN
+select 1, 2, 3
+;
