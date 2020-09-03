@@ -216,23 +216,65 @@ SELECT
 FROM video
 ;
 
-EXPLAIN
-    SELECT
-        video.pk,
-        video.id,
-        video.title,
-        video.added,
-        video.is_down,
-        array (
-            select playlistpk
-            from playlist_video
-            WHERE playlist_video.videopk = video.pk ),
-        (
-            select array_agg (array[
-            cast (playlist.pk as text), playlist.id, playlist.title])
-            from playlist
-            join playlist_video on playlist_video.playlistpk = playlist.pk
-            where playlist_video.videopk = video.pk
-        )
-    FROM video
-    ;
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    array (
+        select playlistpk
+        from playlist_video
+        WHERE playlist_video.videopk = video.pk ),
+    (
+        select array_agg (array[
+        cast (playlist.pk as text), playlist.id, playlist.title])
+        from playlist
+        join playlist_video on playlist_video.playlistpk = playlist.pk
+        where playlist_video.videopk = video.pk
+    )
+FROM video
+;
+
+
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    playlist.id as playlist_id,
+    playlist.title as playlist_title
+FROM video
+LEFT JOIN playlist ON playlist.pk = video.playlistpk
+ORDER BY video.pk
+;
+
+-- FINAL:
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    NULL AS playlist_id,
+    NULL AS playlist_title,
+    array (
+        SELECT playlistpk
+        FROM playlist_video
+        WHERE playlist_video.videopk = video.pk
+    ) AS playlist_pks,
+    (
+        SELECT array_agg (array[
+            playlist.id,
+            playlist.title])
+        FROM playlist
+        JOIN playlist_video ON playlist_video.playlistpk = playlist.pk
+        WHERE playlist_video.videopk = video.pk
+    ) as playlists
+FROM video
+ORDER BY video.pk
+;
