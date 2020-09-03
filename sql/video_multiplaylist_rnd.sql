@@ -170,7 +170,7 @@ SELECT
     array (
         select playlistpk
         from playlist_video
-        WHERE playlist_video.videopk = video.pk ),
+        WHERE playlist_video.videopk = video.pk ) as plist_pks,
     (
         select array_agg (array[
         cast (playlist.pk as text), playlist.id, playlist.title])
@@ -181,7 +181,16 @@ FROM video
 
 
 
+-- WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, 
+-- WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, 
+-- WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, 
+-- WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, WORKS, 
 
+-- 
+-- THIS IS IT +++++++++++++++++++++++++++++
+-- THIS IS IT +++++++++++++++++++++++++++++
+-- THIS IS IT +++++++++++++++++++++++++++++
+-- 
 
 SELECT
     video.pk,
@@ -192,13 +201,38 @@ SELECT
     array (
         select playlistpk
         from playlist_video
-        WHERE playlist_video.videopk = video.pk ),
+        WHERE playlist_video.videopk = video.pk ) as plist_pks,
     (
-        select array_agg (array[
-        cast (playlist.pk as text), playlist.id, playlist.title])
+        select array_agg (
+            array [
+                cast (playlist.pk as text),
+                playlist.id,
+                playlist.title
+            ])
         from playlist
         join playlist_video on playlist_video.playlistpk = playlist.pk
         where playlist_video.videopk = video.pk
     )
 FROM video
 ;
+
+EXPLAIN
+    SELECT
+        video.pk,
+        video.id,
+        video.title,
+        video.added,
+        video.is_down,
+        array (
+            select playlistpk
+            from playlist_video
+            WHERE playlist_video.videopk = video.pk ),
+        (
+            select array_agg (array[
+            cast (playlist.pk as text), playlist.id, playlist.title])
+            from playlist
+            join playlist_video on playlist_video.playlistpk = playlist.pk
+            where playlist_video.videopk = video.pk
+        )
+    FROM video
+    ;
