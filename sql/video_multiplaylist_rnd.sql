@@ -159,3 +159,46 @@ select array_agg (array[
     playlist.title])
 from playlist
 ;
+
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    array (
+        select playlistpk
+        from playlist_video
+        WHERE playlist_video.videopk = video.pk ),
+    (
+        select array_agg (array[
+        cast (playlist.pk as text), playlist.id, playlist.title])
+        from playlist
+    )
+FROM video
+;
+
+
+
+
+
+SELECT
+    video.pk,
+    video.id,
+    video.title,
+    video.added,
+    video.is_down,
+    array (
+        select playlistpk
+        from playlist_video
+        WHERE playlist_video.videopk = video.pk ),
+    (
+        select array_agg (array[
+        cast (playlist.pk as text), playlist.id, playlist.title])
+        from playlist
+        join playlist_video on playlist_video.playlistpk = playlist.pk
+        where playlist_video.videopk = video.pk
+    )
+FROM video
+;
