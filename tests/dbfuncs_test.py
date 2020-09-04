@@ -21,54 +21,25 @@ def test_select_all_videos_03():
     tests.setup.run_sql_file(sqlfile='testData')
     expected = [
         {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'playlistid': 'plid1',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': 'pltitle1',
-        },
-        {
-            'pk': 3,
-            'id': 'id3',
-            'title': 'title3',
+            'pk': index,
+            'id': 'id{}'.format(index),
+            'title': 'title{}'.format(index),
             'playlistid': None,
             'added': '2000-01-01 00:00:00',
             'is_down': False,
             'playlisttitle': None,
-        },
-        {
-            'pk': 4,
-            'id': 'id4',
-            'title': 'title4',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlisttitle': 'pltitle2',
-        },
-        {
-            'pk': 5,
-            'id': 'id5',
-            'title': 'title5',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': 'pltitle2',
-        },
+        } for index in range(1, 11)
     ]
+    expected[1]['playlistid'] = 'plid1'
+    expected[1]['playlisttitle'] = 'pltitle1'
+    expected[3]['playlistid'] = 'plid2'
+    expected[3]['playlisttitle'] = 'pltitle2'
+    expected[4]['playlistid'] = 'plid2'
+    expected[4]['playlisttitle'] = 'pltitle2'
 
     data = dbf.select_all_videos()
 
+    assert len(data) == len(expected)
     assert data == expected
 
 
@@ -78,33 +49,21 @@ def test_select_videos_by_id():
     tests.setup.run_sql_file(sqlfile='testData')
     expected = [
         {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'playlistid': 'plid1',
+            'pk': index,
+            'id': 'id{}'.format(index),
+            'title': 'title{}'.format(index),
+            'playlistid': None,
             'added': '2000-01-01 00:00:00',
             'is_down': False,
-            'playlisttitle': 'pltitle1',
-        },
-        {
-            'pk': 4,
-            'id': 'id4',
-            'title': 'title4',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlisttitle': 'pltitle2',
-        },
-        {
-            'pk': 5,
-            'id': 'id5',
-            'title': 'title5',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': 'pltitle2',
-        },
+            'playlisttitle': None,
+        } for index in [2, 4, 5]
     ]
+    expected[0]['playlistid'] = 'plid1'
+    expected[0]['playlisttitle'] = 'pltitle1'
+    expected[1]['playlistid'] = 'plid2'
+    expected[1]['playlisttitle'] = 'pltitle2'
+    expected[2]['playlistid'] = 'plid2'
+    expected[2]['playlisttitle'] = 'pltitle2'
 
     data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
 

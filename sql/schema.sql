@@ -1,6 +1,3 @@
--- CREATE DATABASE ymdb;
--- \c ymdb
-
 CREATE TABLE playlist (
 	pk				SMALLSERIAL		PRIMARY KEY,
 	id				TEXT			NOT NULL UNIQUE,
@@ -17,5 +14,12 @@ CREATE TABLE video (
 	playlist_pk		INTEGER			REFERENCES playlist,
 	added			TIMESTAMP		NOT NUll,
 	is_down			BOOLEAN			NOT NULL DEFAULT false
+)
+;
+
+CREATE TABLE playlist_video (
+	playlistpk		INTEGER			REFERENCES playlist,
+	videopk			INTEGER			REFERENCES video,
+	UNIQUE (playlistpk, videopk)
 )
 ;
