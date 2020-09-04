@@ -14,11 +14,16 @@ insert into playlist
 
 insert into video
     (pk, id, title, added, is_down) values
-    (1, 'id1', 'title1', '2000-01-01 00:00:00', True),
+    (1, 'id1', 'title1', '2000-01-01 00:00:00', false),
     (2, 'id2', 'title2', '2000-01-01 00:00:00', false),
     (3, 'id3', 'title3', '2000-01-01 00:00:00', false),
-    (4, 'id4', 'title4', '2000-01-01 00:00:00', True),
-    (5, 'id5', 'title5', '2000-01-01 00:00:00', false)
+    (4, 'id4', 'title4', '2000-01-01 00:00:00', false),
+    (5, 'id5', 'title5', '2000-01-01 00:00:00', false),
+    (6, 'id6', 'title6', '2000-01-01 00:00:00', false),
+    (7, 'id7', 'title7', '2000-01-01 00:00:00', false),
+    (8, 'id8', 'title8', '2000-01-01 00:00:00', false),
+    (9, 'id9', 'title9', '2000-01-01 00:00:00', false),
+    (10, 'id10', 'title10', '2000-01-01 00:00:00', false)
 ;
 
 update video
