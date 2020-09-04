@@ -15,8 +15,8 @@ VIDEO_ROW_IDX__id = 1
 VIDEO_ROW_IDX__title = 2
 VIDEO_ROW_IDX__added = 3
 VIDEO_ROW_IDX__is_down = 4
-VIDEO_ROW_IDX__playlistid = 5
-VIDEO_ROW_IDX__playlisttitle = 6
+VIDEO_ROW_IDX__playlist_pks = 5
+VIDEO_ROW_IDX__playlists = 6
 
 VIDEO_ROW_NAME__pk = 'pk'
 VIDEO_ROW_NAME__id = 'id'
@@ -162,8 +162,8 @@ def video_row_to_dict(row):
         VIDEO_ROW_NAME__title: row[VIDEO_ROW_IDX__title],
         VIDEO_ROW_NAME__added: str(row[VIDEO_ROW_IDX__added]),
         VIDEO_ROW_NAME__is_down: row[VIDEO_ROW_IDX__is_down],
-        VIDEO_ROW_NAME__playlist_pks: row[VIDEO_ROW_NAME__playlist_pks],
-        VIDEO_ROW_NAME__playlists: row[VIDEO_ROW_NAME__playlists] or None,
+        VIDEO_ROW_NAME__playlist_pks: row[VIDEO_ROW_IDX__playlist_pks],
+        VIDEO_ROW_NAME__playlists: row[VIDEO_ROW_IDX__playlists] or None,
     }
     return row
 
