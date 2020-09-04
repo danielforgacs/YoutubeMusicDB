@@ -134,8 +134,8 @@ def test_select_all_videos_03():
 
 def test_select_videos_by_id():
     tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = {
-        'id2': {
+    expected = [
+        {
             'pk': 2,
             'id': 'id2',
             'title': 'title2',
@@ -144,7 +144,7 @@ def test_select_videos_by_id():
             'is_down': False,
             'playlisttitle': 'pltitle1',
         },
-        'id4': {
+        {
             'pk': 4,
             'id': 'id4',
             'title': 'title4',
@@ -153,7 +153,7 @@ def test_select_videos_by_id():
             'is_down': True,
             'playlisttitle': 'pltitle2',
         },
-        'id5': {
+        {
             'pk': 5,
             'id': 'id5',
             'title': 'title5',
@@ -162,7 +162,7 @@ def test_select_videos_by_id():
             'is_down': False,
             'playlisttitle': 'pltitle2',
         },
-    }
+    ]
 
     data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
 
@@ -193,22 +193,22 @@ def test_set_video_playlist():
     vid = 'id1'
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] is None
-    assert video[vid]['playlisttitle'] is None
+    assert video[0]['playlistid'] is None
+    assert video[0]['playlisttitle'] is None
 
     plpk = 1
     result = dbf.set_video_playlist(vid=vid, plpk=plpk)
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] == 'plid1'
-    assert video[vid]['playlisttitle'] == 'pltitle1'
+    assert video[0]['playlistid'] == 'plid1'
+    assert video[0]['playlisttitle'] == 'pltitle1'
 
     plpk = 2
     result = dbf.set_video_playlist(vid=vid, plpk=plpk)
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] == 'plid2'
-    assert video[vid]['playlisttitle'] == 'pltitle2'
+    assert video[0]['playlistid'] == 'plid2'
+    assert video[0]['playlisttitle'] == 'pltitle2'
 
 
 
@@ -338,7 +338,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video(vdata):
     result = dbf.insert_video(vdata=vdata)
-    vpk = [video for video in result.values()][0]
+    vpk = [video for video in result][0]
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
@@ -403,7 +403,7 @@ def test_set_video_playlist_sets_updates():
     vpk = dbf.insert_video(vdata=videodata)
 
     res3 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
-    result = [video for video in res3.values()][0]
+    result = [video for video in res3][0]
     vpk = result['pk']
     vid = result['id']
     plpk = result['playlistid']
@@ -417,7 +417,7 @@ def test_set_video_playlist_sets_updates():
     assert result[dbf.VIDEO_COLUMN_IDX__pk] == vpk
 
     result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
-    result = [video for video in result5.values()][0]
+    result = [video for video in result5][0]
     vpk = result['pk']
     vid = result['id']
     plpk = result['playlistid']
@@ -433,7 +433,7 @@ def test_set_video_playlist_sets_updates():
     plpk3 = None
 
     result6 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk3)
-    result = [video for video in result6.values()][0]
+    result = [video for video in result6][0]
     vpk = result['pk']
     vid = result['id']
     plpk = result['playlistid']
@@ -471,7 +471,7 @@ def test_set_video_as_downloaded():
     assert is_downloaded is False
 
     result3 = dbf.set_video_as_downloaded(vid=videdict['id'])
-    vpk = [video for video in result3.values()][0]
+    vpk = [video for video in result3][0]
 
     assert isinstance(vpk, dict)
 
@@ -572,7 +572,7 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = dbf.select_videos_by_id(vids=vids)
     allvideos = dbf.select_all_videos()
 
-    assert len(list(videos.values())[0]) == len(allvideos[0])
+    assert len(videos[0]) == len(allvideos[0])
 
 
 
@@ -592,10 +592,10 @@ def test_insert_playlist_returns_dict(pldata):
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video_returns_dict(vdata):
     result = dbf.insert_video(vdata=vdata)
-    video = list(result.values())[0]
+    video = list(result)[0]
 
-    assert isinstance(result, dict)
-    assert list(result.keys()) == [video['id']]
+    assert isinstance(result, list)
+    assert [result[0]['id']] == [video['id']]
     assert isinstance(video['pk'], int)
 
 
@@ -617,7 +617,7 @@ def test_set_video_playlist_returns_dict():
 
     result = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
 
-    assert isinstance(result, dict)
+    assert isinstance(result, list)
 
 
 

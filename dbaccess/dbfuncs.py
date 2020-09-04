@@ -92,6 +92,7 @@ SQL_SELECT_VIDEOS_BY_ID = """
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
     WHERE video.id in %(vids)s
+    ORDER BY video.pk
     ;
 """
 
@@ -176,10 +177,7 @@ def select_videos_by_id(vids):
         cur.execute(query=SQL_SELECT_VIDEOS_BY_ID, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_COLUMN_IDX__id]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 
