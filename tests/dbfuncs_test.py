@@ -17,26 +17,6 @@ def test_select_all_videos_empty_db():
 
 
 
-def test_select_all_videos_01():
-    tests.setup.run_sql_file(sqlfile='testData_01')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-    ]
-
-    data = dbf.select_all_videos()
-
-    assert data == expected
-
-
-
 def test_select_all_videos_02():
     tests.setup.run_sql_file(sqlfile='testData_02')
     expected = [
