@@ -10,12 +10,13 @@ PLAYLIST_UPLOADER_ID_IDX = 3
 PLAYLIST_ADDED_IDX = 4
 
 
-VIDEO_PK_IDX = 0
-VIDEO_ID_IDX = 1
-VIDEO_TITLE_IDX = 2
-VIDEO_ADDED_IDX = 3
-VIDEO_IS_DOWN_IDX = 4
-VIDEO_PLAYLISTPK_IDX = 5
+VIDEO_ROW_IDX__pk = 0
+VIDEO_ROW_IDX__id = 1
+VIDEO_ROW_IDX__title = 2
+VIDEO_ROW_IDX__added = 3
+VIDEO_ROW_IDX__is_down = 4
+VIDEO_ROW_IDX__playlistpk = 5
+
 
 
 SQL_SELECT_ALL_VIDEOS = """
@@ -137,12 +138,12 @@ class PGConnection:
 def video_row_to_dict(row):
     playlisttitle_idx = 6
     row = {
-        'pk': row[VIDEO_PK_IDX],
-        'id': row[VIDEO_ID_IDX],
-        'title': row[VIDEO_TITLE_IDX],
-        'added': str(row[VIDEO_ADDED_IDX]),
-        'is_down': row[VIDEO_IS_DOWN_IDX],
-        'playlistid': row[VIDEO_PLAYLISTPK_IDX],
+        'pk': row[VIDEO_ROW_IDX__pk],
+        'id': row[VIDEO_ROW_IDX__id],
+        'title': row[VIDEO_ROW_IDX__title],
+        'added': str(row[VIDEO_ROW_IDX__added]),
+        'is_down': row[VIDEO_ROW_IDX__is_down],
+        'playlistid': row[VIDEO_ROW_IDX__playlistpk],
         'playlisttitle': row[playlisttitle_idx] or None,
     }
     return row
@@ -182,7 +183,7 @@ def select_videos_by_id(vids):
         rows = cur.fetchall()
 
     data = {
-        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
+        row[VIDEO_ROW_IDX__id]: video_row_to_dict(row=row)
         for row in rows
     }
 
@@ -225,7 +226,7 @@ def select_videos_by_playlistid(playlistid):
         rows = cur.fetchall()
 
     data = {
-        row[VIDEO_ID_IDX]: video_row_to_dict(row=row)
+        row[VIDEO_ROW_IDX__id]: video_row_to_dict(row=row)
         for row in rows
     }
 
@@ -244,7 +245,7 @@ def insert_video(vdata):
         conn.commit()
         row = cur.fetchone()
 
-    result = select_videos_by_id(vids=(row[VIDEO_ID_IDX],))
+    result = select_videos_by_id(vids=(row[VIDEO_ROW_IDX__id],))
 
     return result
 
