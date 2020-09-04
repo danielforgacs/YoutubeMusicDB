@@ -3,18 +3,6 @@ import pytest
 import xmlrpc.client
 import tests.setup
 
-import requests
-
-NO_DBACCESS = False
-
-try:
-    requests.get(tests.setup.DB_ACCESS_URL)
-except:
-    NO_DBACCESS = True
-
-SKIP_ON_MISSING_DBACCESS = pytest.mark.skipif(NO_DBACCESS, reason='No connection')
-
-
 
 
 
@@ -22,7 +10,6 @@ def setup():
     tests.setup.init_test_db()
 
 
-@SKIP_ON_MISSING_DBACCESS
 def test_server_is_working():
     dbacces_svr = xmlrpc.client.ServerProxy(uri=tests.setup.DB_ACCESS_URL)
     data = 1
@@ -33,7 +20,6 @@ def test_server_is_working():
 
 
 
-@SKIP_ON_MISSING_DBACCESS
 def test_select_all_videos_01():
     dbacces_svr = xmlrpc.client.ServerProxy(uri=tests.setup.DB_ACCESS_URL)
     videos = dbacces_svr.select_all_videos()
@@ -43,7 +29,6 @@ def test_select_all_videos_01():
 
 
 
-@SKIP_ON_MISSING_DBACCESS
 def test_select_all_videos_02():
     dbacces_svr = xmlrpc.client.ServerProxy(uri=tests.setup.DB_ACCESS_URL)
     videos = dbacces_svr.select_all_videos()

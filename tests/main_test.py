@@ -1,9 +1,7 @@
 import os
 import pytest
-# import app.data
 import app.main as main
 import app.youtube as ytdl
-import tests.data_test
 import tests.setup
 import dbaccess.dbfuncs as dbf
 from app import config
