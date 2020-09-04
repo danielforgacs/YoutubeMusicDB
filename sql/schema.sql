@@ -16,3 +16,10 @@ CREATE TABLE video (
 	is_down			BOOLEAN			NOT NULL DEFAULT false
 )
 ;
+
+CREATE TABLE playlist_video (
+	playlistpk		INTEGER			REFERENCES playlist,
+	videopk			INTEGER			REFERENCES video,
+	UNIQUE (playlistpk, videopk)
+)
+;
