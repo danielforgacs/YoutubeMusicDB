@@ -16,6 +16,7 @@ VIDEO_ROW_IDX__title = 2
 VIDEO_ROW_IDX__added = 3
 VIDEO_ROW_IDX__is_down = 4
 VIDEO_ROW_IDX__playlistid = 5
+VIDEO_ROW_IDX__playlisttitle = 6
 
 
 
@@ -136,7 +137,6 @@ class PGConnection:
 
 
 def video_row_to_dict(row):
-    playlisttitle_idx = 6
     row = {
         'pk': row[VIDEO_ROW_IDX__pk],
         'id': row[VIDEO_ROW_IDX__id],
@@ -144,7 +144,7 @@ def video_row_to_dict(row):
         'added': str(row[VIDEO_ROW_IDX__added]),
         'is_down': row[VIDEO_ROW_IDX__is_down],
         'playlistid': row[VIDEO_ROW_IDX__playlistid],
-        'playlisttitle': row[playlisttitle_idx] or None,
+        'playlisttitle': row[VIDEO_ROW_IDX__playlisttitle] or None,
     }
     return row
 
