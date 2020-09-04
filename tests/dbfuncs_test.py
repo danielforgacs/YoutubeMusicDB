@@ -20,8 +20,6 @@ def setup():
 
 
 
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
     newplist = dbf.insert_playlist(pldict=pldata)
@@ -656,7 +654,7 @@ def test_select_playlists_by_id(plids):
         'uploader_id': 'pl_uploader_id_2',
     },
 ))
-def test_insert_playlist(pldict):
+def test_insert_playlist_05(pldict):
     result = dbf.insert_playlist(pldict=pldict)
 
     assert len(result.keys()) == 1
