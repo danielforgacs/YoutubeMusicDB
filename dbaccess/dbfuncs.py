@@ -18,6 +18,14 @@ VIDEO_ROW_IDX__is_down = 4
 VIDEO_ROW_IDX__playlistid = 5
 VIDEO_ROW_IDX__playlisttitle = 6
 
+VIDEO_ROW_NAME__pk = 'pk'
+VIDEO_ROW_NAME__id = 'id'
+VIDEO_ROW_NAME__title = 'title'
+VIDEO_ROW_NAME__added = 'added'
+VIDEO_ROW_NAME__is_down = 'is_down'
+VIDEO_ROW_NAME__playlistid = 'playlistid'
+VIDEO_ROW_NAME__playlisttitle = 'playlisttitle'
+
 
 
 SQL_SELECT_ALL_VIDEOS = """
@@ -27,11 +35,24 @@ SQL_SELECT_ALL_VIDEOS = """
         video.title,
         video.added,
         video.is_down,
-        playlist.id,
-        playlist.title
+        NULL AS playlist_id,
+        NULL AS playlist_title,
+        array (
+            SELECT playlistpk
+            FROM playlist_video
+            WHERE playlist_video.videopk = video.pk
+        ) AS playlist_pks,
+        (
+            SELECT array_agg (array[
+                playlist.id,
+                playlist.title])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlistpk = playlist.pk
+            WHERE playlist_video.videopk = video.pk
+        ) as playlists
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlistpk
     ORDER BY video.pk
+    ;
 """
 
 SQL_SELECT_VIDEOS_BY_ID = """
@@ -138,13 +159,13 @@ class PGConnection:
 
 def video_row_to_dict(row):
     row = {
-        'pk': row[VIDEO_ROW_IDX__pk],
-        'id': row[VIDEO_ROW_IDX__id],
-        'title': row[VIDEO_ROW_IDX__title],
-        'added': str(row[VIDEO_ROW_IDX__added]),
-        'is_down': row[VIDEO_ROW_IDX__is_down],
-        'playlistid': row[VIDEO_ROW_IDX__playlistid],
-        'playlisttitle': row[VIDEO_ROW_IDX__playlisttitle] or None,
+        VIDEO_ROW_NAME__pk: row[VIDEO_ROW_IDX__pk],
+        VIDEO_ROW_NAME__id: row[VIDEO_ROW_IDX__id],
+        VIDEO_ROW_NAME__title: row[VIDEO_ROW_IDX__title],
+        VIDEO_ROW_NAME__added: str(row[VIDEO_ROW_IDX__added]),
+        VIDEO_ROW_NAME__is_down: row[VIDEO_ROW_IDX__is_down],
+        VIDEO_ROW_NAME__playlistid: row[VIDEO_ROW_IDX__playlistid],
+        VIDEO_ROW_NAME__playlisttitle: row[VIDEO_ROW_IDX__playlisttitle] or None,
     }
     return row
 
