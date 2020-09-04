@@ -35,8 +35,8 @@ SQL_SELECT_ALL_VIDEOS = """
         video.title,
         video.added,
         video.is_down,
-        NULL AS playlist_id,
-        NULL AS playlist_title,
+        -- NULL AS playlist_id,
+        -- NULL AS playlist_title,
         array (
             SELECT playlistpk
             FROM playlist_video
