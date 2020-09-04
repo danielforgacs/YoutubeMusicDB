@@ -17,66 +17,8 @@ def test_select_all_videos_empty_db():
 
 
 
-def test_select_all_videos_01():
-    tests.setup.run_sql_file(sqlfile='testData_01')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-    ]
-
-    data = dbf.select_all_videos()
-
-    assert data == expected
-
-
-
-def test_select_all_videos_02():
-    tests.setup.run_sql_file(sqlfile='testData_02')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 3,
-            'id': 'id3',
-            'title': 'title3',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-    ]
-
-    data = dbf.select_all_videos()
-
-    assert data == expected
-
-
-
 def test_select_all_videos_03():
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     expected = [
         {
             'pk': 1,
@@ -133,7 +75,7 @@ def test_select_all_videos_03():
 
 
 def test_select_videos_by_id():
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     expected = [
         {
             'pk': 2,
@@ -171,7 +113,7 @@ def test_select_videos_by_id():
 
 
 def test_set_video_as_downloaded():
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     expected = {'id5': {
         'pk': 5,
         'id': 'id5',
@@ -189,7 +131,7 @@ def test_set_video_as_downloaded():
 
 
 def test_set_video_playlist():
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     vid = 'id1'
     video = dbf.select_videos_by_id(vids=(vid,))
 
@@ -219,7 +161,7 @@ def test_set_video_playlist():
     ('plid2', ['id4', 'id5']),
 ))
 def test_select_videos_by_playlistid(plid, expected):
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     result = dbf.select_videos_by_playlistid(playlistid=plid)
     vids = [video['id'] for video in result]
 
@@ -250,7 +192,7 @@ def test_insert_video():
     ('plid1', 'plid2'),
 ))
 def test_select_playlists_by_id(plids):
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
     expected = list(plids)
     result = dbf.select_playlists_by_id(plids=plids)
 

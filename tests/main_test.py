@@ -49,19 +49,22 @@ def test_download_set_videos_as_is_down_True(plst):
     with main.app.test_client() as client:
         response = client.post('/api/download', json={'id': plst})
 
-    videoids = response.json
+    videoids = tuple([video['id'] for video in response.json['videos']])
+    # videoids = tuple(['HJq-6y2IYEQ', 'FIQ2F3T1ydM'])
+    print(videoids)
     # videoids = tuple(vid['id'] for vid in response.json['videos'])
-    videoids = tuple(videoids.keys())
+    # videoids = tuple(videoids.keys())
 
     sql = """
         SELECT is_down
         FROM video
-        WHERE id in %s;
+        WHERE id in %(ids)s;
     """
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
-        cur.execute(query=sql, vars=(videoids,))
+        # cur.execute(query=sql, vars={'ids': ('HJq-6y2IYEQ', 'FIQ2F3T1ydM')})
+        cur.execute(query=sql, vars={'ids': videoids})
         rows = cur.fetchall()
 
     is_down_vals = [row[0] for row in rows]
