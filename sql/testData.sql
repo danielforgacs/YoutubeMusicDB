@@ -1,7 +1,15 @@
 insert into playlist
     (pk, id, title, uploader_id, added) values
     (1, 'plid1', 'pltitle1', 'user1', '2000-01-01 00:00:00'),
-    (2, 'plid2', 'pltitle2', 'user2', '2000-01-01 00:00:00')
+    (2, 'plid2', 'pltitle2', 'user2', '2000-01-01 00:00:00'),
+    (3, 'plid3', 'pltitle3', 'user3', '2000-01-01 00:00:00'),
+    (4, 'plid4', 'pltitle4', 'user4', '2000-01-01 00:00:00'),
+    (5, 'plid5', 'pltitle5', 'user5', '2000-01-01 00:00:00'),
+    (6, 'plid6', 'pltitle6', 'user6', '2000-01-01 00:00:00'),
+    (7, 'plid7', 'pltitle7', 'user7', '2000-01-01 00:00:00'),
+    (8, 'plid8', 'pltitle8', 'user8', '2000-01-01 00:00:00'),
+    (9, 'plid9', 'pltitle9', 'user9', '2000-01-01 00:00:00'),
+    (10, 'plid10', 'pltitle10', 'user10', '2000-01-01 00:00:00')
 ;
 
 insert into video
