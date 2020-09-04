@@ -36,7 +36,7 @@ def test_select_all_videos_02():
 
     assert videos == expected
 
-    tests.setup.run_sql_file(sqlfile='testData_03')
+    tests.setup.run_sql_file(sqlfile='testData')
 
     videos = dbacces_svr.select_all_videos()
     expected = [
