@@ -42,7 +42,6 @@ def test_insert_playlist(pldata):
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_playlist_insert_updates_data_if_playlist_extsts():
     playlist = dict(tests.setup.PLAYLIST_DATA[0])
     newtitle = 'new_title'
@@ -69,7 +68,6 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
     assert result[0][dbf.PLAYLIST_TITLE_IDX] == newtitle
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
 def test_insert_video(vdata):
     result = dbf.insert_video(vdata=vdata)
@@ -94,7 +92,6 @@ def test_insert_video(vdata):
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_get_video_ids_by_playlist():
     result1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
     plpk1 = [playlist for playlist in result1.values()][0]
