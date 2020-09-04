@@ -77,6 +77,7 @@ SQL_SELECT_ALL_VIDEOS = """
         playlist.title AS playlist
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
+    ORDER BY video.pk
 """
 
 SQL_SELECT_VIDEOS_BY_ID = """
@@ -162,10 +163,7 @@ def select_all_videos():
         cur.execute(query=SQL_SELECT_ALL_VIDEOS)
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_COLUMN_IDX__id]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 
