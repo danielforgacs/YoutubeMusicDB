@@ -20,169 +20,6 @@ def setup():
 
 
 
-@pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
-def test_insert_playlist(pldata):
-    newplist = dbf.insert_playlist(pldict=pldata)
-    plpk = [pldict for pldict in newplist.values()][0]
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute(query="""
-            SELECT pk, id, title, uploader_id
-            FROM playlist
-            WHERE id = %(id)s
-            ;
-        """, vars=pldata)
-        result = cur.fetchone()
-
-    assert result[dbf.PLAYLIST_PK_IDX] == plpk['pk']
-    assert result[dbf.PLAYLIST_ID_IDX] == pldata['id']
-    assert result[dbf.PLAYLIST_TITLE_IDX] == pldata['title']
-    assert result[dbf.PLAYLIST_UPLOADER_ID_IDX] == pldata['uploader_id']
-
-
-
-def test_playlist_insert_updates_data_if_playlist_extsts():
-    playlist = dict(tests.setup.PLAYLIST_DATA[0])
-    newtitle = 'new_title'
-    result = dbf.insert_playlist(pldict=playlist)
-    plpk = [playlist for playlist in result.values()][0]['pk']
-
-    playlist['title'] = newtitle
-    result2 = dbf.insert_playlist(pldict=playlist)
-    plpk2 = [playlist for playlist in result2.values()][0]['pk']
-
-    assert plpk == plpk2
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute(query="""
-            SELECT pk, id, title, uploader_id
-            FROM playlist
-            WHERE id = %(id)s
-            ;
-        """, vars=playlist)
-        result = cur.fetchall()
-
-    assert len(result) == 1
-    assert result[0][dbf.PLAYLIST_TITLE_IDX] == newtitle
-
-
-@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
-def test_insert_video(vdata):
-    result = dbf.insert_video(vdata=vdata)
-    vpk = [video for video in result.values()][0]
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute("""
-            SELECT pk, id, title, playlistpk
-            FROM video
-            WHERE id = %(id)s
-        ;
-        """, vars=vdata)
-        result = cur.fetchall()
-
-    assert len(result) == 1
-    assert result[0][dbf.VIDEO_ROW_IDX__pk] == vpk['pk']
-    assert result[0][dbf.VIDEO_ROW_IDX__id] == vdata['id']
-    assert result[0][dbf.VIDEO_ROW_IDX__title] == vdata['title']
-    assert result[0][dbf.VIDEO_ROW_IDX__playlistid] == vdata['playlistpk']
-
-
-
-
-def test_get_video_ids_by_playlist():
-    result1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
-    plpk1 = [playlist for playlist in result1.values()][0]
-    result2 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
-    plpk2 = [playlist for playlist in result2.values()][0]
-    videodata1 = dict(tests.setup.VIDEO_DATA[0])
-    videodata2 = dict(tests.setup.VIDEO_DATA[1])
-    videodata3 = dict(tests.setup.VIDEO_DATA[2])
-    videodata1['playlistpk'] = plpk1['pk']
-    videodata2['playlistpk'] = plpk1['pk']
-    videodata3['playlistpk'] = plpk2['pk']
-    vpk1 = dbf.insert_video(vdata=videodata1)
-    vpk2 = dbf.insert_video(vdata=videodata2)
-    vpk3 = dbf.insert_video(vdata=videodata3)
-    videoids1_raw = dbf.select_videos_by_playlistid(
-        playlistid=dict(tests.setup.PLAYLIST_DATA[0])['id'])
-    videoids1 = [video for video in videoids1_raw.values()]
-    videoids2_raw = dbf.select_videos_by_playlistid(
-        playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
-    videoids2 = [video for video in videoids2_raw.values()]
-
-    assert [vid['id'] for vid in videoids1] == [videodata1['id'], videodata2['id']]
-    assert [vid['id'] for vid in videoids2] == [videodata3['id']]
-
-
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_set_video_playlist_sets_updates():
-    sql = """
-        SELECT pk, id, title, added, is_down, playlistpk
-        FROM video
-        WHERE video.id = %(vid)s
-        ;
-    """
-    videodata = dict(tests.setup.VIDEO_DATA[0])
-
-    res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk1 = [playlist for playlist in res1.values()][0]
-    res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
-    plpk2 = [playlist for playlist in res2.values()][0]
-    vpk = dbf.insert_video(vdata=videodata)
-
-    res3 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
-    result = [video for video in res3.values()][0]
-    vpk = result['pk']
-    vid = result['id']
-    plpk = result['playlistid']
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute(query=sql, vars={'vid': videodata['id']})
-        result = cur.fetchone()
-
-    assert result[dbf.VIDEO_ROW_IDX__playlistid] == plpk1['pk']
-    assert result[dbf.VIDEO_ROW_IDX__pk] == vpk
-
-    result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
-    result = [video for video in result5.values()][0]
-    vpk = result['pk']
-    vid = result['id']
-    plpk = result['playlistid']
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute(query=sql, vars={'vid': videodata['id']})
-        result = cur.fetchone()
-
-    assert result[dbf.VIDEO_ROW_IDX__playlistid] == plpk2['pk']
-    assert result[dbf.VIDEO_ROW_IDX__pk] == vpk
-
-    plpk3 = None
-
-    result6 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk3)
-    result = [video for video in result6.values()][0]
-    vpk = result['pk']
-    vid = result['id']
-    plpk = result['playlistid']
-
-    with dbf.PGConnection() as conn:
-        cur = conn.cursor()
-        cur.execute(query=sql, vars={'vid': videodata['id']})
-        result = cur.fetchone()
-
-    assert result[dbf.VIDEO_ROW_IDX__playlistid] == plpk3
-    assert result[dbf.VIDEO_ROW_IDX__pk] == vpk
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_set_video_as_downloaded():
     videdict = {
         'id': 'id_test',
@@ -221,17 +58,16 @@ def test_set_video_as_downloaded():
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('sql', [
     """
-    INSERT INTO public.video (id,  title,   playlistpk, added, is_down)
-    VALUES ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false);
+    INSERT INTO public.video (id,  title, added, is_down)
+    VALUES ('a', 'vid01', '2020-08-18 14:53:22.697986', false);
     """,
     """
-    INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
-    ('a', 'vid01', NULL, '2020-08-18 14:53:22.697986', false),
-    ('b', 'vid02', NULL, '2020-08-18 14:53:24.035011', false),
-    ('c', 'vid03', NULL, '2020-08-18 14:58:58.980937', false);
+    INSERT INTO public.video (id,  title, added, is_down) VALUES
+    ('a', 'vid01', '2020-08-18 14:53:22.697986', false),
+    ('b', 'vid02', '2020-08-18 14:53:24.035011', false),
+    ('c', 'vid03', '2020-08-18 14:58:58.980937', false);
     """,
 ])
 def test_select_all_videos_returns_all_video_rows_once(sql):
@@ -255,7 +91,6 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('vids, count', (
     [('id_aa',), 1],
     [('id_aa', 'id_aa', 'id_aa',), 1],
@@ -265,12 +100,12 @@ def test_select_all_videos_returns_all_video_rows_once(sql):
 ))
 def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
     sql = """
-        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
-            ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_dd', 'title_dd', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_ff', 'title_ff', NULL, '2020-01-01 12:12:12.12', false)
+        INSERT INTO public.video (id,  title, added, is_down) VALUES
+            ('id_aa', 'title_aa', '2020-01-01 12:12:12.12', false),
+            ('id_bb', 'title_bb', '2020-01-01 12:12:12.12', false),
+            ('id_cc', 'title_cc', '2020-01-01 12:12:12.12', false),
+            ('id_dd', 'title_dd', '2020-01-01 12:12:12.12', false),
+            ('id_ff', 'title_ff', '2020-01-01 12:12:12.12', false)
     """
 
     with dbf.PGConnection() as conn:
@@ -285,7 +120,6 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('vids', (
     ('id_aa',),
     ('id_aa', 'id_aa', 'id_aa',),
@@ -294,12 +128,12 @@ def test_select_videos_by_id_retursn_videos_by_video_id_list(vids, count):
 ))
 def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     sql = """
-        INSERT INTO public.video (id,  title,   playlistpk, added, is_down) VALUES
-            ('id_aa', 'title_aa', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_bb', 'title_bb', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_cc', 'title_cc', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_dd', 'title_dd', NULL, '2020-01-01 12:12:12.12', false),
-            ('id_ff', 'title_ff', NULL, '2020-01-01 12:12:12.12', false)
+        INSERT INTO public.video (id,  title, added, is_down) VALUES
+            ('id_aa', 'title_aa', '2020-01-01 12:12:12.12', false),
+            ('id_bb', 'title_bb', '2020-01-01 12:12:12.12', false),
+            ('id_cc', 'title_cc', '2020-01-01 12:12:12.12', false),
+            ('id_dd', 'title_dd', '2020-01-01 12:12:12.12', false),
+            ('id_ff', 'title_ff', '2020-01-01 12:12:12.12', false)
     """
 
     with dbf.PGConnection() as conn:
@@ -310,72 +144,11 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
     videos = dbf.select_videos_by_id(vids=vids)
     allvideos = dbf.select_all_videos()
 
-    assert len(list(videos.values())[0]) == len(allvideos[0])
+    assert len(videos[0]) == len(allvideos[0])
 
 
 
 
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-@pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
-def test_insert_playlist_returns_dict(pldata):
-    result = dbf.insert_playlist(pldict=pldata)
-
-    assert isinstance(result, dict)
-    assert list(result.keys()) == [[playl for playl in result.values()][0]['id']]
-    assert isinstance([plist for plist in result.values()][0]['pk'], int)
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
-def test_insert_video_returns_dict(vdata):
-    result = dbf.insert_video(vdata=vdata)
-    video = list(result.values())[0]
-
-    assert isinstance(result, dict)
-    assert list(result.keys()) == [video['id']]
-    assert isinstance(video['pk'], int)
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_set_video_playlist_returns_dict():
-    sql = """
-        SELECT pk, id, title, playlistpk
-        FROM video
-        WHERE video.id = %(vid)s
-        ;
-    """
-    videodata = dict(tests.setup.VIDEO_DATA[0])
-
-    res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk1 = [playl for playl in res1.values()][0]
-    res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
-    plpk2 = [playl for playl in res2.values()][0]
-    vpk = dbf.insert_video(vdata=videodata)
-
-    result = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
-
-    assert isinstance(result, dict)
-
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-@pytest.mark.parametrize('vdata', tests.setup.VIDEO_DATA)
-def test_select_all_videos_returns_dict_of_dicts(vdata):
-    vpk = dbf.insert_video(vdata=vdata)
-    vpk = dbf.insert_video(vdata=tests.setup.VIDEO_DATA[0])
-    result = dbf.select_all_videos()
-
-    assert isinstance(result, list)
-    assert all(map(lambda x: isinstance(x, dict), result))
-
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_select_all_videos_empty_db():
     data = dbf.select_all_videos()
     expected = []
@@ -384,206 +157,42 @@ def test_select_all_videos_empty_db():
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_select_all_videos_01():
-    tests.setup.run_sql_file(sqlfile='testData_01')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-    ]
 
-    data = dbf.select_all_videos()
-
-    assert data == expected
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_select_all_videos_02():
-    tests.setup.run_sql_file(sqlfile='testData_02')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 3,
-            'id': 'id3',
-            'title': 'title3',
-            'playlistid': None,
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': None,
-        },
-    ]
-
-    data = dbf.select_all_videos()
-
-    assert data == expected
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_select_all_videos_03():
-    tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = [
-        {
-            'pk': 1,
-            'id': 'id1',
-            'title': 'title1',
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlistid': None,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlistid': 'plid1',
-            'playlisttitle': 'pltitle1',
-        },
-        {
-            'pk': 3,
-            'id': 'id3',
-            'title': 'title3',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlistid': None,
-            'playlisttitle': None,
-        },
-        {
-            'pk': 4,
-            'id': 'id4',
-            'title': 'title4',
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlistid': 'plid2',
-            'playlisttitle': 'pltitle2',
-        },
-        {
-            'pk': 5,
-            'id': 'id5',
-            'title': 'title5',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlistid': 'plid2',
-            'playlisttitle': 'pltitle2',
-        },
-    ]
-
-    data = dbf.select_all_videos()
-
-    print(data)
-
-    assert data == expected
-
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-def test_select_videos_by_id():
-    tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = {
-        'id2': {
-            'pk': 2,
-            'id': 'id2',
-            'title': 'title2',
-            'playlistid': 'plid1',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': 'pltitle1',
-        },
-        'id4': {
-            'pk': 4,
-            'id': 'id4',
-            'title': 'title4',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': True,
-            'playlisttitle': 'pltitle2',
-        },
-        'id5': {
-            'pk': 5,
-            'id': 'id5',
-            'title': 'title5',
-            'playlistid': 'plid2',
-            'added': '2000-01-01 00:00:00',
-            'is_down': False,
-            'playlisttitle': 'pltitle2',
-        },
-    }
-
-    data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
-
-    assert data == expected
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_set_video_as_downloaded():
-    tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = {'id5': {
-        'pk': 5,
-        'id': 'id5',
-        'title': 'title5',
-        'playlistid': 'plid2',
-        'added': '2000-01-01 00:00:00',
-        'is_down': True,
-        'playlisttitle': 'pltitle2',
-    }}
-    data = dbf.set_video_as_downloaded(vid='id5')
+    tests.setup.run_sql_file(sqlfile='testData')
+    initvideo = dbf.select_videos_by_id(vids=['id_5'])
 
-    assert data == expected
+    assert initvideo[0]['is_down'] == False
+
+    result = dbf.set_video_as_downloaded(vid='id_5')
+
+    assert result[0]['is_down'] is True
 
 
 
 
 @pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 def test_set_video_playlist():
-    tests.setup.run_sql_file(sqlfile='testData_03')
-    vid = 'id1'
+    tests.setup.run_sql_file(sqlfile='testData')
+    vid = 'id_10'
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] is None
-    assert video[vid]['playlisttitle'] is None
+    assert video[0]['playlist_pks'] is None
+    assert video[0]['playlists'] is None
 
     plpk = 1
     result = dbf.set_video_playlist(vid=vid, plpk=plpk)
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] == 'plid1'
-    assert video[vid]['playlisttitle'] == 'pltitle1'
+    assert video[0]['playlistid'] == 'plid1'
+    assert video[0]['playlisttitle'] == 'pltitle1'
 
     plpk = 2
     result = dbf.set_video_playlist(vid=vid, plpk=plpk)
     video = dbf.select_videos_by_id(vids=(vid,))
 
-    assert video[vid]['playlistid'] == 'plid2'
-    assert video[vid]['playlisttitle'] == 'pltitle2'
+    assert video[0]['playlistid'] == 'plid2'
+    assert video[0]['playlisttitle'] == 'pltitle2'
 
 
 
@@ -600,8 +209,6 @@ def test_select_videos_by_playlistid(plid, expected):
     vids = [video['id'] for video in result.values()]
 
     assert vids == expected
-
-
 
 
 @pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
@@ -621,24 +228,6 @@ def test_insert_video():
 
 
 
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
-@pytest.mark.parametrize('plids', (
-    ('plid1',),
-    ('plid2',),
-    ('plid1', 'plid2'),
-))
-def test_select_playlists_by_id(plids):
-    tests.setup.run_sql_file(sqlfile='testData_03')
-    expected = list(plids)
-    result = dbf.select_playlists_by_id(plids=plids)
-
-    assert list(result.keys()) == expected
-    assert [pl['id'] for pl in result.values()] == expected
-
-
-
-
-@pytest.mark.skip(reason='OUTDATED EXPECTED DATA AFTER UPDATE')
 @pytest.mark.parametrize('pldict', (
     {
         'id': 'pl_id_1',
@@ -666,7 +255,7 @@ def test_insert_playlist_05(pldict):
 
 
 def test_video_row_returns_fields():
-    tests.setup.run_sql_file(sqlfile='testData_04')
+    tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
 
     for row in allvideos:

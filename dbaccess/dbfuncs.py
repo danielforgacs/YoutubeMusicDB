@@ -60,10 +60,20 @@ SQL_SELECT_VIDEOS_BY_ID = """
         video.title,
         video.added,
         video.is_down,
-        playlist.id,
-        playlist.title
+        array (
+            SELECT playlistpk
+            FROM playlist_video
+            WHERE playlist_video.videopk = video.pk
+        ) AS playlist_pks,
+        (
+            SELECT array_agg (array[
+                playlist.id,
+                playlist.title])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlistpk = playlist.pk
+            WHERE playlist_video.videopk = video.pk
+        ) as playlists
     FROM video
-    LEFT JOIN playlist ON playlist.pk = video.playlistpk
     WHERE video.id in %(vids)s
     ORDER BY video.pk
     ;
@@ -101,8 +111,8 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
 """
 
 SQL_INSERT_VIDEO = """
-    INSERT INTO video (id, title, playlistpk, added)
-    VALUES (%(id)s, %(title)s, %(playlistpk)s, %(added)s)
+    INSERT INTO video (id, title, added)
+    VALUES (%(id)s, %(title)s, %(added)s)
     ON CONFLICT (id) DO UPDATE SET
         title = %(title)s
     RETURNING pk, id
@@ -162,7 +172,7 @@ def video_row_to_dict(row):
         VIDEO_ROW_NAME__title: row[VIDEO_ROW_IDX__title],
         VIDEO_ROW_NAME__added: str(row[VIDEO_ROW_IDX__added]),
         VIDEO_ROW_NAME__is_down: row[VIDEO_ROW_IDX__is_down],
-        VIDEO_ROW_NAME__playlist_pks: row[VIDEO_ROW_IDX__playlist_pks],
+        VIDEO_ROW_NAME__playlist_pks: row[VIDEO_ROW_IDX__playlist_pks] or None,
         VIDEO_ROW_NAME__playlists: row[VIDEO_ROW_IDX__playlists] or None,
     }
     return row
@@ -201,10 +211,7 @@ def select_videos_by_id(vids):
         cur.execute(query=SQL_SELECT_VIDEOS_BY_ID, vars={'vids': tuple(vids)})
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_ROW_IDX__id]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 
@@ -255,7 +262,7 @@ def select_videos_by_playlistid(playlistid):
 
 
 def insert_video(vdata):
-    vdata.setdefault('playlistpk', None)
+    # vdata.setdefault('playlistpk', None)
     vdata['added'] = datetime.datetime.now()
 
     with PGConnection() as conn:

@@ -14,11 +14,11 @@ insert into playlist
 
 insert into video
     (pk, id, title, added, is_down) values
-    ( 1, 'id1', 'title1', '2000-01-01 00:00:00', false), --playlists: 1
-    ( 2, 'id2', 'title2', '2000-01-01 00:00:00', false), --playlists: 1, 2
-    ( 3, 'id3', 'title3', '2000-01-01 00:00:00', false), --playlists: 1, 2, 3
-    ( 4, 'id4', 'title4', '2000-01-01 00:00:00', false), --playlists: 1, 2, 3, 4
-    ( 5, 'id5', 'title5', '2000-01-01 00:00:00', false), --playlists:
+    ( 1, 'id_1', 'title_1', '2000-01-01 00:00:00', false), --playlists: 1
+    ( 2, 'id_2', 'title_2', '2000-01-01 00:00:00', false), --playlists: 1, 2
+    ( 3, 'id_3', 'title_3', '2000-01-01 00:00:00', false), --playlists: 1, 2, 3
+    ( 4, 'id_4', 'title_4', '2000-01-01 00:00:00', false), --playlists: 1, 2, 3, 4
+    ( 5, 'id_5', 'title_5', '2000-01-01 00:00:00', false), --playlists:
     ( 6, 'id_6', 'title_6', '2000-01-01 00:00:00', false), --playlists:
     ( 7, 'id_7', 'title_7', '2000-01-01 00:00:00', false), --playlists:
     ( 8, 'id_8', 'title_8', '2000-01-01 00:00:00', false), --playlists:
