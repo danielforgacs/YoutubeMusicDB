@@ -1,6 +1,3 @@
--- CREATE DATABASE ymdb;
--- \c ymdb
-
 CREATE TABLE playlist (
 	pk				SMALLSERIAL		PRIMARY KEY,
 	id				TEXT			NOT NULL UNIQUE,
