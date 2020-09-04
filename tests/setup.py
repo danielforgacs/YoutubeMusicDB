@@ -25,19 +25,6 @@ YOUTUBE_VIDEOS = [
 ]
 YOUTUBE_IDS = YOUTUBE_PLAYLISTS + YOUTUBE_VIDEOS
 
-PLAYLIST_DATA = [{
-        'id': 'pl-id_{}'.format(idx),
-        'title': 'pl-title_{}'.format(idx),
-        'uploader_id': 'pl-uploader_id_{}'.format(idx),
-    } for idx in range(3)
-]
-VIDEO_DATA = [
-    {
-        'id': 'v-id_{}'.format(idx),
-        'title': 'v-title_{}'.format(idx),
-    } for idx in range(3)
-]
-
 
 
 
