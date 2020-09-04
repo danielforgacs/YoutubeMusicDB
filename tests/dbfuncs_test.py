@@ -254,8 +254,7 @@ def test_select_playlists_by_id(plids):
     expected = list(plids)
     result = dbf.select_playlists_by_id(plids=plids)
 
-    assert list(result.keys()) == expected
-    assert [pl['id'] for pl in result.values()] == expected
+    assert [pl['id'] for pl in result] == expected
 
 
 
@@ -275,7 +274,7 @@ def test_select_playlists_by_id(plids):
 def test_insert_playlist(pldict):
     result = dbf.insert_playlist(pldict=pldict)
 
-    assert len(result.keys()) == 1
+    assert len(result) == 1
     assert list(result.keys()) == [pldict['id']]
     assert list(result[pldict['id']].keys()) == [
         'pk', 'id', 'title', 'uploader_id', 'added']
@@ -289,7 +288,7 @@ def test_insert_playlist(pldict):
 @pytest.mark.parametrize('pldata', tests.setup.PLAYLIST_DATA)
 def test_insert_playlist(pldata):
     newplist = dbf.insert_playlist(pldict=pldata)
-    plpk = [pldict for pldict in newplist.values()][0]
+    plpk = newplist[0]
 
     with dbf.PGConnection() as conn:
         cur = conn.cursor()
@@ -312,11 +311,11 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
     playlist = dict(tests.setup.PLAYLIST_DATA[0])
     newtitle = 'new_title'
     result = dbf.insert_playlist(pldict=playlist)
-    plpk = [playlist for playlist in result.values()][0]['pk']
+    plpk = result[0]['pk']
 
     playlist['title'] = newtitle
     result2 = dbf.insert_playlist(pldict=playlist)
-    plpk2 = [playlist for playlist in result2.values()][0]['pk']
+    plpk2 = result[0]['pk']
 
     assert plpk == plpk2
 
@@ -361,9 +360,9 @@ def test_insert_video(vdata):
 
 def test_get_video_ids_by_playlist():
     result1 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[0]))
-    plpk1 = [playlist for playlist in result1.values()][0]
+    plpk1 = result1[0]
     result2 = dbf.insert_playlist(pldict=dict(tests.setup.PLAYLIST_DATA[1]))
-    plpk2 = [playlist for playlist in result2.values()][0]
+    plpk2 = result2[0]
     videodata1 = dict(tests.setup.VIDEO_DATA[0])
     videodata2 = dict(tests.setup.VIDEO_DATA[1])
     videodata3 = dict(tests.setup.VIDEO_DATA[2])
@@ -397,9 +396,9 @@ def test_set_video_playlist_sets_updates():
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
     res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk1 = [playlist for playlist in res1.values()][0]
+    plpk1 = res1[0]
     res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
-    plpk2 = [playlist for playlist in res2.values()][0]
+    plpk2 = res2[0]
     vpk = dbf.insert_video(vdata=videodata)
 
     res3 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])
@@ -582,9 +581,8 @@ def test_select_videos_by_id_retursn_returns_same_columns_as_all_videos(vids):
 def test_insert_playlist_returns_dict(pldata):
     result = dbf.insert_playlist(pldict=pldata)
 
-    assert isinstance(result, dict)
-    assert list(result.keys()) == [[playl for playl in result.values()][0]['id']]
-    assert isinstance([plist for plist in result.values()][0]['pk'], int)
+    assert isinstance(result, list)
+    assert isinstance(result[0]['pk'], int)
 
 
 
@@ -610,9 +608,9 @@ def test_set_video_playlist_returns_dict():
     videodata = dict(tests.setup.VIDEO_DATA[0])
 
     res1 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[0])
-    plpk1 = [playl for playl in res1.values()][0]
+    plpk1 = res1[0]
     res2 = dbf.insert_playlist(pldict=tests.setup.PLAYLIST_DATA[1])
-    plpk2 = [playl for playl in res2.values()][0]
+    plpk2 = res2[0]
     vpk = dbf.insert_video(vdata=videodata)
 
     result = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk1['pk'])

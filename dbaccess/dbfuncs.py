@@ -246,12 +246,9 @@ def select_playlists_by_id(plids):
         cur.execute(query=SQL_SELECT_PLAYLISTS_BY_ID, vars={'plids': plids})
         rows = cur.fetchall()
 
-    result = {
-        row[PLAYLIST_COLUMNT_IDX__id]: playlist_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [playlist_row_to_dict(row=row) for row in rows]
 
-    return result
+    return data
 
 
 
