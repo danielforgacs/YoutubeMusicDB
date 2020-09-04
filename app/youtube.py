@@ -66,8 +66,7 @@ class Video(BaseEntity):
         with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
             response = dbacces_svr.insert_video(self.as_dict)
 
-        videoid = list(response.keys())[0]
-        self.pk = response[videoid]['pk']
+        self.pk = response[0]['pk']
 
 
     def set_playlist(self, playlist):
@@ -91,8 +90,8 @@ class Playlist(BaseEntity):
         with xmlrpc.client.ServerProxy(**RPC_CLIENT_KWARGS) as dbacces_svr:
             response = dbacces_svr.insert_playlist(self.as_dict)
 
-        plid = list(response.keys())[0]
-        self.pk = response[plid]['pk']
+        plid = response[0]
+        self.pk = response[0]['pk']
 
         for video in self.videos:
             video.set_playlist(playlist=self)

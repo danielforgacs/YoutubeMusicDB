@@ -101,7 +101,7 @@ def download_playlist():
 
     titles = []
 
-    for video in videos.values():
+    for video in videos:
         if video['is_down']:
             continue
 
