@@ -217,10 +217,7 @@ def select_videos_by_playlistid(playlistid):
         conn.commit()
         rows = cur.fetchall()
 
-    data = {
-        row[VIDEO_COLUMN_IDX__id]: video_row_to_dict(row=row)
-        for row in rows
-    }
+    data = [video_row_to_dict(row=row) for row in rows]
 
     return data
 

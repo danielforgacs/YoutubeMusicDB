@@ -221,7 +221,7 @@ def test_set_video_playlist():
 def test_select_videos_by_playlistid(plid, expected):
     tests.setup.run_sql_file(sqlfile='testData_03')
     result = dbf.select_videos_by_playlistid(playlistid=plid)
-    vids = [video['id'] for video in result.values()]
+    vids = [video['id'] for video in result]
 
     assert vids == expected
 
@@ -375,10 +375,10 @@ def test_get_video_ids_by_playlist():
     vpk3 = dbf.insert_video(vdata=videodata3)
     videoids1_raw = dbf.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[0])['id'])
-    videoids1 = [video for video in videoids1_raw.values()]
+    videoids1 = [video for video in videoids1_raw]
     videoids2_raw = dbf.select_videos_by_playlistid(
         playlistid=dict(tests.setup.PLAYLIST_DATA[1])['id'])
-    videoids2 = [video for video in videoids2_raw.values()]
+    videoids2 = [video for video in videoids2_raw]
 
     assert [vid['id'] for vid in videoids1] == [videodata1['id'], videodata2['id']]
     assert [vid['id'] for vid in videoids2] == [videodata3['id']]
