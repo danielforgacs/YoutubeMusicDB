@@ -57,4 +57,9 @@ def test_select_all_videos_02():
     expected[4]['playlistid'] = 'plid2'
     expected[4]['playlisttitle'] = 'pltitle2'
 
+    assert len(videos) == len(expected)
+
+    for idx, video in enumerate(videos):
+        del videos[idx]['playlist_data']
+
     assert videos == expected
