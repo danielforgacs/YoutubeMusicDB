@@ -10,28 +10,28 @@ PLAYLIST_COLUMNT_IDX__uploader_id, PLAYLIST_COLUMNT_NAME__uploader_id = 3, 'uplo
 PLAYLIST_COLUMNT_IDX__added, PLAYLIST_COLUMNT_NAME__added = 4, 'added'
 
 
-VIDEO_COLUMN_IDX__pk, VIDEO_COLUMN_NAME__pk = 0, 'pk'
-VIDEO_COLUMN_IDX__id, VIDEO_COLUMN_NAME__id = 1, 'id'
-VIDEO_COLUMN_IDX__title, VIDEO_COLUMN_NAME__title = 2, 'title'
-VIDEO_COLUMN_IDX__playlist_id, VIDEO_COLUMN_NAME__playlist_id = 3, 'playlistid'
-VIDEO_COLUMN_IDX__added, VIDEO_COLUMN_NAME__added = 4, 'added'
-VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
-VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
-VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 7, 'playlist_data'
+VIDEO_COLUMN_IDX__pk, VIDEO_COL_pk = 0, 'pk'
+VIDEO_COLUMN_IDX__id, VIDEO_COL_id = 1, 'id'
+VIDEO_COLUMN_IDX__title, VIDEO_COL_title = 2, 'title'
+VIDEO_COLUMN_IDX__playlist_id, VIDEO_COL_playlist_id = 3, 'playlistid'
+VIDEO_COLUMN_IDX__added, VIDEO_COL_added = 4, 'added'
+VIDEO_COLUMN_IDX__is_down, VIDEO_COL_is_down = 5, 'is_down'
+VIDEO_COLUMN_IDX__playlist_title, VIDEO_COL_playlist_title = 6, 'playlisttitle'
+VIDEO_COLUMN_IDX__playlist_data, VIDEO_COL_playlist_data = 7, 'playlist_data'
 
-VIDEO_COLUMN_NAMES = [
-    VIDEO_COLUMN_NAME__pk,
-    VIDEO_COLUMN_NAME__id,
-    VIDEO_COLUMN_NAME__title,
-    VIDEO_COLUMN_NAME__playlist_id,
-    VIDEO_COLUMN_NAME__added,
-    VIDEO_COLUMN_NAME__is_down,
-    VIDEO_COLUMN_NAME__playlist_title,
-    VIDEO_COLUMN_NAME__playlist_data,
+VIDEO_COL_NAMES = [
+    VIDEO_COL_pk,
+    VIDEO_COL_id,
+    VIDEO_COL_title,
+    VIDEO_COL_playlist_id,
+    VIDEO_COL_added,
+    VIDEO_COL_is_down,
+    VIDEO_COL_playlist_title,
+    VIDEO_COL_playlist_data,
 ]
-VIDEO_COLUMNS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COLUMN_NAMES))
+VIDEO_COLS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COL_NAMES))
 
-print(VIDEO_COLUMNS)
+print(VIDEO_COLS)
 
 
 
@@ -71,14 +71,14 @@ def video_row_to_dict(row):
     videorow[VIDEO_COLUMN_IDX__playlist_data] = list(playlists)
 
     row = {
-        VIDEO_COLUMN_NAME__pk: videorow[VIDEO_COLUMN_IDX__pk],
-        VIDEO_COLUMN_NAME__id: videorow[VIDEO_COLUMN_IDX__id],
-        VIDEO_COLUMN_NAME__title: videorow[VIDEO_COLUMN_IDX__title],
-        VIDEO_COLUMN_NAME__playlist_id: videorow[VIDEO_COLUMN_IDX__playlist_id],
-        VIDEO_COLUMN_NAME__added: str(videorow[VIDEO_COLUMN_IDX__added]),
-        VIDEO_COLUMN_NAME__is_down: videorow[VIDEO_COLUMN_IDX__is_down],
-        VIDEO_COLUMN_NAME__playlist_title: videorow[VIDEO_COLUMN_IDX__playlist_title],
-        VIDEO_COLUMN_NAME__playlist_data: videorow[VIDEO_COLUMN_IDX__playlist_data],
+        VIDEO_COL_pk: videorow[VIDEO_COLUMN_IDX__pk],
+        VIDEO_COL_id: videorow[VIDEO_COLUMN_IDX__id],
+        VIDEO_COL_title: videorow[VIDEO_COLUMN_IDX__title],
+        VIDEO_COL_playlist_id: videorow[VIDEO_COLUMN_IDX__playlist_id],
+        VIDEO_COL_added: str(videorow[VIDEO_COLUMN_IDX__added]),
+        VIDEO_COL_is_down: videorow[VIDEO_COLUMN_IDX__is_down],
+        VIDEO_COL_playlist_title: videorow[VIDEO_COLUMN_IDX__playlist_title],
+        VIDEO_COL_playlist_data: videorow[VIDEO_COLUMN_IDX__playlist_data],
     }
     return row
 
