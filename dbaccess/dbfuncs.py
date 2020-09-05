@@ -20,6 +20,21 @@ VIDEO_IDX_playlist_title, VIDEO_playlist_title = 6, 'playlisttitle'
 VIDEO_IDX_playlist_data, VIDEO_playlist_data = 7, 'playlist_data'
 
 
+VIDEO_COL_NAMES = [
+    VIDEO_pk,
+    VIDEO_id,
+    VIDEO_title,
+    VIDEO_playlist_id,
+    VIDEO_added,
+    VIDEO_is_down,
+    VIDEO_playlist_title,
+    VIDEO_playlist_data,
+]
+
+VIDEO_COLS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COL_NAMES))
+
+
+
 
 class PGConnection:
     def __init__(self, dbname=None):
