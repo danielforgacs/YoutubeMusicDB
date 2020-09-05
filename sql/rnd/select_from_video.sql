@@ -5,7 +5,7 @@ select array [playlist.id, playlist.title]
 from playlist
 ;
 
-select array_agg( array [playlist.id, playlist.title])
+select array_agg ( array [playlist.id, playlist.title])
 from playlist
 ;
 
@@ -30,13 +30,8 @@ SELECT
 	video.added,
 	video.is_down,
 	playlist.title AS playlist,
-	array (
-		SELECT playlist_video.playlist_pk
-		FROM playlist_video
-		WHERE playlist_video.video_pk = video.pk
-	) AS playlist_pks,
 	(
-		SELECT array_agg ( array [ playlist.id, playlist.title ])
+		SELECT array_agg ( array [ playlist.pk::text, playlist.id, playlist.title ])
 		FROM playlist
 		JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
 		WHERE video.pk = playlist_video.video_pk
