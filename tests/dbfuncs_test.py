@@ -584,3 +584,14 @@ def test_video_playlist_data_has_comlumns():
 
     for plist in video_playlists:
         assert list(plist.keys()) == PLAYLIST_COLUMNS
+
+
+
+def test_video_playlist_pk_is_integer():
+    tests.setup.run_sql_file(sqlfile='testData')
+    allvideos = dbf.select_all_videos()
+    playlists = [playlist for video in allvideos
+        for playlist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
+    allpks = [plist['pk'] for plist in playlists]
+
+    assert all(map(lambda x: isinstance(x, int), allpks))
