@@ -70,16 +70,17 @@ def video_row_to_dict(row):
 
     videorow = list(row)
     videorow[VIDEO_IDX_playlist_data] = list(playlists)
+    videorow[VIDEO_COLS[VIDEO_added]] = str(videorow[VIDEO_COLS[VIDEO_added]])
 
     row = {
-        VIDEO_pk: videorow[VIDEO_IDX_pk],
-        VIDEO_id: videorow[VIDEO_IDX_id],
-        VIDEO_title: videorow[VIDEO_IDX_title],
-        VIDEO_playlist_id: videorow[VIDEO_IDX_playlist_id],
-        VIDEO_added: str(videorow[VIDEO_IDX_added]),
-        VIDEO_is_down: videorow[VIDEO_IDX_is_down],
-        VIDEO_playlist_title: videorow[VIDEO_IDX_playlist_title],
-        VIDEO_playlist_data: videorow[VIDEO_IDX_playlist_data],
+        VIDEO_pk: videorow[VIDEO_COLS[VIDEO_pk]],
+        VIDEO_id: videorow[VIDEO_COLS[VIDEO_id]],
+        VIDEO_title: videorow[VIDEO_COLS[VIDEO_title]],
+        VIDEO_playlist_id: videorow[VIDEO_COLS[VIDEO_playlist_id]],
+        VIDEO_added: videorow[VIDEO_COLS[VIDEO_added]],
+        VIDEO_is_down: videorow[VIDEO_COLS[VIDEO_is_down]],
+        VIDEO_playlist_title: videorow[VIDEO_COLS[VIDEO_playlist_title]],
+        VIDEO_playlist_data: videorow[VIDEO_COLS[VIDEO_playlist_data]],
     }
     return row
 
