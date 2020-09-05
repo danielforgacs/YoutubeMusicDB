@@ -60,6 +60,10 @@ def test_select_all_videos_03():
     data = dbf.select_all_videos()
 
     assert len(data) == len(expected)
+
+    for idx, video in enumerate(data):
+        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
+
     assert data == expected
 
 
@@ -86,6 +90,11 @@ def test_select_videos_by_id():
     expected[2]['playlisttitle'] = 'pltitle2'
 
     data = dbf.select_videos_by_id(vids=('id2', 'id4','id5'))
+
+    assert len(data) == len(expected)
+
+    for idx, video in enumerate(data):
+        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
 
     assert data == expected
 
