@@ -74,10 +74,22 @@ SQL_SELECT_ALL_VIDEOS = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        array (
+            SELECT playlist_video.playlist_pk
+            FROM playlist_video
+            WHERE playlist_video.video_pk = video.pk
+        ) AS playlist_pks,
+        (
+            SELECT array_agg ( array [ playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
     ORDER BY video.pk
+    ;
 """
 
 SQL_SELECT_VIDEOS_BY_ID = """
@@ -88,7 +100,18 @@ SQL_SELECT_VIDEOS_BY_ID = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        array (
+            SELECT playlist_video.playlist_pk
+            FROM playlist_video
+            WHERE playlist_video.video_pk = video.pk
+        ) AS playlist_pks,
+        (
+            SELECT array_agg ( array [ playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
     WHERE video.id in %(vids)s
