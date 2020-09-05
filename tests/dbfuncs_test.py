@@ -4,23 +4,23 @@ import tests.setup
 
 
 PLAYLIST_COLUMNS = [
-    dbf.PLAYLIST_COLUMNT_NAME__pk,
-    dbf.PLAYLIST_COLUMNT_NAME__id,
-    dbf.PLAYLIST_COLUMNT_NAME__title,
-    dbf.PLAYLIST_COLUMNT_NAME__uploader_id,
-    dbf.PLAYLIST_COLUMNT_NAME__added,
+    dbf.PLAYLIST_pk,
+    dbf.PLAYLIST_id,
+    dbf.PLAYLIST_title,
+    dbf.PLAYLIST_uploader_id,
+    dbf.PLAYLIST_added,
 ]
 
 
-VIDEO_COLUMNS = [
-    dbf.VIDEO_COLUMN_NAME__pk,
-    dbf.VIDEO_COLUMN_NAME__id,
-    dbf.VIDEO_COLUMN_NAME__title,
-    dbf.VIDEO_COLUMN_NAME__playlist_id,
-    dbf.VIDEO_COLUMN_NAME__added,
-    dbf.VIDEO_COLUMN_NAME__is_down,
-    dbf.VIDEO_COLUMN_NAME__playlist_title,
-    dbf.VIDEO_COLUMN_NAME__playlist_data,
+VIDEOUMNS = [
+    dbf.VIDEO_pk,
+    dbf.VIDEO_id,
+    dbf.VIDEO_title,
+    dbf.VIDEO_playlist_id,
+    dbf.VIDEO_added,
+    dbf.VIDEO_is_down,
+    dbf.VIDEO_playlist_title,
+    dbf.VIDEO_playlist_data,
 ]
 
 
@@ -62,7 +62,7 @@ def test_select_all_videos_03():
     assert len(data) == len(expected)
 
     for idx, video in enumerate(data):
-        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
+        del data[idx][dbf.VIDEO_playlist_data]
 
     assert data == expected
 
@@ -94,7 +94,7 @@ def test_select_videos_by_id():
     assert len(data) == len(expected)
 
     for idx, video in enumerate(data):
-        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
+        del data[idx][dbf.VIDEO_playlist_data]
 
     assert data == expected
 
@@ -230,10 +230,10 @@ def test_insert_playlist(pldata):
         """, vars=pldata)
         result = cur.fetchone()
 
-    assert result[dbf.PLAYLIST_COLUMNT_IDX__pk] == plpk['pk']
-    assert result[dbf.PLAYLIST_COLUMNT_IDX__id] == pldata['id']
-    assert result[dbf.PLAYLIST_COLUMNT_IDX__title] == pldata['title']
-    assert result[dbf.PLAYLIST_COLUMNT_IDX__uploader_id] == pldata['uploader_id']
+    assert result[dbf.PLAYLIST_IDX_pk] == plpk['pk']
+    assert result[dbf.PLAYLIST_IDX_id] == pldata['id']
+    assert result[dbf.PLAYLIST_IDX_title] == pldata['title']
+    assert result[dbf.PLAYLIST_IDX_uploader_id] == pldata['uploader_id']
 
 
 
@@ -260,7 +260,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][dbf.PLAYLIST_COLUMNT_IDX__title] == newtitle
+    assert result[0][dbf.PLAYLIST_IDX_title] == newtitle
 
 
 
@@ -280,10 +280,10 @@ def test_insert_video(vdata):
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][dbf.VIDEO_COLUMN_IDX__pk] == vpk['pk']
-    assert result[0][dbf.VIDEO_COLUMN_IDX__id] == vdata['id']
-    assert result[0][dbf.VIDEO_COLUMN_IDX__title] == vdata['title']
-    assert result[0][dbf.VIDEO_COLUMN_IDX__playlist_id] == vdata['playlist_pk']
+    assert result[0][dbf.VIDEO_IDX_pk] == vpk['pk']
+    assert result[0][dbf.VIDEO_IDX_id] == vdata['id']
+    assert result[0][dbf.VIDEO_IDX_title] == vdata['title']
+    assert result[0][dbf.VIDEO_IDX_playlist_id] == vdata['playlist_pk']
 
 
 
@@ -342,8 +342,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_COLUMN_IDX__playlist_id] == plpk1['pk']
-    assert result[dbf.VIDEO_COLUMN_IDX__pk] == vpk
+    assert result[dbf.VIDEO_IDX_playlist_id] == plpk1['pk']
+    assert result[dbf.VIDEO_IDX_pk] == vpk
 
     result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
     result = [video for video in result5][0]
@@ -356,8 +356,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_COLUMN_IDX__playlist_id] == plpk2['pk']
-    assert result[dbf.VIDEO_COLUMN_IDX__pk] == vpk
+    assert result[dbf.VIDEO_IDX_playlist_id] == plpk2['pk']
+    assert result[dbf.VIDEO_IDX_pk] == vpk
 
     plpk3 = None
 
@@ -372,8 +372,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_COLUMN_IDX__playlist_id] == plpk3
-    assert result[dbf.VIDEO_COLUMN_IDX__pk] == vpk
+    assert result[dbf.VIDEO_IDX_playlist_id] == plpk3
+    assert result[dbf.VIDEO_IDX_pk] == vpk
 
 
 
@@ -565,22 +565,22 @@ def test_select_all_videos_returns_dict_of_dicts(vdata):
 def test_video_has_comlumns():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
-    videoid = allvideos[0][dbf.VIDEO_COLUMN_NAME__id]
+    videoid = allvideos[0][dbf.VIDEO_id]
     videos = dbf.select_videos_by_id(vids=[videoid])
     video = videos[0]
 
     assert video == allvideos[0]
-    assert list(video.keys()) == VIDEO_COLUMNS
+    assert list(video.keys()) == VIDEOUMNS
 
 
 
 def test_video_playlist_data_has_comlumns():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
-    video_playlists = [video[dbf.VIDEO_COLUMN_NAME__playlist_data] for video in allvideos]
+    video_playlists = [video[dbf.VIDEO_playlist_data] for video in allvideos]
 
     video_playlists = [plist for video in allvideos
-        for plist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
+        for plist in video[dbf.VIDEO_playlist_data]]
 
     for plist in video_playlists:
         assert list(plist.keys()) == PLAYLIST_COLUMNS
@@ -591,7 +591,7 @@ def test_video_playlist_pk_is_integer():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
     playlists = [playlist for video in allvideos
-        for playlist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
+        for playlist in video[dbf.VIDEO_playlist_data]]
     allpks = [plist['pk'] for plist in playlists]
 
     assert all(map(lambda x: isinstance(x, int), allpks))

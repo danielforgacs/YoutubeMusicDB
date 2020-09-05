@@ -3,21 +3,21 @@ import psycopg2
 import datetime
 
 
-PLAYLIST_COLUMNT_IDX__pk, PLAYLIST_COLUMNT_NAME__pk = 0, 'pk'
-PLAYLIST_COLUMNT_IDX__id, PLAYLIST_COLUMNT_NAME__id = 1, 'id'
-PLAYLIST_COLUMNT_IDX__title, PLAYLIST_COLUMNT_NAME__title = 2, 'title'
-PLAYLIST_COLUMNT_IDX__uploader_id, PLAYLIST_COLUMNT_NAME__uploader_id = 3, 'uploader_id'
-PLAYLIST_COLUMNT_IDX__added, PLAYLIST_COLUMNT_NAME__added = 4, 'added'
+PLAYLIST_IDX_pk, PLAYLIST_pk = 0, 'pk'
+PLAYLIST_IDX_id, PLAYLIST_id = 1, 'id'
+PLAYLIST_IDX_title, PLAYLIST_title = 2, 'title'
+PLAYLIST_IDX_uploader_id, PLAYLIST_uploader_id = 3, 'uploader_id'
+PLAYLIST_IDX_added, PLAYLIST_added = 4, 'added'
 
 
-VIDEO_COLUMN_IDX__pk, VIDEO_COLUMN_NAME__pk = 0, 'pk'
-VIDEO_COLUMN_IDX__id, VIDEO_COLUMN_NAME__id = 1, 'id'
-VIDEO_COLUMN_IDX__title, VIDEO_COLUMN_NAME__title = 2, 'title'
-VIDEO_COLUMN_IDX__playlist_id, VIDEO_COLUMN_NAME__playlist_id = 3, 'playlistid'
-VIDEO_COLUMN_IDX__added, VIDEO_COLUMN_NAME__added = 4, 'added'
-VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
-VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
-VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 7, 'playlist_data'
+VIDEO_IDX_pk, VIDEO_pk = 0, 'pk'
+VIDEO_IDX_id, VIDEO_id = 1, 'id'
+VIDEO_IDX_title, VIDEO_title = 2, 'title'
+VIDEO_IDX_playlist_id, VIDEO_playlist_id = 3, 'playlistid'
+VIDEO_IDX_added, VIDEO_added = 4, 'added'
+VIDEO_IDX_is_down, VIDEO_is_down = 5, 'is_down'
+VIDEO_IDX_playlist_title, VIDEO_playlist_title = 6, 'playlisttitle'
+VIDEO_IDX_playlist_data, VIDEO_playlist_data = 7, 'playlist_data'
 
 
 
@@ -43,7 +43,7 @@ class PGConnection:
 
 
 def video_row_to_dict(row):
-    playlist_data = row[VIDEO_COLUMN_IDX__playlist_data]
+    playlist_data = row[VIDEO_IDX_playlist_data]
     playlists = []
 
     if playlist_data:
@@ -51,20 +51,20 @@ def video_row_to_dict(row):
         playlists = map(playlist_row_to_dict, playlists)
 
     for playlist in playlists:
-        playlist[PLAYLIST_COLUMNT_NAME__pk] = int(playlist[PLAYLIST_COLUMNT_NAME__pk])
+        playlist[PLAYLIST_pk] = int(playlist[PLAYLIST_pk])
 
     videorow = list(row)
-    videorow[VIDEO_COLUMN_IDX__playlist_data] = list(playlists)
+    videorow[VIDEO_IDX_playlist_data] = list(playlists)
 
     row = {
-        VIDEO_COLUMN_NAME__pk: videorow[VIDEO_COLUMN_IDX__pk],
-        VIDEO_COLUMN_NAME__id: videorow[VIDEO_COLUMN_IDX__id],
-        VIDEO_COLUMN_NAME__title: videorow[VIDEO_COLUMN_IDX__title],
-        VIDEO_COLUMN_NAME__playlist_id: videorow[VIDEO_COLUMN_IDX__playlist_id],
-        VIDEO_COLUMN_NAME__added: str(videorow[VIDEO_COLUMN_IDX__added]),
-        VIDEO_COLUMN_NAME__is_down: videorow[VIDEO_COLUMN_IDX__is_down],
-        VIDEO_COLUMN_NAME__playlist_title: videorow[VIDEO_COLUMN_IDX__playlist_title],
-        VIDEO_COLUMN_NAME__playlist_data: videorow[VIDEO_COLUMN_IDX__playlist_data],
+        VIDEO_pk: videorow[VIDEO_IDX_pk],
+        VIDEO_id: videorow[VIDEO_IDX_id],
+        VIDEO_title: videorow[VIDEO_IDX_title],
+        VIDEO_playlist_id: videorow[VIDEO_IDX_playlist_id],
+        VIDEO_added: str(videorow[VIDEO_IDX_added]),
+        VIDEO_is_down: videorow[VIDEO_IDX_is_down],
+        VIDEO_playlist_title: videorow[VIDEO_IDX_playlist_title],
+        VIDEO_playlist_data: videorow[VIDEO_IDX_playlist_data],
     }
     return row
 
@@ -72,11 +72,11 @@ def video_row_to_dict(row):
 
 def playlist_row_to_dict(row):
     rowdict = {
-        PLAYLIST_COLUMNT_NAME__pk: row[PLAYLIST_COLUMNT_IDX__pk],
-        PLAYLIST_COLUMNT_NAME__id: row[PLAYLIST_COLUMNT_IDX__id],
-        PLAYLIST_COLUMNT_NAME__title: row[PLAYLIST_COLUMNT_IDX__title],
-        PLAYLIST_COLUMNT_NAME__uploader_id: row[PLAYLIST_COLUMNT_IDX__uploader_id],
-        PLAYLIST_COLUMNT_NAME__added: row[PLAYLIST_COLUMNT_IDX__added],
+        PLAYLIST_pk: row[PLAYLIST_IDX_pk],
+        PLAYLIST_id: row[PLAYLIST_IDX_id],
+        PLAYLIST_title: row[PLAYLIST_IDX_title],
+        PLAYLIST_uploader_id: row[PLAYLIST_IDX_uploader_id],
+        PLAYLIST_added: row[PLAYLIST_IDX_added],
     }
     return rowdict
 
@@ -268,7 +268,7 @@ def insert_video(vdata):
         conn.commit()
         row = cur.fetchone()
 
-    result = select_videos_by_id(vids=(row[VIDEO_COLUMN_IDX__id],))
+    result = select_videos_by_id(vids=(row[VIDEO_IDX_id],))
 
     return result
 
