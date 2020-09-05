@@ -13,14 +13,14 @@ PLAYLIST_COLUMNS = [
 
 
 VIDEO_COLUMNS = [
-    dbf.VIDEO_COL_pk,
-    dbf.VIDEO_COL_id,
-    dbf.VIDEO_COL_title,
-    dbf.VIDEO_COL_playlist_id,
-    dbf.VIDEO_COL_added,
-    dbf.VIDEO_COL_is_down,
-    dbf.VIDEO_COL_playlist_title,
-    dbf.VIDEO_COL_playlist_data,
+    dbf.VIDEO_COLUMN_NAME__pk,
+    dbf.VIDEO_COLUMN_NAME__id,
+    dbf.VIDEO_COLUMN_NAME__title,
+    dbf.VIDEO_COLUMN_NAME__playlist_id,
+    dbf.VIDEO_COLUMN_NAME__added,
+    dbf.VIDEO_COLUMN_NAME__is_down,
+    dbf.VIDEO_COLUMN_NAME__playlist_title,
+    dbf.VIDEO_COLUMN_NAME__playlist_data,
 ]
 
 
@@ -62,7 +62,7 @@ def test_select_all_videos_03():
     assert len(data) == len(expected)
 
     for idx, video in enumerate(data):
-        del data[idx][dbf.VIDEO_COL_playlist_data]
+        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
 
     assert data == expected
 
@@ -94,7 +94,7 @@ def test_select_videos_by_id():
     assert len(data) == len(expected)
 
     for idx, video in enumerate(data):
-        del data[idx][dbf.VIDEO_COL_playlist_data]
+        del data[idx][dbf.VIDEO_COLUMN_NAME__playlist_data]
 
     assert data == expected
 
@@ -565,7 +565,7 @@ def test_select_all_videos_returns_dict_of_dicts(vdata):
 def test_video_has_comlumns():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
-    videoid = allvideos[0][dbf.VIDEO_COL_id]
+    videoid = allvideos[0][dbf.VIDEO_COLUMN_NAME__id]
     videos = dbf.select_videos_by_id(vids=[videoid])
     video = videos[0]
 
@@ -577,10 +577,10 @@ def test_video_has_comlumns():
 def test_video_playlist_data_has_comlumns():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
-    video_playlists = [video[dbf.VIDEO_COL_playlist_data] for video in allvideos]
+    video_playlists = [video[dbf.VIDEO_COLUMN_NAME__playlist_data] for video in allvideos]
 
     video_playlists = [plist for video in allvideos
-        for plist in video[dbf.VIDEO_COL_playlist_data]]
+        for plist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
 
     for plist in video_playlists:
         assert list(plist.keys()) == PLAYLIST_COLUMNS
@@ -591,7 +591,7 @@ def test_video_playlist_pk_is_integer():
     tests.setup.run_sql_file(sqlfile='testData')
     allvideos = dbf.select_all_videos()
     playlists = [playlist for video in allvideos
-        for playlist in video[dbf.VIDEO_COL_playlist_data]]
+        for playlist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
     allpks = [plist['pk'] for plist in playlists]
 
     assert all(map(lambda x: isinstance(x, int), allpks))
