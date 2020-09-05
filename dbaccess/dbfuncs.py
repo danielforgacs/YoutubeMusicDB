@@ -141,7 +141,13 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        (
+            SELECT array_agg ( array [ playlist.pk::text, playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     JOIN playlist ON playlist.pk = video.playlist_pk
     WHERE playlist.id = %(plid)s
