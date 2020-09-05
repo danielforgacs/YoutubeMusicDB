@@ -17,6 +17,7 @@ VIDEO_COLUMN_IDX__playlist_id, VIDEO_COLUMN_NAME__playlist_id = 3, 'playlistid'
 VIDEO_COLUMN_IDX__added, VIDEO_COLUMN_NAME__added = 4, 'added'
 VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
 VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
+VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 6, 'playlist_data'
 
 
 
@@ -50,6 +51,7 @@ def video_row_to_dict(row):
         VIDEO_COLUMN_NAME__added: str(row[VIDEO_COLUMN_IDX__added]),
         VIDEO_COLUMN_NAME__is_down: row[VIDEO_COLUMN_IDX__is_down],
         VIDEO_COLUMN_NAME__playlist_title: row[VIDEO_COLUMN_IDX__playlist_title] or None,
+        VIDEO_COLUMN_NAME__playlist_data: row[VIDEO_COLUMN_IDX__playlist_data] or None,
     }
     return row
 
