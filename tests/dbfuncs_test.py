@@ -3,6 +3,15 @@ import dbaccess.dbfuncs as dbf
 import tests.setup
 
 
+PLAYLIST_COLUMNS = [
+    dbf.PLAYLIST_COLUMNT_NAME__pk,
+    dbf.PLAYLIST_COLUMNT_NAME__id,
+    dbf.PLAYLIST_COLUMNT_NAME__title,
+    dbf.PLAYLIST_COLUMNT_NAME__uploader_id,
+    dbf.PLAYLIST_COLUMNT_NAME__added,
+]
+
+
 VIDEO_COLUMNS = [
     dbf.VIDEO_COLUMN_NAME__pk,
     dbf.VIDEO_COLUMN_NAME__id,
