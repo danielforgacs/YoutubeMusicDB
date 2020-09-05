@@ -47,8 +47,11 @@ def video_row_to_dict(row):
     playlists = []
 
     if playlist_data:
-        playlists = list(map(lambda x: x + [None, None], playlist_data))
-        playlists = list(map(playlist_row_to_dict, playlists))
+        playlists = map(lambda x: x + [None, None], playlist_data)
+        playlists = map(playlist_row_to_dict, playlists)
+
+    for playlist in playlists:
+        playlist[PLAYLIST_COLUMNT_NAME__pk] = int(playlist[PLAYLIST_COLUMNT_NAME__pk])
 
     row = {
         VIDEO_COLUMN_NAME__pk: row[VIDEO_COLUMN_IDX__pk],
@@ -58,7 +61,7 @@ def video_row_to_dict(row):
         VIDEO_COLUMN_NAME__added: str(row[VIDEO_COLUMN_IDX__added]),
         VIDEO_COLUMN_NAME__is_down: row[VIDEO_COLUMN_IDX__is_down],
         VIDEO_COLUMN_NAME__playlist_title: row[VIDEO_COLUMN_IDX__playlist_title] or None,
-        VIDEO_COLUMN_NAME__playlist_data: playlists,
+        VIDEO_COLUMN_NAME__playlist_data: list(playlists),
     }
     return row
 
