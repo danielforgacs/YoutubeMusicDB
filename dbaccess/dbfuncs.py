@@ -10,14 +10,14 @@ PLAYLIST_IDX_uploader_id, PLAYLIST_uploader_id = 3, 'uploader_id'
 PLAYLIST_IDX_added, PLAYLIST_added = 4, 'added'
 
 
-VIDEO_IDX_pk, VIDEO_pk = 0, 'pk'
-VIDEO_IDX_id, VIDEO_id = 1, 'id'
-VIDEO_IDX_title, VIDEO_title = 2, 'title'
-VIDEO_IDX_playlist_id, VIDEO_playlist_id = 3, 'playlistid'
-VIDEO_IDX_added, VIDEO_added = 4, 'added'
-VIDEO_IDX_is_down, VIDEO_is_down = 5, 'is_down'
-VIDEO_IDX_playlist_title, VIDEO_playlist_title = 6, 'playlisttitle'
-VIDEO_IDX_playlist_data, VIDEO_playlist_data = 7, 'playlist_data'
+VIDEO_pk = 'pk'
+VIDEO_id = 'id'
+VIDEO_title = 'title'
+VIDEO_playlist_id = 'playlistid'
+VIDEO_added = 'added'
+VIDEO_is_down = 'is_down'
+VIDEO_playlist_title = 'playlisttitle'
+VIDEO_playlist_data = 'playlist_data'
 
 
 VIDEO_COL_NAMES = [
@@ -58,7 +58,7 @@ class PGConnection:
 
 
 def video_row_to_dict(row):
-    playlist_data = row[VIDEO_IDX_playlist_data]
+    playlist_data = row[VIDEO_COLS[VIDEO_playlist_data]]
     playlists = []
 
     if playlist_data:
@@ -69,20 +69,12 @@ def video_row_to_dict(row):
         playlist[PLAYLIST_pk] = int(playlist[PLAYLIST_pk])
 
     videorow = list(row)
-    videorow[VIDEO_IDX_playlist_data] = list(playlists)
+    videorow[VIDEO_COLS[VIDEO_playlist_data]] = list(playlists)
     videorow[VIDEO_COLS[VIDEO_added]] = str(videorow[VIDEO_COLS[VIDEO_added]])
 
-    row = {
-        VIDEO_pk: videorow[VIDEO_COLS[VIDEO_pk]],
-        VIDEO_id: videorow[VIDEO_COLS[VIDEO_id]],
-        VIDEO_title: videorow[VIDEO_COLS[VIDEO_title]],
-        VIDEO_playlist_id: videorow[VIDEO_COLS[VIDEO_playlist_id]],
-        VIDEO_added: videorow[VIDEO_COLS[VIDEO_added]],
-        VIDEO_is_down: videorow[VIDEO_COLS[VIDEO_is_down]],
-        VIDEO_playlist_title: videorow[VIDEO_COLS[VIDEO_playlist_title]],
-        VIDEO_playlist_data: videorow[VIDEO_COLS[VIDEO_playlist_data]],
-    }
-    return row
+    videodict = dict(zip(VIDEO_COL_NAMES, videorow))
+
+    return videodict
 
 
 
@@ -284,7 +276,7 @@ def insert_video(vdata):
         conn.commit()
         row = cur.fetchone()
 
-    result = select_videos_by_id(vids=(row[VIDEO_IDX_id],))
+    result = select_videos_by_id(vids=(row[VIDEO_COLS[VIDEO_id]],))
 
     return result
 

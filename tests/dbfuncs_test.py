@@ -280,10 +280,10 @@ def test_insert_video(vdata):
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][dbf.VIDEO_IDX_pk] == vpk['pk']
-    assert result[0][dbf.VIDEO_IDX_id] == vdata['id']
-    assert result[0][dbf.VIDEO_IDX_title] == vdata['title']
-    assert result[0][dbf.VIDEO_IDX_playlist_id] == vdata['playlist_pk']
+    assert result[0][dbf.VIDEO_COLS[dbf.VIDEO_pk]] == vpk['pk']
+    assert result[0][dbf.VIDEO_COLS[dbf.VIDEO_id]] == vdata['id']
+    assert result[0][dbf.VIDEO_COLS[dbf.VIDEO_title]] == vdata['title']
+    assert result[0][dbf.VIDEO_COLS[dbf.VIDEO_playlist_id]] == vdata['playlist_pk']
 
 
 
@@ -342,8 +342,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_IDX_playlist_id] == plpk1['pk']
-    assert result[dbf.VIDEO_IDX_pk] == vpk
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_playlist_id]] == plpk1['pk']
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_pk]] == vpk
 
     result5 = dbf.set_video_playlist(vid=videodata['id'], plpk=plpk2['pk'])
     result = [video for video in result5][0]
@@ -356,8 +356,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_IDX_playlist_id] == plpk2['pk']
-    assert result[dbf.VIDEO_IDX_pk] == vpk
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_playlist_id]] == plpk2['pk']
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_pk]] == vpk
 
     plpk3 = None
 
@@ -372,8 +372,8 @@ def test_set_video_playlist_sets_updates():
         cur.execute(query=sql, vars={'vid': videodata['id']})
         result = cur.fetchone()
 
-    assert result[dbf.VIDEO_IDX_playlist_id] == plpk3
-    assert result[dbf.VIDEO_IDX_pk] == vpk
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_playlist_id]] == plpk3
+    assert result[dbf.VIDEO_COLS[dbf.VIDEO_pk]] == vpk
 
 
 
