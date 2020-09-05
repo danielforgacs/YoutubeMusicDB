@@ -9,24 +9,39 @@ select array_agg( array [playlist.id, playlist.title])
 from playlist
 ;
 
-select
-    video.pk,
-    video.id,
-    video.title,
-    video.playlist_pk,
-    video.added,
-    video.is_down,
-    array (
-        select playlist_video.playlist_pk
-        from playlist_video
-        where playlist_video.video_pk = video.pk
-    ) as playlist_pks,
-    (
-        select array_agg ( array [ playlist.id, playlist.title ])
-        from playlist
-        join playlist_video on playlist_video.playlist_pk = playlist.pk
-        where video.pk = playlist_video.video_pk
-    ) as playlist_data
-from video
-order by video.pk
+SELECT
+	video.pk,
+	video.id AS youtube_id,
+	video.title,
+	playlist.id AS playlistid,
+	video.added,
+	video.is_down,
+	playlist.title AS playlist
+FROM video
+LEFT JOIN playlist ON playlist.pk = video.playlist_pk
+ORDER BY video.pk
+;
+
+SELECT
+	video.pk,
+	video.id AS youtube_id,
+	video.title,
+	playlist.id AS playlistid,
+	video.added,
+	video.is_down,
+	playlist.title AS playlist,
+	array (
+		SELECT playlist_video.playlist_pk
+		FROM playlist_video
+		WHERE playlist_video.video_pk = video.pk
+	) AS playlist_pks,
+	(
+		SELECT array_agg ( array [ playlist.id, playlist.title ])
+		FROM playlist
+		JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+		WHERE video.pk = playlist_video.video_pk
+	) AS playlist_data
+FROM video
+LEFT JOIN playlist ON playlist.pk = video.playlist_pk
+ORDER BY video.pk
 ;
