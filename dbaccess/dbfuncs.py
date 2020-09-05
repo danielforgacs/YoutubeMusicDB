@@ -17,7 +17,7 @@ VIDEO_COLUMN_IDX__playlist_id, VIDEO_COLUMN_NAME__playlist_id = 3, 'playlistid'
 VIDEO_COLUMN_IDX__added, VIDEO_COLUMN_NAME__added = 4, 'added'
 VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
 VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
-VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 6, 'playlist_data'
+VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 7, 'playlist_data'
 
 
 
@@ -43,6 +43,13 @@ class PGConnection:
 
 
 def video_row_to_dict(row):
+    playlist_data = row[VIDEO_COLUMN_IDX__playlist_data]
+    playlists = []
+
+    if playlist_data:
+        playlists = list(map(lambda x: x + [None, None], playlist_data))
+        playlists = list(map(playlist_row_to_dict, playlists))
+
     row = {
         VIDEO_COLUMN_NAME__pk: row[VIDEO_COLUMN_IDX__pk],
         VIDEO_COLUMN_NAME__id: row[VIDEO_COLUMN_IDX__id],
@@ -51,7 +58,7 @@ def video_row_to_dict(row):
         VIDEO_COLUMN_NAME__added: str(row[VIDEO_COLUMN_IDX__added]),
         VIDEO_COLUMN_NAME__is_down: row[VIDEO_COLUMN_IDX__is_down],
         VIDEO_COLUMN_NAME__playlist_title: row[VIDEO_COLUMN_IDX__playlist_title] or None,
-        VIDEO_COLUMN_NAME__playlist_data: row[VIDEO_COLUMN_IDX__playlist_data] or None,
+        VIDEO_COLUMN_NAME__playlist_data: playlists,
     }
     return row
 
