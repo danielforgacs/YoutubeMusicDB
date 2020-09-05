@@ -3,6 +3,17 @@ import dbaccess.dbfuncs as dbf
 import tests.setup
 
 
+VIDEO_COLUMNS = [
+    dbf.VIDEO_COLUMN_NAME__pk,
+    dbf.VIDEO_COLUMN_NAME__id,
+    dbf.VIDEO_COLUMN_NAME__title,
+    dbf.VIDEO_COLUMN_NAME__playlist_id,
+    dbf.VIDEO_COLUMN_NAME__added,
+    dbf.VIDEO_COLUMN_NAME__is_down,
+    dbf.VIDEO_COLUMN_NAME__playlist_title,
+    dbf.VIDEO_COLUMN_NAME__playlist_data,
+]
+
 
 def setup():
     tests.setup.init_test_db()
@@ -529,3 +540,16 @@ def test_select_all_videos_returns_dict_of_dicts(vdata):
 
     assert isinstance(result, list)
     assert all(map(lambda x: isinstance(x, dict), result))
+
+
+
+
+def test_video_has_comlumns():
+    tests.setup.run_sql_file(sqlfile='testData')
+    allvideos = dbf.select_all_videos()
+    videoid = allvideos[0][dbf.VIDEO_COLUMN_NAME__id]
+    videos = dbf.select_videos_by_id(vids=[videoid])
+    video = videos[0]
+
+    assert video == allvideos[0]
+    assert list(video.keys()) == VIDEO_COLUMNS
