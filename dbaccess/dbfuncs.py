@@ -19,6 +19,20 @@ VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
 VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
 VIDEO_COLUMN_IDX__playlist_data, VIDEO_COLUMN_NAME__playlist_data = 7, 'playlist_data'
 
+VIDEO_COLUMN_NAMES = [
+    VIDEO_COLUMN_NAME__pk,
+    VIDEO_COLUMN_NAME__id,
+    VIDEO_COLUMN_NAME__title,
+    VIDEO_COLUMN_NAME__playlist_id,
+    VIDEO_COLUMN_NAME__added,
+    VIDEO_COLUMN_NAME__is_down,
+    VIDEO_COLUMN_NAME__playlist_title,
+    VIDEO_COLUMN_NAME__playlist_data,
+]
+VIDEO_COLUMNS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COLUMN_NAMES))
+
+print(VIDEO_COLUMNS)
+
 
 
 class PGConnection:
