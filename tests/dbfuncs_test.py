@@ -562,3 +562,16 @@ def test_video_has_comlumns():
 
     assert video == allvideos[0]
     assert list(video.keys()) == VIDEO_COLUMNS
+
+
+
+def test_video_playlist_data_has_comlumns():
+    tests.setup.run_sql_file(sqlfile='testData')
+    allvideos = dbf.select_all_videos()
+    video_playlists = [video[dbf.VIDEO_COLUMN_NAME__playlist_data] for video in allvideos]
+
+    video_playlists = [plist for video in allvideos
+        for plist in video[dbf.VIDEO_COLUMN_NAME__playlist_data]]
+
+    for plist in video_playlists:
+        assert list(plist.keys()) == PLAYLIST_COLUMNS
