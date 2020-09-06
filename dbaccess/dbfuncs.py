@@ -3,11 +3,21 @@ import psycopg2
 import datetime
 
 
-PLAYLIST_IDX_pk, PLAYLIST_pk = 0, 'pk'
-PLAYLIST_IDX_id, PLAYLIST_id = 1, 'id'
-PLAYLIST_IDX_title, PLAYLIST_title = 2, 'title'
-PLAYLIST_IDX_uploader_id, PLAYLIST_uploader_id = 3, 'uploader_id'
-PLAYLIST_IDX_added, PLAYLIST_added = 4, 'added'
+PLAYLIST_pk = 'pk'
+PLAYLIST_id = 'id'
+PLAYLIST_title = 'title'
+PLAYLIST_uploader_id = 'uploader_id'
+PLAYLIST_added = 'added'
+
+PLAYLIST_COL_NAMES = [
+    PLAYLIST_pk,
+    PLAYLIST_id,
+    PLAYLIST_title,
+    PLAYLIST_uploader_id,
+    PLAYLIST_added,
+]
+
+PLAYLIST_COLS = dict(reversed(nameidx) for nameidx in enumerate(PLAYLIST_COL_NAMES))
 
 
 VIDEO_pk = 'pk'
@@ -80,11 +90,11 @@ def video_row_to_dict(row):
 
 def playlist_row_to_dict(row):
     rowdict = {
-        PLAYLIST_pk: row[PLAYLIST_IDX_pk],
-        PLAYLIST_id: row[PLAYLIST_IDX_id],
-        PLAYLIST_title: row[PLAYLIST_IDX_title],
-        PLAYLIST_uploader_id: row[PLAYLIST_IDX_uploader_id],
-        PLAYLIST_added: row[PLAYLIST_IDX_added],
+        PLAYLIST_pk: row[PLAYLIST_COLS[PLAYLIST_pk]],
+        PLAYLIST_id: row[PLAYLIST_COLS[PLAYLIST_id]],
+        PLAYLIST_title: row[PLAYLIST_COLS[PLAYLIST_title]],
+        PLAYLIST_uploader_id: row[PLAYLIST_COLS[PLAYLIST_uploader_id]],
+        PLAYLIST_added: row[PLAYLIST_COLS[PLAYLIST_added]],
     }
     return rowdict
 

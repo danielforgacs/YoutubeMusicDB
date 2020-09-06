@@ -230,10 +230,10 @@ def test_insert_playlist(pldata):
         """, vars=pldata)
         result = cur.fetchone()
 
-    assert result[dbf.PLAYLIST_IDX_pk] == plpk['pk']
-    assert result[dbf.PLAYLIST_IDX_id] == pldata['id']
-    assert result[dbf.PLAYLIST_IDX_title] == pldata['title']
-    assert result[dbf.PLAYLIST_IDX_uploader_id] == pldata['uploader_id']
+    assert result[dbf.PLAYLIST_COLS[dbf.PLAYLIST_pk]] == plpk['pk']
+    assert result[dbf.PLAYLIST_COLS[dbf.PLAYLIST_id]] == pldata['id']
+    assert result[dbf.PLAYLIST_COLS[dbf.PLAYLIST_title]] == pldata['title']
+    assert result[dbf.PLAYLIST_COLS[dbf.PLAYLIST_uploader_id]] == pldata['uploader_id']
 
 
 
@@ -260,7 +260,7 @@ def test_playlist_insert_updates_data_if_playlist_extsts():
         result = cur.fetchall()
 
     assert len(result) == 1
-    assert result[0][dbf.PLAYLIST_IDX_title] == newtitle
+    assert result[0][dbf.PLAYLIST_COLS[dbf.PLAYLIST_title]] == newtitle
 
 
 
