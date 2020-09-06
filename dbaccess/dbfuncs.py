@@ -3,20 +3,43 @@ import psycopg2
 import datetime
 
 
-PLAYLIST_COLUMNT_IDX__pk, PLAYLIST_COLUMNT_NAME__pk = 0, 'pk'
-PLAYLIST_COLUMNT_IDX__id, PLAYLIST_COLUMNT_NAME__id = 1, 'id'
-PLAYLIST_COLUMNT_IDX__title, PLAYLIST_COLUMNT_NAME__title = 2, 'title'
-PLAYLIST_COLUMNT_IDX__uploader_id, PLAYLIST_COLUMNT_NAME__uploader_id = 3, 'uploader_id'
-PLAYLIST_COLUMNT_IDX__added, PLAYLIST_COLUMNT_NAME__added = 4, 'added'
+PLAYLIST_pk = 'pk'
+PLAYLIST_id = 'id'
+PLAYLIST_title = 'title'
+PLAYLIST_uploader_id = 'uploader_id'
+PLAYLIST_added = 'added'
 
+VIDEO_pk = 'pk'
+VIDEO_id = 'id'
+VIDEO_title = 'title'
+VIDEO_playlist_id = 'playlistid'
+VIDEO_added = 'added'
+VIDEO_is_down = 'is_down'
+VIDEO_playlist_title = 'playlisttitle'
+VIDEO_playlist_data = 'playlist_data'
 
-VIDEO_COLUMN_IDX__pk, VIDEO_COLUMN_NAME__pk = 0, 'pk'
-VIDEO_COLUMN_IDX__id, VIDEO_COLUMN_NAME__id = 1, 'id'
-VIDEO_COLUMN_IDX__title, VIDEO_COLUMN_NAME__title = 2, 'title'
-VIDEO_COLUMN_IDX__playlist_id, VIDEO_COLUMN_NAME__playlist_id = 3, 'playlistid'
-VIDEO_COLUMN_IDX__added, VIDEO_COLUMN_NAME__added = 4, 'added'
-VIDEO_COLUMN_IDX__is_down, VIDEO_COLUMN_NAME__is_down = 5, 'is_down'
-VIDEO_COLUMN_IDX__playlist_title, VIDEO_COLUMN_NAME__playlist_title = 6, 'playlisttitle'
+PLAYLIST_COL_NAMES = [
+    PLAYLIST_pk,
+    PLAYLIST_id,
+    PLAYLIST_title,
+    PLAYLIST_uploader_id,
+    PLAYLIST_added,
+]
+
+VIDEO_COL_NAMES = [
+    VIDEO_pk,
+    VIDEO_id,
+    VIDEO_title,
+    VIDEO_playlist_id,
+    VIDEO_added,
+    VIDEO_is_down,
+    VIDEO_playlist_title,
+    VIDEO_playlist_data,
+]
+
+PLAYLIST_COLS = dict(reversed(nameidx) for nameidx in enumerate(PLAYLIST_COL_NAMES))
+VIDEO_COLS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COL_NAMES))
+
 
 
 
@@ -42,26 +65,33 @@ class PGConnection:
 
 
 def video_row_to_dict(row):
-    row = {
-        VIDEO_COLUMN_NAME__pk: row[VIDEO_COLUMN_IDX__pk],
-        VIDEO_COLUMN_NAME__id: row[VIDEO_COLUMN_IDX__id],
-        VIDEO_COLUMN_NAME__title: row[VIDEO_COLUMN_IDX__title],
-        VIDEO_COLUMN_NAME__playlist_id: row[VIDEO_COLUMN_IDX__playlist_id],
-        VIDEO_COLUMN_NAME__added: str(row[VIDEO_COLUMN_IDX__added]),
-        VIDEO_COLUMN_NAME__is_down: row[VIDEO_COLUMN_IDX__is_down],
-        VIDEO_COLUMN_NAME__playlist_title: row[VIDEO_COLUMN_IDX__playlist_title] or None,
-    }
-    return row
+    playlist_data = row[VIDEO_COLS[VIDEO_playlist_data]]
+    playlists = []
+
+    if playlist_data:
+        playlists = map(lambda x: x + [None, None], playlist_data)
+        playlists = map(playlist_row_to_dict, playlists)
+
+    for playlist in playlists:
+        playlist[PLAYLIST_pk] = int(playlist[PLAYLIST_pk])
+
+    videorow = list(row)
+    videorow[VIDEO_COLS[VIDEO_playlist_data]] = list(playlists)
+    videorow[VIDEO_COLS[VIDEO_added]] = str(videorow[VIDEO_COLS[VIDEO_added]])
+
+    videodict = dict(zip(VIDEO_COL_NAMES, videorow))
+
+    return videodict
 
 
 
 def playlist_row_to_dict(row):
     rowdict = {
-        PLAYLIST_COLUMNT_NAME__pk: row[PLAYLIST_COLUMNT_IDX__pk],
-        PLAYLIST_COLUMNT_NAME__id: row[PLAYLIST_COLUMNT_IDX__id],
-        PLAYLIST_COLUMNT_NAME__title: row[PLAYLIST_COLUMNT_IDX__title],
-        PLAYLIST_COLUMNT_NAME__uploader_id: row[PLAYLIST_COLUMNT_IDX__uploader_id],
-        PLAYLIST_COLUMNT_NAME__added: row[PLAYLIST_COLUMNT_IDX__added],
+        PLAYLIST_pk: row[PLAYLIST_COLS[PLAYLIST_pk]],
+        PLAYLIST_id: row[PLAYLIST_COLS[PLAYLIST_id]],
+        PLAYLIST_title: row[PLAYLIST_COLS[PLAYLIST_title]],
+        PLAYLIST_uploader_id: row[PLAYLIST_COLS[PLAYLIST_uploader_id]],
+        PLAYLIST_added: row[PLAYLIST_COLS[PLAYLIST_added]],
     }
     return rowdict
 
@@ -74,10 +104,17 @@ SQL_SELECT_ALL_VIDEOS = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        (
+            SELECT array_agg ( array [ playlist.pk::text, playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
     ORDER BY video.pk
+    ;
 """
 
 SQL_SELECT_VIDEOS_BY_ID = """
@@ -88,7 +125,13 @@ SQL_SELECT_VIDEOS_BY_ID = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        (
+            SELECT array_agg ( array [ playlist.pk::text, playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     LEFT JOIN playlist ON playlist.pk = video.playlist_pk
     WHERE video.id in %(vids)s
@@ -119,7 +162,13 @@ SQL_SELECT_VIDEOS_BY_PLAYLISTID = """
         playlist.id AS playlistid,
         video.added,
         video.is_down,
-        playlist.title AS playlist
+        playlist.title AS playlist,
+        (
+            SELECT array_agg ( array [ playlist.pk::text, playlist.id, playlist.title ])
+            FROM playlist
+            JOIN playlist_video ON playlist_video.playlist_pk = playlist.pk
+            WHERE video.pk = playlist_video.video_pk
+        ) AS playlist_data
     FROM video
     JOIN playlist ON playlist.pk = video.playlist_pk
     WHERE playlist.id = %(plid)s
@@ -234,7 +283,7 @@ def insert_video(vdata):
         conn.commit()
         row = cur.fetchone()
 
-    result = select_videos_by_id(vids=(row[VIDEO_COLUMN_IDX__id],))
+    result = select_videos_by_id(vids=(row[VIDEO_COLS[VIDEO_id]],))
 
     return result
 

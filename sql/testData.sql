@@ -26,6 +26,26 @@ insert into video
     (10, 'id10', 'title10', '2000-01-01 00:00:00', false)
 ;
 
+insert into playlist_video
+    (playlist_pk, video_pk) values
+    (1, 1),
+
+    (2, 1),
+    (2, 2),
+
+    (3, 1),
+    (3, 2),
+    (3, 3),
+
+    (4, 3),
+    (4, 4),
+    (4, 5),
+    (4, 6),
+    (4, 7),
+
+    (10, 10)
+;
+
 update video
 set playlist_pk = 1
 where pk = 2

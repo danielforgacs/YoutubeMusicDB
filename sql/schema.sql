@@ -18,8 +18,8 @@ CREATE TABLE video (
 ;
 
 CREATE TABLE playlist_video (
-	playlistpk		INTEGER			REFERENCES playlist,
-	videopk			INTEGER			REFERENCES video,
-	UNIQUE (playlistpk, videopk)
+	playlist_pk		INTEGER			REFERENCES playlist,
+	video_pk		INTEGER			REFERENCES video,
+	UNIQUE (playlist_pk, video_pk)
 )
 ;
