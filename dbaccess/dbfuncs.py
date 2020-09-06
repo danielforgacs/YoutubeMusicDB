@@ -9,17 +9,6 @@ PLAYLIST_title = 'title'
 PLAYLIST_uploader_id = 'uploader_id'
 PLAYLIST_added = 'added'
 
-PLAYLIST_COL_NAMES = [
-    PLAYLIST_pk,
-    PLAYLIST_id,
-    PLAYLIST_title,
-    PLAYLIST_uploader_id,
-    PLAYLIST_added,
-]
-
-PLAYLIST_COLS = dict(reversed(nameidx) for nameidx in enumerate(PLAYLIST_COL_NAMES))
-
-
 VIDEO_pk = 'pk'
 VIDEO_id = 'id'
 VIDEO_title = 'title'
@@ -29,6 +18,13 @@ VIDEO_is_down = 'is_down'
 VIDEO_playlist_title = 'playlisttitle'
 VIDEO_playlist_data = 'playlist_data'
 
+PLAYLIST_COL_NAMES = [
+    PLAYLIST_pk,
+    PLAYLIST_id,
+    PLAYLIST_title,
+    PLAYLIST_uploader_id,
+    PLAYLIST_added,
+]
 
 VIDEO_COL_NAMES = [
     VIDEO_pk,
@@ -41,6 +37,7 @@ VIDEO_COL_NAMES = [
     VIDEO_playlist_data,
 ]
 
+PLAYLIST_COLS = dict(reversed(nameidx) for nameidx in enumerate(PLAYLIST_COL_NAMES))
 VIDEO_COLS = dict(reversed(nameidx) for nameidx in enumerate(VIDEO_COL_NAMES))
 
 
