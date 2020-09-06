@@ -86,14 +86,9 @@ def video_row_to_dict(row):
 
 
 def playlist_row_to_dict(row):
-    rowdict = {
-        PLAYLIST_pk: row[PLAYLIST_COLS[PLAYLIST_pk]],
-        PLAYLIST_id: row[PLAYLIST_COLS[PLAYLIST_id]],
-        PLAYLIST_title: row[PLAYLIST_COLS[PLAYLIST_title]],
-        PLAYLIST_uploader_id: row[PLAYLIST_COLS[PLAYLIST_uploader_id]],
-        PLAYLIST_added: row[PLAYLIST_COLS[PLAYLIST_added]],
-    }
-    return rowdict
+    playlistdict = dict(zip(PLAYLIST_COL_NAMES, row))
+
+    return playlistdict
 
 
 SQL_SELECT_ALL_VIDEOS = """

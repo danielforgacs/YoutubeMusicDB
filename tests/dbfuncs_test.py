@@ -3,26 +3,6 @@ import dbaccess.dbfuncs as dbf
 import tests.setup
 
 
-PLAYLIST_COLUMNS = [
-    dbf.PLAYLIST_pk,
-    dbf.PLAYLIST_id,
-    dbf.PLAYLIST_title,
-    dbf.PLAYLIST_uploader_id,
-    dbf.PLAYLIST_added,
-]
-
-
-VIDEOUMNS = [
-    dbf.VIDEO_pk,
-    dbf.VIDEO_id,
-    dbf.VIDEO_title,
-    dbf.VIDEO_playlist_id,
-    dbf.VIDEO_added,
-    dbf.VIDEO_is_down,
-    dbf.VIDEO_playlist_title,
-    dbf.VIDEO_playlist_data,
-]
-
 
 def setup():
     tests.setup.init_test_db()
@@ -570,7 +550,7 @@ def test_video_has_comlumns():
     video = videos[0]
 
     assert video == allvideos[0]
-    assert list(video.keys()) == VIDEOUMNS
+    assert list(video.keys()) == dbf.VIDEO_COL_NAMES
 
 
 
@@ -583,7 +563,7 @@ def test_video_playlist_data_has_comlumns():
         for plist in video[dbf.VIDEO_playlist_data]]
 
     for plist in video_playlists:
-        assert list(plist.keys()) == PLAYLIST_COLUMNS
+        assert list(plist.keys()) == dbf.PLAYLIST_COL_NAMES
 
 
 
